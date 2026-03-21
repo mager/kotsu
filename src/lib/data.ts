@@ -1,0 +1,191 @@
+export interface CardItem {
+	character: string;
+	romaji: string;
+	meaning: string;
+	readings?: { on?: string[]; kun?: string[] };
+}
+
+export interface Column {
+	id: string;
+	title: string;
+	titleJp: string;
+	items: CardItem[];
+}
+
+const hiragana: CardItem[] = [
+	{ character: 'あ', romaji: 'a', meaning: 'a' },
+	{ character: 'い', romaji: 'i', meaning: 'i' },
+	{ character: 'う', romaji: 'u', meaning: 'u' },
+	{ character: 'え', romaji: 'e', meaning: 'e' },
+	{ character: 'お', romaji: 'o', meaning: 'o' },
+	{ character: 'か', romaji: 'ka', meaning: 'ka' },
+	{ character: 'き', romaji: 'ki', meaning: 'ki' },
+	{ character: 'く', romaji: 'ku', meaning: 'ku' },
+	{ character: 'け', romaji: 'ke', meaning: 'ke' },
+	{ character: 'こ', romaji: 'ko', meaning: 'ko' },
+	{ character: 'さ', romaji: 'sa', meaning: 'sa' },
+	{ character: 'し', romaji: 'shi', meaning: 'shi' },
+	{ character: 'す', romaji: 'su', meaning: 'su' },
+	{ character: 'せ', romaji: 'se', meaning: 'se' },
+	{ character: 'そ', romaji: 'so', meaning: 'so' },
+	{ character: 'た', romaji: 'ta', meaning: 'ta' },
+	{ character: 'ち', romaji: 'chi', meaning: 'chi' },
+	{ character: 'つ', romaji: 'tsu', meaning: 'tsu' },
+	{ character: 'て', romaji: 'te', meaning: 'te' },
+	{ character: 'と', romaji: 'to', meaning: 'to' },
+	{ character: 'な', romaji: 'na', meaning: 'na' },
+	{ character: 'に', romaji: 'ni', meaning: 'ni' },
+	{ character: 'ぬ', romaji: 'nu', meaning: 'nu' },
+	{ character: 'ね', romaji: 'ne', meaning: 'ne' },
+	{ character: 'の', romaji: 'no', meaning: 'no' },
+	{ character: 'は', romaji: 'ha', meaning: 'ha' },
+	{ character: 'ひ', romaji: 'hi', meaning: 'hi' },
+	{ character: 'ふ', romaji: 'fu', meaning: 'fu' },
+	{ character: 'へ', romaji: 'he', meaning: 'he' },
+	{ character: 'ほ', romaji: 'ho', meaning: 'ho' },
+	{ character: 'ま', romaji: 'ma', meaning: 'ma' },
+	{ character: 'み', romaji: 'mi', meaning: 'mi' },
+	{ character: 'む', romaji: 'mu', meaning: 'mu' },
+	{ character: 'め', romaji: 'me', meaning: 'me' },
+	{ character: 'も', romaji: 'mo', meaning: 'mo' },
+	{ character: 'や', romaji: 'ya', meaning: 'ya' },
+	{ character: 'ゆ', romaji: 'yu', meaning: 'yu' },
+	{ character: 'よ', romaji: 'yo', meaning: 'yo' },
+	{ character: 'ら', romaji: 'ra', meaning: 'ra' },
+	{ character: 'り', romaji: 'ri', meaning: 'ri' },
+	{ character: 'る', romaji: 'ru', meaning: 'ru' },
+	{ character: 'れ', romaji: 're', meaning: 're' },
+	{ character: 'ろ', romaji: 'ro', meaning: 'ro' },
+	{ character: 'わ', romaji: 'wa', meaning: 'wa' },
+	{ character: 'を', romaji: 'wo', meaning: 'wo' },
+	{ character: 'ん', romaji: 'n', meaning: 'n' }
+];
+
+const katakana: CardItem[] = [
+	{ character: 'ア', romaji: 'a', meaning: 'a' },
+	{ character: 'イ', romaji: 'i', meaning: 'i' },
+	{ character: 'ウ', romaji: 'u', meaning: 'u' },
+	{ character: 'エ', romaji: 'e', meaning: 'e' },
+	{ character: 'オ', romaji: 'o', meaning: 'o' },
+	{ character: 'カ', romaji: 'ka', meaning: 'ka' },
+	{ character: 'キ', romaji: 'ki', meaning: 'ki' },
+	{ character: 'ク', romaji: 'ku', meaning: 'ku' },
+	{ character: 'ケ', romaji: 'ke', meaning: 'ke' },
+	{ character: 'コ', romaji: 'ko', meaning: 'ko' },
+	{ character: 'サ', romaji: 'sa', meaning: 'sa' },
+	{ character: 'シ', romaji: 'shi', meaning: 'shi' },
+	{ character: 'ス', romaji: 'su', meaning: 'su' },
+	{ character: 'セ', romaji: 'se', meaning: 'se' },
+	{ character: 'ソ', romaji: 'so', meaning: 'so' },
+	{ character: 'タ', romaji: 'ta', meaning: 'ta' },
+	{ character: 'チ', romaji: 'chi', meaning: 'chi' },
+	{ character: 'ツ', romaji: 'tsu', meaning: 'tsu' },
+	{ character: 'テ', romaji: 'te', meaning: 'te' },
+	{ character: 'ト', romaji: 'to', meaning: 'to' },
+	{ character: 'ナ', romaji: 'na', meaning: 'na' },
+	{ character: 'ニ', romaji: 'ni', meaning: 'ni' },
+	{ character: 'ヌ', romaji: 'nu', meaning: 'nu' },
+	{ character: 'ネ', romaji: 'ne', meaning: 'ne' },
+	{ character: 'ノ', romaji: 'no', meaning: 'no' },
+	{ character: 'ハ', romaji: 'ha', meaning: 'ha' },
+	{ character: 'ヒ', romaji: 'hi', meaning: 'hi' },
+	{ character: 'フ', romaji: 'fu', meaning: 'fu' },
+	{ character: 'ヘ', romaji: 'he', meaning: 'he' },
+	{ character: 'ホ', romaji: 'ho', meaning: 'ho' },
+	{ character: 'マ', romaji: 'ma', meaning: 'ma' },
+	{ character: 'ミ', romaji: 'mi', meaning: 'mi' },
+	{ character: 'ム', romaji: 'mu', meaning: 'mu' },
+	{ character: 'メ', romaji: 'me', meaning: 'me' },
+	{ character: 'モ', romaji: 'mo', meaning: 'mo' },
+	{ character: 'ヤ', romaji: 'ya', meaning: 'ya' },
+	{ character: 'ユ', romaji: 'yu', meaning: 'yu' },
+	{ character: 'ヨ', romaji: 'yo', meaning: 'yo' },
+	{ character: 'ラ', romaji: 'ra', meaning: 'ra' },
+	{ character: 'リ', romaji: 'ri', meaning: 'ri' },
+	{ character: 'ル', romaji: 'ru', meaning: 'ru' },
+	{ character: 'レ', romaji: 're', meaning: 're' },
+	{ character: 'ロ', romaji: 'ro', meaning: 'ro' },
+	{ character: 'ワ', romaji: 'wa', meaning: 'wa' },
+	{ character: 'ヲ', romaji: 'wo', meaning: 'wo' },
+	{ character: 'ン', romaji: 'n', meaning: 'n' }
+];
+
+const radicals: CardItem[] = [
+	{ character: '人', romaji: 'hito', meaning: 'person' },
+	{ character: '水', romaji: 'mizu', meaning: 'water' },
+	{ character: '火', romaji: 'hi', meaning: 'fire' },
+	{ character: '木', romaji: 'ki', meaning: 'tree' },
+	{ character: '金', romaji: 'kane', meaning: 'metal / gold' },
+	{ character: '土', romaji: 'tsuchi', meaning: 'earth' },
+	{ character: '日', romaji: 'hi / nichi', meaning: 'sun / day' },
+	{ character: '月', romaji: 'tsuki', meaning: 'moon / month' },
+	{ character: '山', romaji: 'yama', meaning: 'mountain' },
+	{ character: '川', romaji: 'kawa', meaning: 'river' },
+	{ character: '口', romaji: 'kuchi', meaning: 'mouth' },
+	{ character: '目', romaji: 'me', meaning: 'eye' },
+	{ character: '手', romaji: 'te', meaning: 'hand' },
+	{ character: '心', romaji: 'kokoro', meaning: 'heart / mind' },
+	{ character: '力', romaji: 'chikara', meaning: 'power' },
+	{ character: '田', romaji: 'ta', meaning: 'rice field' },
+	{ character: '女', romaji: 'onna', meaning: 'woman' },
+	{ character: '子', romaji: 'ko', meaning: 'child' },
+	{ character: '糸', romaji: 'ito', meaning: 'thread' },
+	{ character: '言', romaji: 'koto', meaning: 'speech' },
+	{ character: '食', romaji: 'shoku', meaning: 'eat / food' },
+	{ character: '車', romaji: 'kuruma', meaning: 'vehicle' },
+	{ character: '門', romaji: 'mon', meaning: 'gate' },
+	{ character: '雨', romaji: 'ame', meaning: 'rain' }
+];
+
+const kanji: CardItem[] = [
+	{ character: '一', romaji: 'ichi', meaning: 'one', readings: { on: ['イチ', 'イツ'], kun: ['ひと-'] } },
+	{ character: '二', romaji: 'ni', meaning: 'two', readings: { on: ['ニ'], kun: ['ふた-'] } },
+	{ character: '三', romaji: 'san', meaning: 'three', readings: { on: ['サン'], kun: ['み-'] } },
+	{ character: '四', romaji: 'shi / yon', meaning: 'four', readings: { on: ['シ'], kun: ['よ-', 'よん'] } },
+	{ character: '五', romaji: 'go', meaning: 'five', readings: { on: ['ゴ'], kun: ['いつ-'] } },
+	{ character: '六', romaji: 'roku', meaning: 'six', readings: { on: ['ロク'], kun: ['む-'] } },
+	{ character: '七', romaji: 'shichi / nana', meaning: 'seven', readings: { on: ['シチ'], kun: ['なな'] } },
+	{ character: '八', romaji: 'hachi', meaning: 'eight', readings: { on: ['ハチ'], kun: ['や-'] } },
+	{ character: '九', romaji: 'ku / kyuu', meaning: 'nine', readings: { on: ['キュウ', 'ク'], kun: ['ここの-'] } },
+	{ character: '十', romaji: 'juu', meaning: 'ten', readings: { on: ['ジュウ', 'ジッ'], kun: ['とお'] } },
+	{ character: '日', romaji: 'nichi / hi', meaning: 'day / sun', readings: { on: ['ニチ', 'ジツ'], kun: ['ひ', 'か'] } },
+	{ character: '月', romaji: 'getsu / tsuki', meaning: 'month / moon', readings: { on: ['ゲツ', 'ガツ'], kun: ['つき'] } },
+	{ character: '火', romaji: 'ka / hi', meaning: 'fire', readings: { on: ['カ'], kun: ['ひ'] } },
+	{ character: '水', romaji: 'sui / mizu', meaning: 'water', readings: { on: ['スイ'], kun: ['みず'] } },
+	{ character: '木', romaji: 'moku / ki', meaning: 'tree / wood', readings: { on: ['モク', 'ボク'], kun: ['き'] } },
+	{ character: '金', romaji: 'kin / kane', meaning: 'gold / money', readings: { on: ['キン', 'コン'], kun: ['かね'] } },
+	{ character: '土', romaji: 'do / tsuchi', meaning: 'earth / soil', readings: { on: ['ド', 'ト'], kun: ['つち'] } },
+	{ character: '人', romaji: 'jin / hito', meaning: 'person', readings: { on: ['ジン', 'ニン'], kun: ['ひと'] } },
+	{ character: '大', romaji: 'dai / oo', meaning: 'big / large', readings: { on: ['ダイ', 'タイ'], kun: ['おお-'] } },
+	{ character: '小', romaji: 'shou / chii', meaning: 'small / little', readings: { on: ['ショウ'], kun: ['ちい-', 'こ'] } },
+	{ character: '中', romaji: 'chuu / naka', meaning: 'middle / inside', readings: { on: ['チュウ'], kun: ['なか'] } },
+	{ character: '上', romaji: 'jou / ue', meaning: 'up / above', readings: { on: ['ジョウ'], kun: ['うえ', 'あ-'] } },
+	{ character: '下', romaji: 'ka / shita', meaning: 'down / below', readings: { on: ['カ', 'ゲ'], kun: ['した', 'さ-', 'くだ-'] } },
+	{ character: '年', romaji: 'nen / toshi', meaning: 'year', readings: { on: ['ネン'], kun: ['とし'] } }
+];
+
+const vocabulary: CardItem[] = [
+	{ character: 'ママ', romaji: 'mama', meaning: 'mom' },
+	{ character: 'パパ', romaji: 'papa', meaning: 'dad' },
+	{ character: 'はい', romaji: 'hai', meaning: 'yes' },
+	{ character: 'ワンワン', romaji: 'wan-wan', meaning: 'woof (doggy)' },
+	{ character: 'ニャーニャー', romaji: 'nyā-nyā', meaning: 'meow (kitty)' },
+	{ character: 'おいしい', romaji: 'oishii', meaning: 'delicious' },
+	{ character: 'いたい', romaji: 'itai', meaning: 'ouch / it hurts' },
+	{ character: 'すき', romaji: 'suki', meaning: 'like / love' },
+	{ character: 'だめ', romaji: 'dame', meaning: 'no good / stop' },
+	{ character: 'あぶない', romaji: 'abunai', meaning: 'dangerous' },
+	{ character: 'こんにちは', romaji: 'konnichiwa', meaning: 'hello' },
+	{ character: 'ありがとう', romaji: 'arigatou', meaning: 'thank you' },
+	{ character: 'ごめんなさい', romaji: 'gomen nasai', meaning: 'I\'m sorry' },
+	{ character: 'さようなら', romaji: 'sayounara', meaning: 'goodbye' },
+	{ character: 'おはよう', romaji: 'ohayou', meaning: 'good morning' }
+];
+
+export const columns: Column[] = [
+	{ id: 'hiragana', title: 'Hiragana', titleJp: 'ひらがな', items: hiragana },
+	{ id: 'katakana', title: 'Katakana', titleJp: 'カタカナ', items: katakana },
+	{ id: 'radicals', title: 'Radicals', titleJp: '部首', items: radicals },
+	{ id: 'kanji', title: 'Kanji N5', titleJp: '漢字', items: kanji },
+	{ id: 'vocabulary', title: 'Vocabulary', titleJp: '語彙', items: vocabulary }
+];
