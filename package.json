@@ -19,6 +19,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@sveltejs/adapter-vercel": "^6.3.3"
+    "@sveltejs/adapter-vercel": "^6.3.3",
+    "firebase": "^12.11.0"
   }
 }

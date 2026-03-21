@@ -4,6 +4,8 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import type { Snippet } from 'svelte';
 	import { page } from '$app/stores';
+	import { initAuth } from '$lib/stores/auth.svelte';
+	import { browser } from '$app/environment';
 
 	interface Props {
 		children: Snippet;
@@ -11,8 +13,12 @@
 
 	let { children }: Props = $props();
 
-	// Hide nav/footer on detail pages (immersive)
 	let isDetailPage = $derived($page.params.index !== undefined);
+
+	// Init Firebase auth on client only
+	if (browser) {
+		initAuth();
+	}
 </script>
 
 <div class="flex min-h-screen flex-col bg-[var(--color-paper)]">

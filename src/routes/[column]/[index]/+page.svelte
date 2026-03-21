@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { fly, fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
+	import { markLearned, unmarkLearned } from '$lib/firebase';
+	import { getAuthState, isLearned, setLearned } from '$lib/stores/auth.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	let showDetails = $state(false);
-	let learned = $state(false);
+	let auth = $derived(getAuthState());
+
+	let learnedKey = $derived(`${data.column.id}_${data.index}`);
+	let learned = $derived(isLearned(data.column.id, data.index));
 
 	$effect(() => {
 		showDetails = false;
@@ -13,8 +18,15 @@
 		return () => clearTimeout(t);
 	});
 
-	function toggleLearned() {
-		learned = !learned;
+	async function toggleLearned() {
+		if (!auth.user) return;
+		const newValue = !learned;
+		setLearned(learnedKey, newValue);
+		if (newValue) {
+			await markLearned(auth.user.uid, data.column.id, data.index);
+		} else {
+			await unmarkLearned(auth.user.uid, data.column.id, data.index);
+		}
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -53,21 +65,22 @@
 			{data.column.titleJp}
 		</span>
 
-		<!-- Learned toggle — top right, subtle -->
-		<button
-			class="cursor-pointer text-xs font-bold tracking-[0.2em] uppercase transition-all {learned
-				? 'text-green-500'
-				: 'text-[var(--color-ink-ghost)] hover:text-[var(--color-ink-light)]'}"
-			onclick={toggleLearned}
-			title={learned ? 'Learned' : 'Mark as learned'}
-		>
-			{learned ? '✓ Learned' : '○ Learn'}
-		</button>
+		{#if auth.user}
+			<button
+				class="cursor-pointer text-xs font-bold tracking-[0.2em] uppercase transition-all {learned
+					? 'text-green-500'
+					: 'text-[var(--color-ink-ghost)] hover:text-[var(--color-ink-light)]'}"
+				onclick={toggleLearned}
+			>
+				{learned ? '✓ Learned' : '○ Learn'}
+			</button>
+		{:else}
+			<span></span>
+		{/if}
 	</div>
 
-	<!-- Center: character + details -->
+	<!-- Center -->
 	<div class="flex flex-col items-center">
-		<!-- Character -->
 		<div in:fly={{ y: 20, duration: 400 }}>
 			<span
 				class="block font-black leading-none"
@@ -77,7 +90,6 @@
 			</span>
 		</div>
 
-		<!-- Details -->
 		{#if showDetails}
 			<div class="mt-4 flex flex-col items-center gap-2" in:fade={{ duration: 300 }}>
 				<span
