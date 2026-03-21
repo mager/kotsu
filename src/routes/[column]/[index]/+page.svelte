@@ -82,7 +82,7 @@
 	</div>
 
 	<!-- Center -->
-	<div class="flex flex-col items-center">
+	<div class="flex flex-col items-center pb-24">
 		<div in:fly={{ y: 20, duration: 400 }}>
 			<span
 				class="block font-black leading-none"
