@@ -65,20 +65,9 @@ body {
 	color: var(--color-hai);
 }
 
-/* Learned character — full ink, no fading */
+/* Learned character — full ink, clean */
 .char-learned {
 	color: var(--color-ink);
-	position: relative;
-}
-.char-learned::after {
-	content: '';
-	position: absolute;
-	bottom: -2px;
-	left: 20%;
-	right: 20%;
-	height: 2px;
-	background: var(--color-accent, var(--color-hai));
-	border-radius: 1px;
 }
 
 /* Staggered fade-in */
