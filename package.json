@@ -21,6 +21,7 @@
   "dependencies": {
     "@sveltejs/adapter-vercel": "^6.3.3",
     "@vercel/analytics": "^2.0.1",
-    "firebase": "^12.11.0"
+    "firebase": "^12.11.0",
+    "wanakana": "^5.3.1"
   }
 }
