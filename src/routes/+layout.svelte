@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import Nav from '$lib/components/Nav.svelte';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -10,5 +11,6 @@
 </script>
 
 <div class="min-h-screen bg-[var(--color-paper)]">
+	<Nav />
 	{@render children()}
 </div>

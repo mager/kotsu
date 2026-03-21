@@ -1,19 +1,29 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
+	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+	let showDetails = $state(false);
+
+	// Stagger detail reveal
+	$effect(() => {
+		const t = setTimeout(() => (showDetails = true), 200);
+		return () => clearTimeout(t);
+	});
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') {
-			window.location.href = '/';
+			goto('/');
 		} else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
 			if (data.nextIndex !== null) {
-				window.location.href = `/${data.column.id}/${data.nextIndex}`;
+				showDetails = false;
+				goto(`/${data.column.id}/${data.nextIndex}`);
 			}
 		} else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
 			if (data.prevIndex !== null) {
-				window.location.href = `/${data.column.id}/${data.prevIndex}`;
+				showDetails = false;
+				goto(`/${data.column.id}/${data.prevIndex}`);
 			}
 		}
 	}
@@ -21,83 +31,106 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div
-	class="fixed inset-0 flex flex-col items-center justify-center bg-[var(--color-paper)]"
-	in:fly={{ y: 30, duration: 250 }}
->
-	<!-- Back link -->
+<div class="fixed inset-0 flex flex-col items-center justify-center bg-[var(--color-paper)]">
+	<!-- Back -->
 	<a
 		href="/"
-		class="absolute top-6 left-6 text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-ink-light)] transition-colors hover:text-[var(--color-ink)] md:top-10 md:left-10"
+		class="absolute top-5 left-5 text-xs font-bold tracking-[0.25em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] md:top-8 md:left-10"
 	>
 		← Back
 	</a>
 
-	<!-- Column indicator -->
-	<span class="absolute top-6 right-6 text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-ink-light)] md:top-10 md:right-10" style="font-family: var(--font-jp-serif);">
+	<!-- Column name -->
+	<span
+		class="absolute top-5 right-5 text-xs font-bold tracking-[0.25em] uppercase text-[var(--color-ink-ghost)] md:top-8 md:right-10"
+		style="font-family: var(--font-jp-brush);"
+	>
 		{data.column.titleJp}
 	</span>
 
-	<!-- Character -->
-	<span
-		class="block font-black leading-none"
-		style="font-size: clamp(10rem, 35vw, 28rem);"
-	>
-		{data.item.character}
-	</span>
-
-	<!-- Romaji -->
-	<span class="mt-6 text-2xl font-bold tracking-[0.3em] uppercase text-[var(--color-ink-light)] md:text-4xl">
-		{data.item.romaji}
-	</span>
-
-	<!-- Meaning (if different from romaji) -->
-	{#if data.item.meaning && data.item.meaning !== data.item.romaji}
-		<span class="mt-2 text-lg text-[var(--color-ink-light)] md:text-xl" style="font-family: var(--font-jp-serif);">
-			{data.item.meaning}
+	<!-- Main character -->
+	<div in:fly={{ y: 20, duration: 400 }}>
+		<span
+			class="block font-black leading-none"
+			style="font-size: clamp(12rem, 40vw, 32rem);"
+		>
+			{data.item.character}
 		</span>
-	{/if}
+	</div>
 
-	<!-- Readings (kanji) -->
-	{#if data.item.readings}
-		<div class="mt-8 flex gap-12 text-base">
-			{#if data.item.readings.on}
-				<div class="text-center">
-					<span class="block text-[10px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-light)]">On'yomi</span>
-					<span class="mt-2 block text-xl font-black">{data.item.readings.on.join('・')}</span>
+	<!-- Details (staggered) -->
+	{#if showDetails}
+		<div class="flex flex-col items-center gap-3" in:fade={{ duration: 300 }}>
+			<!-- Romaji -->
+			<span
+				class="text-xl font-bold tracking-[0.4em] uppercase text-[var(--color-ink-light)] md:text-3xl"
+				style="font-family: var(--font-jp-brush);"
+			>
+				{data.item.romaji}
+			</span>
+
+			<!-- Meaning -->
+			{#if data.item.meaning && data.item.meaning !== data.item.romaji}
+				<span class="text-base text-[var(--color-ink-light)] md:text-lg">
+					{data.item.meaning}
+				</span>
+			{/if}
+
+			<!-- Readings -->
+			{#if data.item.readings}
+				<div class="mt-4 flex gap-16">
+					{#if data.item.readings.on}
+						<div class="text-center">
+							<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">On</span>
+							<span class="mt-1 block text-lg font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.on.join('・')}</span>
+						</div>
+					{/if}
+					{#if data.item.readings.kun}
+						<div class="text-center">
+							<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">Kun</span>
+							<span class="mt-1 block text-lg font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.kun.join('・')}</span>
+						</div>
+					{/if}
 				</div>
 			{/if}
-			{#if data.item.readings.kun}
-				<div class="text-center">
-					<span class="block text-[10px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-light)]">Kun'yomi</span>
-					<span class="mt-2 block text-xl font-black">{data.item.readings.kun.join('・')}</span>
-				</div>
-			{/if}
+
+			<!-- Mark as learned -->
+			<button
+				class="mt-8 cursor-pointer border-[2px] border-[var(--color-divider)] px-6 py-2 text-xs font-bold tracking-[0.25em] uppercase text-[var(--color-ink-light)] transition-all hover:border-[var(--color-ink)] hover:text-[var(--color-ink)]"
+			>
+				Mark as learned ✓
+			</button>
 		</div>
 	{/if}
 
-	<!-- Navigation arrows -->
-	<div class="absolute bottom-8 flex gap-8 md:bottom-12">
+	<!-- Navigation -->
+	<div class="absolute bottom-8 flex items-center gap-12 md:bottom-12">
 		{#if data.prevIndex !== null}
 			<a
 				href="/{data.column.id}/{data.prevIndex}"
-				class="text-3xl font-black text-[var(--color-ink-light)] transition-colors hover:text-[var(--color-ink)]"
+				class="text-2xl text-[var(--color-ink-ghost)] transition-all hover:text-[var(--color-ink)] hover:-translate-x-1"
+				onclick={() => (showDetails = false)}
 			>
 				←
 			</a>
+		{:else}
+			<span class="w-6"></span>
 		{/if}
+
+		<span class="text-[10px] font-bold tracking-[0.2em] text-[var(--color-ink-ghost)]">
+			{data.index + 1} / {data.column.items.length}
+		</span>
+
 		{#if data.nextIndex !== null}
 			<a
 				href="/{data.column.id}/{data.nextIndex}"
-				class="text-3xl font-black text-[var(--color-ink-light)] transition-colors hover:text-[var(--color-ink)]"
+				class="text-2xl text-[var(--color-ink-ghost)] transition-all hover:text-[var(--color-ink)] hover:translate-x-1"
+				onclick={() => (showDetails = false)}
 			>
 				→
 			</a>
+		{:else}
+			<span class="w-6"></span>
 		{/if}
 	</div>
-
-	<!-- Keyboard hint -->
-	<span class="absolute bottom-3 text-[10px] font-bold tracking-[0.2em] text-[var(--color-ink-light)]/40 uppercase">
-		← → navigate · esc back
-	</span>
 </div>
