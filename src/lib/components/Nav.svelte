@@ -54,13 +54,13 @@
 			<!-- Progress -->
 			{#if totalLearned > 0}
 				<div class="hidden items-center gap-2 md:flex">
-					<div class="h-1.5 w-24 overflow-hidden rounded-full bg-[var(--color-shu-ghost)]">
+					<div class="h-1 w-20 overflow-hidden rounded-full bg-[var(--color-divider)]">
 						<div
-							class="h-full rounded-full transition-all duration-700 ease-out"
-							style="width: {progressPct}%; background-color: var(--color-shu);"
+							class="h-full rounded-full bg-[var(--color-hai)] transition-all duration-700 ease-out"
+							style="width: {progressPct}%;"
 						></div>
 					</div>
-					<span class="text-[10px] font-bold tracking-wide" style="color: var(--color-shu);">
+					<span class="text-[10px] font-bold tracking-wide text-[var(--color-ink-light)]">
 						{totalLearned}/{totalItems}
 					</span>
 				</div>

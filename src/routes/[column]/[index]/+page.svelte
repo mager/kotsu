@@ -68,9 +68,8 @@
 		{#if auth.user}
 			<button
 				class="cursor-pointer text-xs font-bold tracking-[0.2em] uppercase transition-all {learned
-					? ''
+					? 'text-[var(--color-ink-mid)]'
 					: 'text-[var(--color-ink-ghost)] hover:text-[var(--color-ink-light)]'}"
-				style={learned ? 'color: var(--color-shu);' : ''}
 				onclick={toggleLearned}
 			>
 				{learned ? '✓ Learned' : '○ Learn'}

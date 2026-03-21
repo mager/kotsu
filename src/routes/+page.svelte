@@ -56,12 +56,12 @@
 
 						<!-- Column progress indicator -->
 						{#if getColumnProgress(col.id, col.items.length) > 0}
-							<span class="mt-1 block text-[9px] font-bold tracking-wide" style="color: var(--color-shu);">
+							<span class="mt-1 block text-[9px] font-bold tracking-wide" style="color: var(--color-col-{col.id});">
 								{getColumnProgress(col.id, col.items.length)}/{col.items.length}
 							</span>
 						{/if}
 
-						<div class="mx-auto mt-2 h-px w-10 bg-[var(--color-divider)]"></div>
+						<div class="mx-auto mt-2 h-[2px] w-8 rounded-full" style="background-color: var(--color-col-{col.id}); opacity: 0.3;"></div>
 					</div>
 
 					<!-- Cards -->

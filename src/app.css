@@ -11,16 +11,24 @@
 	--font-jp-brush: 'Shippori Mincho', serif;
 	--font-jp-serif: 'Zen Old Mincho', serif;
 
-	/* 朱色 (shuiro) — vermillion red, the color of torii gates */
-	--color-shu: #c23b22;
-	--color-shu-light: #d45640;
-	--color-shu-ghost: rgba(194, 59, 34, 0.08);
-	--color-shu-glow: rgba(194, 59, 34, 0.15);
+	/* Traditional Japanese palette — 和色 (washoku) */
+	--color-sumi: #2c2c2c;           /* 墨 sumi — ink stone */
+	--color-hai: #828282;             /* 灰 hai — ash gray */
+	--color-ai: #264e73;              /* 藍 ai — indigo */
+	--color-matcha: #5b7a5e;          /* 抹茶 matcha — tea green */
+	--color-fuji: #7d6b91;            /* 藤 fuji — wisteria */
+	--color-shu: #b35c44;             /* 朱 shu — muted vermillion */
+	--color-asagi: #48929b;           /* 浅葱 asagi — pale blue-green */
 
-	/* Learned state — subtle red ink stamp feel */
-	--color-learned: #c23b22;
-	--color-learned-ghost: rgba(194, 59, 34, 0.06);
-	--color-learned-border: rgba(194, 59, 34, 0.2);
+	/* Column accent colors */
+	--color-col-hiragana: var(--color-sumi);
+	--color-col-katakana: var(--color-ai);
+	--color-col-radicals: var(--color-matcha);
+	--color-col-kanji: var(--color-fuji);
+	--color-col-vocabulary: var(--color-asagi);
+
+	/* Learned state — subtle warm gray shift */
+	--color-learned: var(--color-hai);
 }
 
 html {
@@ -52,34 +60,20 @@ body {
 	text-shadow: 0 0 40px rgba(0, 0, 0, 0.06);
 }
 
-/* Learned character — hanko stamp aesthetic */
+/* Learned character — subtle underline accent, no circles */
 .char-learned {
-	color: var(--color-shu);
+	opacity: 0.4;
 	position: relative;
 }
 .char-learned::after {
 	content: '';
 	position: absolute;
-	inset: -4px;
-	border-radius: 50%;
-	border: 1.5px solid var(--color-learned-border);
-	opacity: 0;
-	animation: stampReveal 0.4s ease forwards;
-}
-
-@keyframes stampReveal {
-	0% {
-		opacity: 0;
-		transform: scale(0.8) rotate(-8deg);
-	}
-	60% {
-		opacity: 1;
-		transform: scale(1.05) rotate(1deg);
-	}
-	100% {
-		opacity: 1;
-		transform: scale(1) rotate(0deg);
-	}
+	bottom: -2px;
+	left: 20%;
+	right: 20%;
+	height: 2px;
+	background: var(--color-accent, var(--color-hai));
+	border-radius: 1px;
 }
 
 /* Staggered fade-in */
@@ -106,10 +100,5 @@ body {
 	}
 	.char-glow:hover {
 		text-shadow: none;
-	}
-	.char-learned::after {
-		animation: none;
-		opacity: 1;
-		transform: none;
 	}
 }

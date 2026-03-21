@@ -58,18 +58,18 @@
 		<!-- Big progress number -->
 		<div class="mt-10 text-center">
 			<span
-				class="font-black leading-none"
-				style="font-size: clamp(5rem, 15vw, 10rem); color: var(--color-shu);"
+				class="font-black leading-none text-[var(--color-ink)]"
+				style="font-size: clamp(5rem, 15vw, 10rem);"
 			>
-				{progressPct}%
+				{progressPct}<span class="text-[var(--color-ink-light)]" style="font-size: 0.4em;">%</span>
 			</span>
 			<p class="mt-1 text-sm tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">
 				{totalLearned} of {totalItems} characters learned
 			</p>
-			<div class="mx-auto mt-4 h-2 max-w-md overflow-hidden rounded-full bg-[var(--color-shu-ghost)]">
+			<div class="mx-auto mt-4 h-2 max-w-md overflow-hidden rounded-full bg-[var(--color-divider)]">
 				<div
-					class="h-full rounded-full transition-all duration-700 ease-out"
-					style="width: {progressPct}%; background-color: var(--color-shu);"
+					class="h-full rounded-full bg-[var(--color-sumi)] transition-all duration-700 ease-out"
+					style="width: {progressPct}%;"
 				></div>
 			</div>
 		</div>
@@ -93,15 +93,15 @@
 								{col.hint}
 							</span>
 						</div>
-						<span class="text-sm font-bold" style="color: {pct > 0 ? 'var(--color-shu)' : 'var(--color-ink-ghost)'};">
+						<span class="text-sm font-bold" style="color: var(--color-col-{col.id});">
 							{col.learned}/{col.total}
 						</span>
 					</div>
 
-					<div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-shu-ghost)]">
+					<div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-divider)]">
 						<div
 							class="h-full rounded-full transition-all duration-500"
-							style="width: {pct}%; background-color: var(--color-shu);"
+							style="width: {pct}%; background-color: var(--color-col-{col.id});"
 						></div>
 					</div>
 
@@ -111,7 +111,7 @@
 							{#each col.learnedItems as item}
 								<a
 									href="/{col.id}/{item.index}"
-									class="char-learned font-black transition-transform hover:scale-110"
+									class="font-black text-[var(--color-ink-light)] transition-all hover:scale-110 hover:text-[var(--color-ink)]"
 									style="font-size: clamp(2rem, 4vw, 3rem);"
 								>
 									{item.character}
@@ -119,7 +119,7 @@
 							{/each}
 						</div>
 					{:else}
-						<p class="mt-3 text-sm text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">
+						<p class="mt-3 text-sm text-[var(--color-ink-ghost)]">
 							No characters learned yet — <a href="/" class="underline decoration-[var(--color-divider)] underline-offset-4 hover:decoration-[var(--color-ink)]">start learning</a>
 						</p>
 					{/if}

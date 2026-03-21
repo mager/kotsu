@@ -13,7 +13,7 @@
 
 	let href = $derived(`/${columnId}/${index}`);
 
-	// Scale font down for multi-character items (vocab, long words)
+	// Scale font for multi-char items
 	let charLen = $derived(item.character.length);
 	let fontSize = $derived(
 		charLen <= 1
@@ -29,7 +29,7 @@
 <a
 	{href}
 	class="animate-fade-up group relative block py-3 text-center md:py-4 {learned ? '' : 'char-glow'}"
-	style="animation-delay: {delay}ms;"
+	style="animation-delay: {delay}ms; --color-accent: var(--color-col-{columnId});"
 >
 	<span
 		class="relative inline-block font-black leading-none transition-transform duration-200 group-hover:scale-110 {learned ? 'char-learned' : ''}"
