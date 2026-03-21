@@ -34,11 +34,26 @@ export async function signInWithGoogle() {
 			displayName: result.user.displayName,
 			email: result.user.email,
 			photoURL: result.user.photoURL,
+			username: '',
 			createdAt: new Date().toISOString(),
 			learned: {}
 		});
 	}
 	return result.user;
+}
+
+export async function updateUsername(uid: string, username: string) {
+	const userRef = doc(db, 'users', uid);
+	await updateDoc(userRef, { username });
+}
+
+export async function getUsername(uid: string): Promise<string> {
+	const userRef = doc(db, 'users', uid);
+	const userDoc = await getDoc(userRef);
+	if (userDoc.exists()) {
+		return userDoc.data().username || '';
+	}
+	return '';
 }
 
 export async function signOut() {
