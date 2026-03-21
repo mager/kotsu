@@ -3,15 +3,17 @@
 :root {
 	--color-paper: #f9f9f9;
 	--color-ink: #111111;
-	--color-ink-light: #444444;
-	--color-border: #111111;
+	--color-ink-light: #888888;
+	--color-border: #e0e0e0;
 	--font-jp: 'Noto Sans JP', sans-serif;
+	--font-jp-serif: 'Zen Old Mincho', serif;
 }
 
 html {
 	font-family: var(--font-jp);
 	background-color: var(--color-paper);
 	color: var(--color-ink);
+	-webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -19,20 +21,11 @@ body {
 	min-height: 100vh;
 }
 
-/* Scrollbar styling for column containers */
-.column-scroll::-webkit-scrollbar {
-	width: 4px;
+/* Hide all scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
 }
-
-.column-scroll::-webkit-scrollbar-track {
-	background: transparent;
-}
-
-.column-scroll::-webkit-scrollbar-thumb {
-	background: #ccc;
-	border-radius: 2px;
-}
-
-.column-scroll::-webkit-scrollbar-thumb:hover {
-	background: #999;
+.no-scrollbar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
