@@ -5,7 +5,7 @@
 <footer class="mt-20 border-t border-[var(--color-divider)] px-5 py-8 md:px-10">
 	<div class="mx-auto flex max-w-[1400px] flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
 		<span class="text-xs text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">
-			<a href="/about" class="transition-colors hover:text-[var(--color-ink-light)]">@magerさん が作りました</a>
+			<a href="/about" class="transition-colors hover:text-[var(--color-shu)]">@magerさん が作りました</a>
 			<span class="mx-2">·</span>
 			<span>{year}</span>
 		</span>

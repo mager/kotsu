@@ -10,6 +10,17 @@
 	--font-jp: 'Noto Sans JP', sans-serif;
 	--font-jp-brush: 'Shippori Mincho', serif;
 	--font-jp-serif: 'Zen Old Mincho', serif;
+
+	/* 朱色 (shuiro) — vermillion red, the color of torii gates */
+	--color-shu: #c23b22;
+	--color-shu-light: #d45640;
+	--color-shu-ghost: rgba(194, 59, 34, 0.08);
+	--color-shu-glow: rgba(194, 59, 34, 0.15);
+
+	/* Learned state — subtle red ink stamp feel */
+	--color-learned: #c23b22;
+	--color-learned-ghost: rgba(194, 59, 34, 0.06);
+	--color-learned-border: rgba(194, 59, 34, 0.2);
 }
 
 html {
@@ -33,12 +44,42 @@ body {
 	scrollbar-width: none;
 }
 
-/* Character hover glow */
+/* Character hover */
 .char-glow {
 	transition: all 0.2s ease;
 }
 .char-glow:hover {
-	text-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+	text-shadow: 0 0 40px rgba(0, 0, 0, 0.06);
+}
+
+/* Learned character — hanko stamp aesthetic */
+.char-learned {
+	color: var(--color-shu);
+	position: relative;
+}
+.char-learned::after {
+	content: '';
+	position: absolute;
+	inset: -4px;
+	border-radius: 50%;
+	border: 1.5px solid var(--color-learned-border);
+	opacity: 0;
+	animation: stampReveal 0.4s ease forwards;
+}
+
+@keyframes stampReveal {
+	0% {
+		opacity: 0;
+		transform: scale(0.8) rotate(-8deg);
+	}
+	60% {
+		opacity: 1;
+		transform: scale(1.05) rotate(1deg);
+	}
+	100% {
+		opacity: 1;
+		transform: scale(1) rotate(0deg);
+	}
 }
 
 /* Staggered fade-in */
@@ -65,5 +106,10 @@ body {
 	}
 	.char-glow:hover {
 		text-shadow: none;
+	}
+	.char-learned::after {
+		animation: none;
+		opacity: 1;
+		transform: none;
 	}
 }

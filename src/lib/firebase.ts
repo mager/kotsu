@@ -9,15 +9,14 @@ import {
 } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
-// TODO: Replace with your Firebase config from console
-// Firebase Console → Project Settings → Your apps → Web
 const firebaseConfig = {
-	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+	apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyC9jAA4RL7Qw51spKiEY0U9pkkZ5B7XQ5c',
 	authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'kotsu-875a3.firebaseapp.com',
 	projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'kotsu-875a3',
 	storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'kotsu-875a3.firebasestorage.app',
-	messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-	appId: import.meta.env.VITE_FIREBASE_APP_ID
+	messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '930402461940',
+	appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:930402461940:web:fdc84810b27365569d16a1',
+	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || 'G-LMHHYJTNE8'
 };
 
 const app = initializeApp(firebaseConfig);
@@ -28,7 +27,6 @@ const provider = new GoogleAuthProvider();
 
 export async function signInWithGoogle() {
 	const result = await signInWithPopup(auth, provider);
-	// Create user doc if first time
 	const userRef = doc(db, 'users', result.user.uid);
 	const userDoc = await getDoc(userRef);
 	if (!userDoc.exists()) {
@@ -51,7 +49,6 @@ export function onAuth(callback: (user: User | null) => void) {
 	return onAuthStateChanged(auth, callback);
 }
 
-// Progress tracking
 export async function markLearned(uid: string, columnId: string, index: number) {
 	const userRef = doc(db, 'users', uid);
 	const key = `learned.${columnId}_${index}`;

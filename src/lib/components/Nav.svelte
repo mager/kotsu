@@ -49,25 +49,24 @@
 	<!-- Right side -->
 	<div class="flex items-center gap-5">
 		{#if auth.loading}
-			<!-- Loading skeleton -->
 			<span class="h-4 w-16 animate-pulse rounded bg-[var(--color-divider)]"></span>
 		{:else if auth.user}
-			<!-- Progress bar (when logged in) -->
+			<!-- Progress -->
 			{#if totalLearned > 0}
 				<div class="hidden items-center gap-2 md:flex">
-					<div class="h-1 w-20 overflow-hidden rounded-full bg-[var(--color-divider)]">
+					<div class="h-1.5 w-24 overflow-hidden rounded-full bg-[var(--color-shu-ghost)]">
 						<div
-							class="h-full rounded-full bg-[var(--color-ink)] transition-all duration-500"
-							style="width: {progressPct}%"
+							class="h-full rounded-full transition-all duration-700 ease-out"
+							style="width: {progressPct}%; background-color: var(--color-shu);"
 						></div>
 					</div>
-					<span class="text-[10px] font-bold tracking-wide text-[var(--color-ink-ghost)]">
+					<span class="text-[10px] font-bold tracking-wide" style="color: var(--color-shu);">
 						{totalLearned}/{totalItems}
 					</span>
 				</div>
 			{/if}
 
-			<!-- User -->
+			<!-- User avatar -->
 			<button
 				class="flex cursor-pointer items-center gap-2 text-sm font-bold text-[var(--color-ink-mid)] transition-colors hover:text-[var(--color-ink)]"
 				onclick={signOut}
@@ -77,7 +76,7 @@
 					<img
 						src={auth.user.photoURL}
 						alt=""
-						class="h-6 w-6 rounded-full"
+						class="h-6 w-6 rounded-full ring-1 ring-[var(--color-divider)]"
 					/>
 				{/if}
 				<span class="hidden md:inline">{auth.user.displayName?.split(' ')[0]}</span>

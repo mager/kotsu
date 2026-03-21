@@ -52,7 +52,7 @@
 
 						<!-- Column progress indicator -->
 						{#if getColumnProgress(col.id, col.items.length) > 0}
-							<span class="mt-1 block text-[9px] font-bold tracking-wide text-green-500">
+							<span class="mt-1 block text-[9px] font-bold tracking-wide" style="color: var(--color-shu);">
 								{getColumnProgress(col.id, col.items.length)}/{col.items.length}
 							</span>
 						{/if}
