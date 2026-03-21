@@ -6,6 +6,8 @@
 	import { page } from '$app/stores';
 	import { initAuth } from '$lib/stores/auth.svelte';
 	import { browser } from '$app/environment';
+	import { dev } from '$app/environment';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 
 	interface Props {
 		children: Snippet;
@@ -19,6 +21,9 @@
 	if (browser) {
 		initAuth();
 	}
+
+	// Vercel Analytics
+	injectAnalytics({ mode: dev ? 'development' : 'production' });
 </script>
 
 <div class="flex min-h-screen flex-col bg-[var(--color-paper)]">

@@ -60,9 +60,14 @@ body {
 	text-shadow: 0 0 40px rgba(0, 0, 0, 0.06);
 }
 
-/* Learned character — subtle underline accent, no circles */
+/* Unlearned character — ghosted out */
+.char-unlearned {
+	color: var(--color-hai);
+}
+
+/* Learned character — full ink, no fading */
 .char-learned {
-	opacity: 0.4;
+	color: var(--color-ink);
 	position: relative;
 }
 .char-learned::after {

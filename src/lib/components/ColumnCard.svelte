@@ -32,7 +32,7 @@
 	style="animation-delay: {delay}ms; --color-accent: var(--color-col-{columnId});"
 >
 	<span
-		class="relative inline-block font-black leading-none transition-transform duration-200 group-hover:scale-110 {learned ? 'char-learned' : ''}"
+		class="relative inline-block font-black leading-none transition-transform duration-200 group-hover:scale-110 {learned ? 'char-learned' : 'char-unlearned'}"
 		style="font-size: {fontSize};"
 	>
 		{item.character}

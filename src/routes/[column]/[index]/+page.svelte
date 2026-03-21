@@ -13,6 +13,8 @@
 	let learned = $derived(isLearned(data.column.id, data.index));
 
 	$effect(() => {
+		// Track data.index so this re-fires on arrow key navigation
+		const _idx = data.index;
 		showDetails = false;
 		const t = setTimeout(() => (showDetails = true), 200);
 		return () => clearTimeout(t);
