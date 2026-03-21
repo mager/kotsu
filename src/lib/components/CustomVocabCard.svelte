@@ -39,14 +39,6 @@
 	onmouseleave={() => (hovering = false)}
 	role="listitem"
 >
-	<!-- Custom badge -->
-	<span
-		class="absolute top-1 right-1 text-[8px] font-bold tracking-widest uppercase opacity-30"
-		style="color: var(--color-col-vocabulary);"
-	>
-		mine
-	</span>
-
 	<!-- Remove button — appears on hover -->
 	{#if hovering && !removing}
 		<button
