@@ -78,6 +78,15 @@
 			← Back
 		</a>
 
+		<a
+			href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="absolute top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] md:top-8"
+		>
+			kanshudo ↗
+		</a>
+
 		<span
 			class="text-sm text-[var(--color-ink-ghost)]"
 			style="font-family: var(--font-jp-brush);"
