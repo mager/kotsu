@@ -7,7 +7,15 @@ import {
 	onAuthStateChanged,
 	type User
 } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+
+export interface CustomVocabItem {
+	id: string;
+	character: string;
+	romaji: string;
+	meaning: string;
+	createdAt: string;
+}
 
 const firebaseConfig = {
 	apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyC9jAA4RL7Qw51spKiEY0U9pkkZ5B7XQ5c',
@@ -83,4 +91,23 @@ export async function getProgress(uid: string): Promise<Record<string, boolean>>
 		return userDoc.data().learned || {};
 	}
 	return {};
+}
+
+export async function getCustomVocab(uid: string): Promise<CustomVocabItem[]> {
+	const userRef = doc(db, 'users', uid);
+	const userDoc = await getDoc(userRef);
+	if (userDoc.exists()) {
+		return userDoc.data().customVocab || [];
+	}
+	return [];
+}
+
+export async function addCustomVocab(uid: string, item: CustomVocabItem): Promise<void> {
+	const userRef = doc(db, 'users', uid);
+	await updateDoc(userRef, { customVocab: arrayUnion(item) });
+}
+
+export async function removeCustomVocab(uid: string, item: CustomVocabItem): Promise<void> {
+	const userRef = doc(db, 'users', uid);
+	await updateDoc(userRef, { customVocab: arrayRemove(item) });
 }

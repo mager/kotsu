@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { columns } from '$lib/data';
 	import ColumnCard from '$lib/components/ColumnCard.svelte';
-	import { isLearned, getColumnProgress } from '$lib/stores/auth.svelte';
+	import CustomVocabCard from '$lib/components/CustomVocabCard.svelte';
+	import AddVocabForm from '$lib/components/AddVocabForm.svelte';
+	import { isLearned, getColumnProgress, getCustomVocabItems } from '$lib/stores/auth.svelte';
 
 	let activeTab = $state(0);
+	let customVocab = $derived(getCustomVocabItems());
 </script>
 
 <div class="px-4 pb-16 md:px-8">
@@ -33,7 +36,15 @@
 					learned={isLearned(columns[activeTab].id, i)}
 				/>
 			{/each}
+			{#if columns[activeTab].id === 'vocabulary'}
+				{#each customVocab as item, i (item.id)}
+					<CustomVocabCard {item} delay={(columns[activeTab].items.length + i) * 30} />
+				{/each}
+			{/if}
 		</div>
+		{#if columns[activeTab].id === 'vocabulary'}
+			<AddVocabForm />
+		{/if}
 	</div>
 
 	<!-- Desktop: 5-Column Grid with Vertical Dividers -->
@@ -75,6 +86,12 @@
 								learned={isLearned(col.id, i)}
 							/>
 						{/each}
+						{#if col.id === 'vocabulary'}
+							{#each customVocab as item, i (item.id)}
+								<CustomVocabCard {item} delay={colIndex * 100 + (col.items.length + i) * 20} />
+							{/each}
+							<AddVocabForm />
+						{/if}
 					</div>
 
 					<!-- Fade out at bottom -->
