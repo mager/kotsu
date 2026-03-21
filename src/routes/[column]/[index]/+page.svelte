@@ -106,6 +106,13 @@
 					</span>
 				{/if}
 
+				{#if data.item.pair}
+					<div class="mt-6 text-center">
+						<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">Hiragana</span>
+						<span class="mt-1 block text-4xl font-black text-[var(--color-ink-light)] md:text-5xl">{data.item.pair}</span>
+					</div>
+				{/if}
+
 				{#if data.item.readings}
 					<div class="mt-6 flex gap-16">
 						{#if data.item.readings.on}

@@ -65,7 +65,7 @@
 					</div>
 
 					<!-- Cards -->
-					<div class="no-scrollbar flex max-h-[calc(100vh-10rem)] flex-col gap-0 overflow-y-auto">
+					<div class="no-scrollbar flex max-h-[calc(100vh-10rem)] flex-col gap-0 overflow-y-auto pb-20">
 						{#each col.items as item, i (item.character + item.romaji)}
 							<ColumnCard
 								{item}
@@ -78,7 +78,7 @@
 					</div>
 
 					<!-- Fade out at bottom -->
-					<div class="pointer-events-none absolute right-0 bottom-0 left-0 h-16 bg-gradient-to-t from-[var(--color-paper)] to-transparent"></div>
+					<div class="pointer-events-none absolute right-0 bottom-0 left-0 h-20 bg-gradient-to-t from-[var(--color-paper)] to-transparent"></div>
 				</div>
 			{/each}
 		</div>
