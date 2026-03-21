@@ -66,11 +66,10 @@
 				</div>
 			{/if}
 
-			<!-- User avatar -->
-			<button
-				class="flex cursor-pointer items-center gap-2 text-sm font-bold text-[var(--color-ink-mid)] transition-colors hover:text-[var(--color-ink)]"
-				onclick={signOut}
-				title="Sign out"
+			<!-- User avatar → profile link -->
+			<a
+				href="/profile"
+				class="flex items-center gap-2 text-sm font-bold text-[var(--color-ink-mid)] transition-colors hover:text-[var(--color-ink)]"
 			>
 				{#if auth.user.photoURL}
 					<img
@@ -80,7 +79,7 @@
 					/>
 				{/if}
 				<span class="hidden md:inline">{auth.user.displayName?.split(' ')[0]}</span>
-			</button>
+			</a>
 		{:else}
 			<button
 				class="cursor-pointer text-sm font-bold tracking-[0.15em] uppercase text-[var(--color-ink-light)] transition-colors hover:text-[var(--color-ink)]"
