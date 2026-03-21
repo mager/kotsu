@@ -11,6 +11,21 @@
 
 	// All tabs including the custom "mine" column
 	const MINE_TAB = columns.length;
+
+	// Swipe handling
+	let touchStartX = 0;
+
+	function onTouchStart(e: TouchEvent) {
+		touchStartX = e.touches[0].clientX;
+	}
+
+	function onTouchEnd(e: TouchEvent) {
+		const delta = e.changedTouches[0].clientX - touchStartX;
+		const totalTabs = authState.user ? columns.length + 1 : columns.length;
+		if (Math.abs(delta) < 50) return;
+		if (delta < 0 && activeTab < totalTabs - 1) activeTab++;
+		if (delta > 0 && activeTab > 0) activeTab--;
+	}
 </script>
 
 <div class="px-4 pb-16 md:px-8">
@@ -40,7 +55,7 @@
 	</nav>
 
 	<!-- Mobile: Single Column View -->
-	<div class="md:hidden">
+	<div class="md:hidden" ontouchstart={onTouchStart} ontouchend={onTouchEnd}>
 		{#if activeTab === MINE_TAB}
 			<div class="flex flex-col gap-0">
 				{#each customVocab as item, i (item.id)}
