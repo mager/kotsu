@@ -5,12 +5,17 @@
 
 	let { data }: { data: PageData } = $props();
 	let showDetails = $state(false);
+	let learned = $state(false);
 
-	// Stagger detail reveal
 	$effect(() => {
+		showDetails = false;
 		const t = setTimeout(() => (showDetails = true), 200);
 		return () => clearTimeout(t);
 	});
+
+	function toggleLearned() {
+		learned = !learned;
+	}
 
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') {
@@ -31,80 +36,85 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="fixed inset-0 flex flex-col items-center justify-center bg-[var(--color-paper)]">
-	<!-- Back -->
-	<a
-		href="/"
-		class="absolute top-5 left-5 text-xs font-bold tracking-[0.25em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] md:top-8 md:left-10"
-	>
-		← Back
-	</a>
-
-	<!-- Column name -->
-	<span
-		class="absolute top-5 right-5 text-xs font-bold tracking-[0.25em] uppercase text-[var(--color-ink-ghost)] md:top-8 md:right-10"
-		style="font-family: var(--font-jp-brush);"
-	>
-		{data.column.titleJp}
-	</span>
-
-	<!-- Main character -->
-	<div in:fly={{ y: 20, duration: 400 }}>
-		<span
-			class="block font-black leading-none"
-			style="font-size: clamp(12rem, 40vw, 32rem);"
+<div class="fixed inset-0 flex items-center justify-center bg-[var(--color-paper)]">
+	<!-- Top bar -->
+	<div class="absolute top-0 right-0 left-0 flex items-center justify-between px-5 py-5 md:px-10 md:py-8">
+		<a
+			href="/"
+			class="text-xs font-bold tracking-[0.25em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)]"
 		>
-			{data.item.character}
+			← Back
+		</a>
+
+		<span
+			class="text-sm text-[var(--color-ink-ghost)]"
+			style="font-family: var(--font-jp-brush);"
+		>
+			{data.column.titleJp}
 		</span>
+
+		<!-- Learned toggle — top right, subtle -->
+		<button
+			class="cursor-pointer text-xs font-bold tracking-[0.2em] uppercase transition-all {learned
+				? 'text-green-500'
+				: 'text-[var(--color-ink-ghost)] hover:text-[var(--color-ink-light)]'}"
+			onclick={toggleLearned}
+			title={learned ? 'Learned' : 'Mark as learned'}
+		>
+			{learned ? '✓ Learned' : '○ Learn'}
+		</button>
 	</div>
 
-	<!-- Details (staggered) -->
-	{#if showDetails}
-		<div class="flex flex-col items-center gap-3" in:fade={{ duration: 300 }}>
-			<!-- Romaji -->
+	<!-- Center: character + details -->
+	<div class="flex flex-col items-center">
+		<!-- Character -->
+		<div in:fly={{ y: 20, duration: 400 }}>
 			<span
-				class="text-xl font-bold tracking-[0.4em] uppercase text-[var(--color-ink-light)] md:text-3xl"
-				style="font-family: var(--font-jp-brush);"
+				class="block font-black leading-none"
+				style="font-size: clamp(12rem, 40vw, 32rem);"
 			>
-				{data.item.romaji}
+				{data.item.character}
 			</span>
-
-			<!-- Meaning -->
-			{#if data.item.meaning && data.item.meaning !== data.item.romaji}
-				<span class="text-base text-[var(--color-ink-light)] md:text-lg">
-					{data.item.meaning}
-				</span>
-			{/if}
-
-			<!-- Readings -->
-			{#if data.item.readings}
-				<div class="mt-4 flex gap-16">
-					{#if data.item.readings.on}
-						<div class="text-center">
-							<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">On</span>
-							<span class="mt-1 block text-lg font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.on.join('・')}</span>
-						</div>
-					{/if}
-					{#if data.item.readings.kun}
-						<div class="text-center">
-							<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">Kun</span>
-							<span class="mt-1 block text-lg font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.kun.join('・')}</span>
-						</div>
-					{/if}
-				</div>
-			{/if}
-
-			<!-- Mark as learned -->
-			<button
-				class="mt-8 cursor-pointer border-[2px] border-[var(--color-divider)] px-6 py-2 text-xs font-bold tracking-[0.25em] uppercase text-[var(--color-ink-light)] transition-all hover:border-[var(--color-ink)] hover:text-[var(--color-ink)]"
-			>
-				Mark as learned ✓
-			</button>
 		</div>
-	{/if}
 
-	<!-- Navigation -->
-	<div class="absolute bottom-8 flex items-center gap-12 md:bottom-12">
+		<!-- Details -->
+		{#if showDetails}
+			<div class="mt-4 flex flex-col items-center gap-2" in:fade={{ duration: 300 }}>
+				<span
+					class="text-xl font-bold tracking-[0.4em] uppercase text-[var(--color-ink-light)] md:text-3xl"
+					style="font-family: var(--font-jp-brush);"
+				>
+					{data.item.romaji}
+				</span>
+
+				{#if data.item.meaning && data.item.meaning !== data.item.romaji}
+					<span class="text-base text-[var(--color-ink-light)] md:text-lg">
+						{data.item.meaning}
+					</span>
+				{/if}
+
+				{#if data.item.readings}
+					<div class="mt-6 flex gap-16">
+						{#if data.item.readings.on}
+							<div class="text-center">
+								<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">On</span>
+								<span class="mt-1 block text-lg font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.on.join('・')}</span>
+							</div>
+						{/if}
+						{#if data.item.readings.kun}
+							<div class="text-center">
+								<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">Kun</span>
+								<span class="mt-1 block text-lg font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.kun.join('・')}</span>
+							</div>
+						{/if}
+					</div>
+				{/if}
+			</div>
+		{/if}
+	</div>
+
+	<!-- Bottom nav -->
+	<div class="absolute bottom-6 flex items-center gap-12 md:bottom-10">
 		{#if data.prevIndex !== null}
 			<a
 				href="/{data.column.id}/{data.prevIndex}"
