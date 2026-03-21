@@ -46,11 +46,29 @@
 			}
 		}
 	}
+
+	let touchStartX = 0;
+
+	function onTouchStart(e: TouchEvent) {
+		touchStartX = e.touches[0].clientX;
+	}
+
+	function onTouchEnd(e: TouchEvent) {
+		const delta = e.changedTouches[0].clientX - touchStartX;
+		if (Math.abs(delta) < 50) return;
+		if (delta < 0 && data.nextIndex !== null) {
+			showDetails = false;
+			goto(`/${data.column.id}/${data.nextIndex}`);
+		} else if (delta > 0 && data.prevIndex !== null) {
+			showDetails = false;
+			goto(`/${data.column.id}/${data.prevIndex}`);
+		}
+	}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="fixed inset-0 flex items-center justify-center bg-[var(--color-paper)]">
+<div class="fixed inset-0 flex items-center justify-center bg-[var(--color-paper)]" ontouchstart={onTouchStart} ontouchend={onTouchEnd}>
 	<!-- Top bar -->
 	<div class="absolute top-0 right-0 left-0 flex items-center justify-between px-5 py-5 md:px-10 md:py-8">
 		<a
