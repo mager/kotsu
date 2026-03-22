@@ -122,14 +122,14 @@
 		{#if showDetails}
 			<div class="mt-4 flex flex-col items-center gap-2" in:fade={{ duration: 300 }}>
 				<span
-					class="text-xl font-bold tracking-[0.4em] uppercase text-[var(--color-ink-light)] md:text-3xl"
+					class="text-2xl font-black tracking-[0.3em] uppercase text-[var(--color-ink)] md:text-4xl"
 					style="font-family: var(--font-jp-brush);"
 				>
 					{data.item.romaji}
 				</span>
 
 				{#if data.item.meaning && data.item.meaning !== data.item.romaji}
-					<span class="text-base text-[var(--color-ink-light)] md:text-lg">
+					<span class="text-lg font-bold tracking-wide text-[var(--color-ink-mid)] md:text-2xl">
 						{data.item.meaning}
 					</span>
 				{/if}
