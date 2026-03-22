@@ -16,6 +16,7 @@
 	let { children }: Props = $props();
 
 	let isDetailPage = $derived($page.params.index !== undefined);
+	let isAboutPage = $derived($page.url.pathname === '/about');
 
 	// Init Firebase auth on client only
 	if (browser) {
@@ -27,9 +28,7 @@
 </script>
 
 <div class="flex min-h-screen flex-col bg-[var(--color-paper)]">
-	{#if !isDetailPage}
-		<Nav />
-	{/if}
+	<Nav />
 
 	<main class="flex-1">
 		{@render children()}

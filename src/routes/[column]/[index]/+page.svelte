@@ -67,23 +67,7 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="fixed inset-0 flex items-center justify-center bg-[var(--color-paper)]" ontouchstart={onTouchStart} ontouchend={onTouchEnd}>
-
-	<!-- Top bar: Back (left) + Column title (right) — nothing else -->
-	<div class="absolute top-0 right-0 left-0 flex items-center justify-between px-5 py-5 md:px-10 md:py-8">
-		<a
-			href="/"
-			class="text-xs font-bold tracking-[0.25em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)]"
-		>
-			← Back
-		</a>
-		<span
-			class="text-sm text-[var(--color-ink-ghost)]"
-			style="font-family: var(--font-jp-brush);"
-		>
-			{data.column.titleJp}
-		</span>
-	</div>
+<div class="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center bg-[var(--color-paper)]" ontouchstart={onTouchStart} ontouchend={onTouchEnd}>
 
 	<!-- Center: character + details + learn button -->
 	<div class="flex flex-col items-center pb-24">
@@ -151,7 +135,7 @@
 	</div>
 
 	<!-- Bottom nav: prev / counter / next -->
-	<div class="absolute bottom-6 flex items-center gap-12 md:bottom-10">
+	<div class="mt-10 flex items-center gap-12 pb-10">
 		{#if data.prevIndex !== null}
 			<a
 				href="/{data.column.id}/{data.prevIndex}"
@@ -181,12 +165,12 @@
 		{/if}
 	</div>
 
-	<!-- Bottom-right: outgoing link (kanshudo) — out of the way -->
+	<!-- Bottom-right: kanshudo link -->
 	<a
 		href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
 		target="_blank"
 		rel="noopener noreferrer"
-		class="absolute right-5 bottom-5 text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] md:right-10 md:bottom-10"
+		class="absolute right-5 bottom-4 text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] md:right-10"
 	>
 		kanshudo ↗
 	</a>
