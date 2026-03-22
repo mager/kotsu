@@ -6,11 +6,18 @@
 	import { isLearned, getColumnProgress, getCustomVocabItems, getAuthState } from '$lib/stores/auth.svelte';
 
 	let activeTab = $state(0);
+	let addFormOpen = $state(false);
 	let customVocab = $derived(getCustomVocabItems());
 	let authState = $derived(getAuthState());
 
 	// All tabs including the custom "mine" column
 	const MINE_TAB = columns.length;
+
+	function openAddWord() {
+		activeTab = MINE_TAB;
+		// small tick so the tab renders before we open the form
+		setTimeout(() => (addFormOpen = true), 50);
+	}
 
 	// Swipe handling
 	let touchStartX = 0;
@@ -29,6 +36,18 @@
 </script>
 
 <div class="px-4 pb-16 md:px-8">
+	<!-- Floating "Add Word" button — visible when signed in on any tab -->
+	{#if authState.user && !addFormOpen}
+		<button
+			onclick={openAddWord}
+			class="fixed bottom-6 right-5 z-50 flex items-center gap-2 rounded-full px-5 py-3 shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 md:bottom-10 md:right-10"
+			style="background: var(--color-ink); color: var(--color-paper);"
+			title="Add a word"
+		>
+			<span class="text-xl font-black leading-none">+</span>
+			<span class="text-[11px] font-bold tracking-[0.2em] uppercase">Add Word</span>
+		</button>
+	{/if}
 	<!-- Mobile Tab Navigation -->
 	<nav class="no-scrollbar mb-4 flex justify-center gap-2 overflow-x-auto pt-2 md:hidden">
 		{#each columns as col, i}
@@ -61,11 +80,11 @@
 				{#each customVocab as item, i (item.id)}
 					<CustomVocabCard {item} delay={i * 30} />
 				{/each}
-				{#if customVocab.length === 0}
+				{#if customVocab.length === 0 && !addFormOpen}
 					<p class="py-8 text-center text-sm text-[var(--color-ink-ghost)]">no words yet</p>
 				{/if}
 			</div>
-			<AddVocabForm />
+			<AddVocabForm bind:open={addFormOpen} />
 		{:else}
 			<div class="grid grid-cols-4 gap-0">
 				{#each columns[activeTab].items as item, i (item.character + item.romaji)}
@@ -150,10 +169,10 @@
 						{#each customVocab as item, i (item.id)}
 							<CustomVocabCard {item} delay={500 + i * 20} />
 						{/each}
-						{#if customVocab.length === 0}
+						{#if customVocab.length === 0 && !addFormOpen}
 							<p class="py-6 text-center text-[11px] text-[var(--color-ink-ghost)]">no words yet</p>
 						{/if}
-						<AddVocabForm />
+						<AddVocabForm bind:open={addFormOpen} />
 					</div>
 
 					<!-- Fade out at bottom -->

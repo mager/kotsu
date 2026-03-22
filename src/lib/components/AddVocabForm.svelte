@@ -3,8 +3,13 @@
 	import type { CustomVocabItem } from '$lib/firebase';
 	import { bind, unbind, isKana } from 'wanakana';
 
+	interface Props {
+		open?: boolean;
+	}
+
+	let { open = $bindable(false) }: Props = $props();
+
 	let authState = $derived(getAuthState());
-	let open = $state(false);
 	let saving = $state(false);
 	let looking = $state(false);
 
