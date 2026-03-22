@@ -13,7 +13,6 @@
 	let learned = $derived(isLearned(data.column.id, data.index));
 
 	$effect(() => {
-		// Track data.index so this re-fires on arrow key navigation
 		const _idx = data.index;
 		showDetails = false;
 		const t = setTimeout(() => (showDetails = true), 200);
@@ -69,7 +68,8 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <div class="fixed inset-0 flex items-center justify-center bg-[var(--color-paper)]" ontouchstart={onTouchStart} ontouchend={onTouchEnd}>
-	<!-- Top bar -->
+
+	<!-- Top bar: Back (left) + Column title (right) — nothing else -->
 	<div class="absolute top-0 right-0 left-0 flex items-center justify-between px-5 py-5 md:px-10 md:py-8">
 		<a
 			href="/"
@@ -77,38 +77,15 @@
 		>
 			← Back
 		</a>
-
-		<a
-			href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="absolute top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] md:top-8"
-		>
-			kanshudo ↗
-		</a>
-
 		<span
 			class="text-sm text-[var(--color-ink-ghost)]"
 			style="font-family: var(--font-jp-brush);"
 		>
 			{data.column.titleJp}
 		</span>
-
-		{#if auth.user}
-			<button
-				class="cursor-pointer text-xs font-bold tracking-[0.2em] uppercase transition-all {learned
-					? 'text-[var(--color-ink-mid)]'
-					: 'text-[var(--color-ink-ghost)] hover:text-[var(--color-ink-light)]'}"
-				onclick={toggleLearned}
-			>
-				{learned ? '✓ Learned' : '○ Learn'}
-			</button>
-		{:else}
-			<span></span>
-		{/if}
 	</div>
 
-	<!-- Center -->
+	<!-- Center: character + details + learn button -->
 	<div class="flex flex-col items-center pb-24">
 		<div in:fly={{ y: 20, duration: 400 }}>
 			<span
@@ -157,11 +134,23 @@
 						{/if}
 					</div>
 				{/if}
+
+				<!-- Learn button — prominent, below all the metadata -->
+				{#if auth.user}
+					<button
+						onclick={toggleLearned}
+						class="mt-8 cursor-pointer rounded-full px-8 py-3 text-sm font-black tracking-[0.2em] uppercase transition-all duration-200 active:scale-95 {learned
+							? 'border-2 border-[var(--color-ink-light)] text-[var(--color-ink-mid)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)]'
+							: 'bg-[var(--color-ink)] text-[var(--color-paper)] hover:opacity-80'}"
+					>
+						{learned ? '✓ Learned' : 'Mark Learned'}
+					</button>
+				{/if}
 			</div>
 		{/if}
 	</div>
 
-	<!-- Bottom nav -->
+	<!-- Bottom nav: prev / counter / next -->
 	<div class="absolute bottom-6 flex items-center gap-12 md:bottom-10">
 		{#if data.prevIndex !== null}
 			<a
@@ -191,4 +180,15 @@
 			<span class="w-6"></span>
 		{/if}
 	</div>
+
+	<!-- Bottom-right: outgoing link (kanshudo) — out of the way -->
+	<a
+		href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
+		target="_blank"
+		rel="noopener noreferrer"
+		class="absolute right-5 bottom-5 text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] md:right-10 md:bottom-10"
+	>
+		kanshudo ↗
+	</a>
+
 </div>
