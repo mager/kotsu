@@ -65,9 +65,9 @@
 	}
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} ontouchstart={onTouchStart} ontouchend={onTouchEnd} />
 
-<div class="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center bg-[var(--color-paper)]" ontouchstart={onTouchStart} ontouchend={onTouchEnd}>
+<div class="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center bg-[var(--color-paper)]">
 
 	<!-- Center: character + details + learn button -->
 	<div class="flex flex-col items-center pb-24">
