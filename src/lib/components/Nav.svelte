@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { signInWithGoogle, signOut } from '$lib/firebase';
 	import { getAuthState, getColumnProgress } from '$lib/stores/auth.svelte';
-	import { columns } from '$lib/data';
+	import { columns, getColumnItems } from '$lib/data';
 
 	let auth = $derived(getAuthState());
 
 	let totalLearned = $derived(
-		columns.reduce((sum, col) => sum + getColumnProgress(col.id, col.items.length), 0)
+		columns.reduce((sum, col) => sum + getColumnProgress(col.id, getColumnItems(col).length), 0)
 	);
 	let totalItems = $derived(
-		columns.reduce((sum, col) => sum + col.items.length, 0)
+		columns.reduce((sum, col) => sum + getColumnItems(col).length, 0)
 	);
 	let progressPct = $derived(totalItems > 0 ? Math.round((totalLearned / totalItems) * 100) : 0);
 
@@ -24,7 +24,7 @@
 	}
 </script>
 
-<nav class="flex items-center justify-between px-5 py-4 md:px-10 md:py-5">
+<nav class="flex items-center justify-between px-5 py-3 md:px-10 md:py-4">
 	<!-- Logo -->
 	<a
 		href="/"
@@ -51,7 +51,6 @@
 		{#if auth.loading}
 			<span class="h-4 w-16 animate-pulse rounded bg-[var(--color-divider)]"></span>
 		{:else if auth.user}
-			<!-- Progress -->
 			{#if totalLearned > 0}
 				<div class="hidden items-center gap-2 md:flex">
 					<div class="h-1 w-20 overflow-hidden rounded-full bg-[var(--color-divider)]">
@@ -66,7 +65,6 @@
 				</div>
 			{/if}
 
-			<!-- User avatar → profile link -->
 			<a
 				href="/profile"
 				class="flex items-center gap-2 text-sm font-bold text-[var(--color-ink-mid)] transition-colors hover:text-[var(--color-ink)]"
@@ -86,7 +84,6 @@
 				onclick={handleSignIn}
 				title="Sign in with Google"
 			>
-				<!-- Google 'G' logo -->
 				<svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 					<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
 					<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>

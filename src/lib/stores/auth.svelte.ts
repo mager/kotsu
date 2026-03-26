@@ -1,5 +1,6 @@
-import { onAuth, getProgress, getCustomVocab, addCustomVocab, removeCustomVocab, type auth, type CustomVocabItem } from '$lib/firebase';
+import { onAuth, getProgress, getCustomVocab, addCustomVocab, removeCustomVocab, type CustomVocabItem } from '$lib/firebase';
 import type { User } from 'firebase/auth';
+import { getColumnItems, columns } from '$lib/data';
 
 interface AuthState {
 	user: User | null;
@@ -76,5 +77,6 @@ export function getColumnProgress(columnId: string, total: number): number {
 
 export function getTotalProgress(): { learned: number; total: number } {
 	const learned = Object.values(state.learned).filter(Boolean).length;
-	return { learned, total: 0 }; // total set by caller
+	const total = columns.reduce((sum, col) => sum + getColumnItems(col).length, 0);
+	return { learned, total };
 }

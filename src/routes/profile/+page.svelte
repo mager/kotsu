@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { signOut, updateUsername, getUsername } from '$lib/firebase';
 	import { getAuthState, getColumnProgress, isLearned } from '$lib/stores/auth.svelte';
-	import { columns } from '$lib/data';
+	import { columns, getColumnItems } from '$lib/data';
 	import { fade } from 'svelte/transition';
 
 	let auth = $derived(getAuthState());
@@ -22,14 +22,17 @@
 	});
 
 	let columnStats = $derived(
-		columns.map((col) => ({
-			...col,
-			learned: getColumnProgress(col.id, col.items.length),
-			total: col.items.length,
-			learnedItems: col.items
-				.map((item, i) => ({ ...item, index: i }))
-				.filter((_, i) => isLearned(col.id, i))
-		}))
+		columns.map((col) => {
+			const items = getColumnItems(col);
+			return {
+				...col,
+				learned: getColumnProgress(col.id, items.length),
+				total: items.length,
+				learnedItems: items
+					.map((item, i) => ({ ...item, index: i }))
+					.filter((_, i) => isLearned(col.id, i))
+			};
+		})
 	);
 
 	let totalLearned = $derived(columnStats.reduce((sum, c) => sum + c.learned, 0));

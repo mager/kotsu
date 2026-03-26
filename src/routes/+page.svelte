@@ -1,12 +1,16 @@
 <script lang="ts">
-	import { columns } from '$lib/data';
+	import { goto } from '$app/navigation';
+	import { columns, getColumnItems } from '$lib/data';
 	import ColumnCard from '$lib/components/ColumnCard.svelte';
 	import CustomVocabCard from '$lib/components/CustomVocabCard.svelte';
 	import AddVocabForm from '$lib/components/AddVocabForm.svelte';
+	import LearnedShelf from '$lib/components/LearnedShelf.svelte';
+	import KeyboardShortcuts from '$lib/components/KeyboardShortcuts.svelte';
 	import { isLearned, getColumnProgress, getCustomVocabItems, getAuthState } from '$lib/stores/auth.svelte';
 
 	let activeTab = $state(0);
 	let addFormOpen = $state(false);
+	let showShortcuts = $state(false);
 	let customVocab = $derived(getCustomVocabItems());
 	let authState = $derived(getAuthState());
 
@@ -15,8 +19,58 @@
 
 	function openAddWord() {
 		activeTab = MINE_TAB;
-		// small tick so the tab renders before we open the form
 		setTimeout(() => (addFormOpen = true), 50);
+	}
+
+	// Find first unlearned character in active column
+	function openFirstUnlearned() {
+		if (activeTab >= columns.length) return;
+		const col = columns[activeTab];
+		const items = getColumnItems(col);
+		for (let i = 0; i < items.length; i++) {
+			if (!isLearned(col.id, i)) {
+				goto(`/${col.id}/${i}`);
+				return;
+			}
+		}
+		// All learned — go to first
+		if (items.length > 0) goto(`/${col.id}/0`);
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+		// If shortcuts overlay is open, close on any key
+		if (showShortcuts) {
+			showShortcuts = false;
+			e.preventDefault();
+			return;
+		}
+
+		const totalTabs = authState.user ? columns.length + 1 : columns.length;
+
+		switch (e.key) {
+			case '?':
+				e.preventDefault();
+				showShortcuts = true;
+				break;
+			case '1': case '2': case '3': case '4': case '5':
+				const colNum = parseInt(e.key) - 1;
+				if (colNum < columns.length) activeTab = colNum;
+				break;
+			case 'ArrowRight':
+			case 'l':
+				if (activeTab < totalTabs - 1) activeTab++;
+				break;
+			case 'ArrowLeft':
+			case 'h':
+				if (activeTab > 0) activeTab--;
+				break;
+			case 'Enter':
+				e.preventDefault();
+				openFirstUnlearned();
+				break;
+		}
 	}
 
 	// Swipe handling
@@ -35,8 +89,17 @@
 	}
 </script>
 
+<svelte:window onkeydown={handleKeydown} />
+
+<KeyboardShortcuts show={showShortcuts} onclose={() => (showShortcuts = false)} />
+
+<!-- Learned Shelf -->
+{#if authState.user}
+	<LearnedShelf />
+{/if}
+
 <div class="px-4 pb-16 md:px-8">
-	<!-- Floating "Add Word" button — visible when signed in on any tab -->
+	<!-- Floating "Add Word" button -->
 	{#if authState.user && !addFormOpen}
 		<button
 			onclick={openAddWord}
@@ -48,6 +111,7 @@
 			<span class="text-[11px] font-bold tracking-[0.2em] uppercase">Add Word</span>
 		</button>
 	{/if}
+
 	<!-- Mobile Tab Navigation -->
 	<nav class="no-scrollbar mb-4 flex justify-center gap-2 overflow-x-auto pt-2 md:hidden">
 		{#each columns as col, i}
@@ -60,7 +124,6 @@
 				<span class="block text-xl font-black" style="font-family: var(--font-jp-brush);">{col.titleJp}</span>
 			</button>
 		{/each}
-		<!-- Mine tab -->
 		{#if authState.user}
 			<button
 				class="shrink-0 cursor-pointer px-4 py-2 text-center transition-all duration-200 {activeTab === MINE_TAB
@@ -86,54 +149,77 @@
 			</div>
 			<AddVocabForm bind:open={addFormOpen} />
 		{:else}
-			<div class="grid grid-cols-4 gap-0">
-				{#each columns[activeTab].items as item, i (item.character + item.romaji)}
-					<ColumnCard
-						{item}
-						columnId={columns[activeTab].id}
-						index={i}
-						delay={i * 30}
-						learned={isLearned(columns[activeTab].id, i)}
-					/>
-				{/each}
-			</div>
+			{@const col = columns[activeTab]}
+			{@const items = getColumnItems(col)}
+			{#each col.sections as section, sIdx}
+				{#if col.sections.length > 1}
+					<div class="mb-2 mt-6 text-center first:mt-2">
+						<span class="text-[10px] font-bold tracking-[0.25em] uppercase" style="color: var(--color-col-{col.id});">
+							{section.titleJp} · {section.title}
+						</span>
+					</div>
+				{/if}
+				{@const offset = col.sections.slice(0, sIdx).reduce((sum, s) => sum + s.items.length, 0)}
+				<div class="grid grid-cols-4 gap-0">
+					{#each section.items as item, i (item.character + item.romaji)}
+						<ColumnCard
+							{item}
+							columnId={col.id}
+							index={offset + i}
+							delay={(offset + i) * 20}
+							learned={isLearned(col.id, offset + i)}
+						/>
+					{/each}
+				</div>
+			{/each}
 		{/if}
 	</div>
 
-	<!-- Desktop: 6-Column Grid (5 standard + mine) -->
+	<!-- Desktop: Multi-Column Grid -->
 	<div class="mx-auto hidden max-w-[1600px] pt-2 md:block">
 		<div class="grid" style="grid-template-columns: repeat({columns.length}, 1fr){authState.user ? ' 1fr' : ''};">
 			{#each columns as col, colIndex}
+				{@const items = getColumnItems(col)}
 				<div class="relative border-r border-[var(--color-divider)] px-4 lg:px-6">
 					<!-- Column Header -->
 					<div class="mb-6 text-center">
 						<h2
 							class="animate-fade-up font-black leading-none"
-							style="font-family: var(--font-jp-brush); font-size: clamp(1.6rem, 2.2vw, 2.4rem); animation-delay: {colIndex * 100}ms;"
+							style="font-family: var(--font-jp-brush); font-size: clamp(1.6rem, 2.2vw, 2.4rem); animation-delay: {colIndex * 80}ms;"
 						>
 							{col.titleJp}
 						</h2>
 						<span class="mt-1 block text-[9px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink-ghost)]">
 							{col.hint}
 						</span>
-						{#if getColumnProgress(col.id, col.items.length) > 0}
+						{#if getColumnProgress(col.id, items.length) > 0}
 							<span class="mt-1 block text-[9px] font-bold tracking-wide" style="color: var(--color-col-{col.id});">
-								{getColumnProgress(col.id, col.items.length)}/{col.items.length}
+								{getColumnProgress(col.id, items.length)}/{items.length}
 							</span>
 						{/if}
 						<div class="mx-auto mt-2 h-[2px] w-8 rounded-full" style="background-color: var(--color-col-{col.id}); opacity: 0.3;"></div>
 					</div>
 
-					<!-- Cards -->
+					<!-- Cards with Sections -->
 					<div class="no-scrollbar flex max-h-[calc(100vh-10rem)] flex-col gap-0 overflow-y-auto pb-20">
-						{#each col.items as item, i (item.character + item.romaji)}
-							<ColumnCard
-								{item}
-								columnId={col.id}
-								index={i}
-								delay={colIndex * 100 + i * 20}
-								learned={isLearned(col.id, i)}
-							/>
+						{#each col.sections as section, sIdx}
+							{#if col.sections.length > 1}
+								<div class="mb-1 mt-4 text-center first:mt-0">
+									<span class="text-[9px] font-bold tracking-[0.2em] uppercase" style="color: var(--color-col-{col.id}); opacity: 0.6;">
+										{section.titleJp}
+									</span>
+								</div>
+							{/if}
+							{@const offset = col.sections.slice(0, sIdx).reduce((sum, s) => sum + s.items.length, 0)}
+							{#each section.items as item, i (item.character + item.romaji + section.id)}
+								<ColumnCard
+									{item}
+									columnId={col.id}
+									index={offset + i}
+									delay={colIndex * 80 + (offset + i) * 15}
+									learned={isLearned(col.id, offset + i)}
+								/>
+							{/each}
 						{/each}
 					</div>
 
@@ -142,10 +228,9 @@
 				</div>
 			{/each}
 
-			<!-- Mine column — only when signed in -->
+			<!-- Mine column -->
 			{#if authState.user}
 				<div class="relative px-4 lg:px-6">
-					<!-- Column Header -->
 					<div class="mb-6 text-center">
 						<h2
 							class="animate-fade-up font-black leading-none"
@@ -164,7 +249,6 @@
 						<div class="mx-auto mt-2 h-[2px] w-8 rounded-full bg-[var(--color-divider)]"></div>
 					</div>
 
-					<!-- Custom words + add form -->
 					<div class="no-scrollbar flex max-h-[calc(100vh-10rem)] flex-col gap-0 overflow-y-auto pb-20">
 						{#each customVocab as item, i (item.id)}
 							<CustomVocabCard {item} delay={500 + i * 20} />
@@ -175,10 +259,20 @@
 						<AddVocabForm bind:open={addFormOpen} />
 					</div>
 
-					<!-- Fade out at bottom -->
 					<div class="pointer-events-none absolute right-0 bottom-0 left-0 h-20 bg-gradient-to-t from-[var(--color-paper)] to-transparent"></div>
 				</div>
 			{/if}
 		</div>
+	</div>
+
+	<!-- Keyboard hint -->
+	<div class="pointer-events-none fixed bottom-4 left-4 z-40 hidden md:block">
+		<button
+			class="pointer-events-auto cursor-pointer text-sm font-bold text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)]"
+			onclick={() => (showShortcuts = true)}
+			title="Keyboard shortcuts"
+		>
+			?
+		</button>
 	</div>
 </div>

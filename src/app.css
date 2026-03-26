@@ -11,14 +11,14 @@
 	--font-jp-brush: 'Shippori Mincho', serif;
 	--font-jp-serif: 'Zen Old Mincho', serif;
 
-	/* Traditional Japanese palette — 和色 (washoku) */
-	--color-sumi: #2c2c2c;           /* 墨 sumi — ink stone */
-	--color-hai: #828282;             /* 灰 hai — ash gray */
-	--color-ai: #264e73;              /* 藍 ai — indigo */
-	--color-matcha: #5b7a5e;          /* 抹茶 matcha — tea green */
-	--color-fuji: #7d6b91;            /* 藤 fuji — wisteria */
-	--color-shu: #b35c44;             /* 朱 shu — muted vermillion */
-	--color-asagi: #48929b;           /* 浅葱 asagi — pale blue-green */
+	/* Traditional Japanese palette — 和色 (washoku) — bolder */
+	--color-sumi: #1a1a1a;           /* 墨 sumi — deeper ink stone */
+	--color-hai: #6e6e6e;             /* 灰 hai — ash gray */
+	--color-ai: #1e4a6e;              /* 藍 ai — deeper indigo */
+	--color-matcha: #3d6b40;          /* 抹茶 matcha — richer green */
+	--color-fuji: #644a7a;            /* 藤 fuji — deeper wisteria */
+	--color-shu: #a04030;             /* 朱 shu — bolder vermillion */
+	--color-asagi: #2e7a84;           /* 浅葱 asagi — richer teal */
 
 	/* Column accent colors */
 	--color-col-hiragana: var(--color-sumi);
@@ -27,7 +27,7 @@
 	--color-col-kanji: var(--color-fuji);
 	--color-col-vocabulary: var(--color-asagi);
 
-	/* Learned state — subtle warm gray shift */
+	/* Learned state */
 	--color-learned: var(--color-hai);
 }
 
@@ -82,7 +82,7 @@ body {
 	}
 }
 .animate-fade-up {
-	animation: fadeUp 0.4s ease both;
+	animation: fadeUp 0.35s ease both;
 }
 
 /* Reduced motion */
