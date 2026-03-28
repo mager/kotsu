@@ -34,15 +34,15 @@
 		onclick={() => (mobileMenuOpen = true)}
 		class="flex items-center gap-2 press-scale"
 	>
-		<span class="text-xl font-black" style="font-family: var(--font-jp-brush);">コツ</span>
+		<span class="text-2xl font-black" style="font-family: var(--font-jp-brush);">コツ</span>
 	</button>
 
 	{#if activeColumn}
-		<span class="text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-light)]">
+		<span class="text-xs font-bold tracking-[0.2em] uppercase text-[var(--color-ink-light)]">
 			{activeColumn.title}
 		</span>
 	{:else}
-		<span class="text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-light)]">
+		<span class="text-xs font-bold tracking-[0.2em] uppercase text-[var(--color-ink-light)]">
 			My Words
 		</span>
 	{/if}
@@ -50,7 +50,7 @@
 	<!-- Mobile nav tabs -->
 	<div class="flex items-center gap-1">
 		<button
-			class="rounded-md px-2 py-1 text-[10px] font-bold transition-colors press-scale {activeView === 'home' ? 'text-[var(--color-ink)] bg-[var(--color-paper-warm)]' : 'text-[var(--color-ink-ghost)]'}"
+			class="rounded-md px-2 py-1 text-base font-bold transition-colors press-scale {activeView === 'home' ? 'text-[var(--color-ink)] bg-[var(--color-paper-warm)]' : 'text-[var(--color-ink-ghost)]'}"
 			onclick={() => (activeView = 'home')}
 		>私</button>
 	</div>
@@ -64,14 +64,14 @@
 			<div class="animate-fade-up">
 				<!-- Hero text -->
 				<div class="mb-8 text-center md:mb-10 md:text-left">
-					<h1 class="text-3xl font-black leading-tight md:text-4xl" style="font-family: var(--font-display);">
+					<h1 class="text-4xl font-black leading-tight md:text-5xl" style="font-family: var(--font-display);">
 						<span class="text-[var(--color-ink)]">Your</span>
-						<span style="font-family: var(--font-jp-brush); color: var(--color-shu);">
+						<span class="text-5xl md:text-6xl" style="font-family: var(--font-jp-brush); color: var(--color-shu);">
 							日本語
 						</span>
 						<span class="text-[var(--color-ink)]">journey</span>
 					</h1>
-					<p class="mt-2 text-sm text-[var(--color-ink-light)] md:text-base" style="font-family: var(--font-display); font-style: italic;">
+					<p class="mt-3 text-base text-[var(--color-ink-light)] md:text-lg" style="font-family: var(--font-display); font-style: italic;">
 						Search, save, and master — one word at a time
 					</p>
 				</div>
@@ -86,7 +86,7 @@
 			<!-- Quick access to character systems -->
 			{#if !auth.user || auth.loading}
 				<div class="mt-16 animate-fade-up" style="animation-delay: 200ms;">
-					<h2 class="mb-6 text-center text-[10px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">
+					<h2 class="mb-6 text-center text-xs font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">
 						Explore Characters
 					</h2>
 					<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
@@ -97,10 +97,10 @@
 								onclick={() => (activeView = col.id)}
 							>
 								<span
-									class="block text-2xl font-black leading-none transition-transform duration-200 group-hover:scale-110"
+									class="block text-3xl font-black leading-none transition-transform duration-200 group-hover:scale-110 md:text-4xl"
 									style="font-family: var(--font-jp-brush); color: var(--color-col-{col.id});"
 								>{col.titleJp}</span>
-								<span class="mt-2 block text-[9px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">{col.title}</span>
+								<span class="mt-2 block text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">{col.title}</span>
 							</button>
 						{/each}
 					</div>

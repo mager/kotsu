@@ -55,14 +55,14 @@
 	<div class="px-6 pt-6 pb-2">
 		<a href="/" class="group inline-block" onclick={() => onclose?.()}>
 			<span
-				class="text-3xl font-black leading-none transition-transform duration-200 group-hover:scale-105 inline-block"
+				class="text-4xl font-black leading-none transition-transform duration-200 group-hover:scale-105 inline-block"
 				style="font-family: var(--font-jp-brush);"
 			>コツ</span>
-			<span class="ml-2 text-xs font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] align-middle">
+			<span class="ml-2 text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] align-middle">
 				Kotsu
 			</span>
 		</a>
-		<p class="mt-1.5 text-[11px] italic text-[var(--color-ink-light)]" style="font-family: var(--font-display);">
+		<p class="mt-1.5 text-xs italic text-[var(--color-ink-light)]" style="font-family: var(--font-display);">
 			The knack of Japanese
 		</p>
 	</div>
@@ -71,8 +71,8 @@
 	{#if auth.user && total.learned > 0}
 		<div class="mx-6 mt-3 mb-4">
 			<div class="flex items-center justify-between mb-1.5">
-				<span class="text-[9px] font-bold tracking-[0.25em] uppercase text-[var(--color-ink-ghost)]">Progress</span>
-				<span class="text-[10px] font-bold text-[var(--color-ink-light)]">{total.learned}/{total.total}</span>
+				<span class="text-[10px] font-bold tracking-[0.25em] uppercase text-[var(--color-ink-ghost)]">Progress</span>
+				<span class="text-xs font-bold text-[var(--color-ink-light)]">{total.learned}/{total.total}</span>
 			</div>
 			<div class="h-[3px] w-full overflow-hidden rounded-full bg-[var(--color-divider)]">
 				<div
@@ -91,10 +91,10 @@
 				{activeColumn === null ? 'bg-[var(--color-paper-warm)]' : 'hover:bg-[var(--color-paper-warm)]'}"
 			onclick={() => { activeColumn = null; onselect?.('home'); onclose?.(); }}
 		>
-			<span class="text-lg">🏠</span>
+			<span class="text-xl">🏠</span>
 			<div>
-				<span class="text-[11px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)]">My Words</span>
-				<span class="block text-[9px] text-[var(--color-ink-light)]">私の言葉</span>
+				<span class="text-sm font-bold tracking-[0.15em] uppercase text-[var(--color-ink)]">My Words</span>
+				<span class="block text-xs text-[var(--color-ink-light)]">私の言葉</span>
 			</div>
 		</button>
 
@@ -121,16 +121,16 @@
 					<div class="flex-1 min-w-0">
 						<div class="flex items-baseline gap-2">
 							<span
-								class="text-base font-black leading-none"
+								class="text-xl font-black leading-none"
 								style="font-family: var(--font-jp-brush); color: {isActive ? accentColors[col.id] : 'var(--color-ink)'};"
 							>
 								{col.titleJp}
 							</span>
-							<span class="text-[9px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink-ghost)]">
+							<span class="text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink-ghost)]">
 								{col.title}
 							</span>
 						</div>
-						<span class="mt-0.5 block text-[9px] text-[var(--color-ink-light)]">{col.hint}</span>
+						<span class="mt-0.5 block text-[10px] text-[var(--color-ink-light)]">{col.hint}</span>
 					</div>
 
 					<!-- Mini progress -->

@@ -74,13 +74,13 @@
 	<!-- Search input -->
 	<div class="search-glow relative rounded-2xl border border-[var(--color-divider)] bg-white/60 px-5 py-4 backdrop-blur-sm transition-all duration-300">
 		<div class="flex items-center gap-3">
-			<span class="text-lg text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">探</span>
+			<span class="text-2xl text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">探</span>
 			<input
 				bind:this={searchInput}
 				type="text"
 				bind:value={query}
 				placeholder="Type English or Japanese to search..."
-				class="flex-1 bg-transparent text-base font-medium text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-ghost)]"
+				class="flex-1 bg-transparent text-lg font-medium text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-ghost)]"
 				autocomplete="off"
 				spellcheck="false"
 			/>
@@ -110,33 +110,33 @@
 							<!-- Word -->
 							<div class="flex items-baseline gap-3">
 								<span
-									class="text-2xl font-black leading-none md:text-3xl"
+									class="text-4xl font-black leading-none md:text-5xl"
 									style="font-family: var(--font-jp-brush);"
 								>{result.word}</span>
 								{#if result.reading && result.reading !== result.word}
-									<span class="text-sm text-[var(--color-ink-light)]" style="font-family: var(--font-jp-brush);">
+									<span class="text-lg text-[var(--color-ink-light)]" style="font-family: var(--font-jp-brush);">
 										{result.reading}
 									</span>
 								{/if}
 							</div>
 
 							<!-- Meaning -->
-							<p class="mt-1.5 text-sm text-[var(--color-ink-mid)]">{result.meaning}</p>
+							<p class="mt-2 text-base text-[var(--color-ink-mid)]">{result.meaning}</p>
 
 							<!-- Tags -->
-							<div class="mt-2 flex flex-wrap gap-1.5">
+							<div class="mt-2.5 flex flex-wrap gap-1.5">
 								{#if result.isCommon}
-									<span class="rounded-full bg-[var(--color-matcha)] px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase text-white">
+									<span class="rounded-full bg-[var(--color-matcha)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-white">
 										common
 									</span>
 								{/if}
 								{#if result.jlpt}
-									<span class="rounded-full border border-[var(--color-divider)] px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase text-[var(--color-ink-light)]">
+									<span class="rounded-full border border-[var(--color-divider)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-[var(--color-ink-light)]">
 										{result.jlpt.replace('jlpt-', 'JLPT ')}
 									</span>
 								{/if}
 								{#if result.partsOfSpeech}
-									<span class="rounded-full border border-[var(--color-divider)] px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase text-[var(--color-ink-light)]">
+									<span class="rounded-full border border-[var(--color-divider)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-[var(--color-ink-light)]">
 										{result.partsOfSpeech}
 									</span>
 								{/if}
@@ -162,8 +162,8 @@
 		</div>
 	{:else if query.trim().length > 0 && !searching}
 		<div class="mt-6 text-center animate-fade-in">
-			<span class="text-4xl" style="font-family: var(--font-jp-brush);">🤷</span>
-			<p class="mt-2 text-sm text-[var(--color-ink-light)]">No results for "{query}"</p>
+			<span class="text-5xl" style="font-family: var(--font-jp-brush);">🤷</span>
+			<p class="mt-2 text-base text-[var(--color-ink-light)]">No results for "{query}"</p>
 		</div>
 	{/if}
 </div>
