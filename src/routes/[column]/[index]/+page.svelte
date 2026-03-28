@@ -38,8 +38,15 @@
 		setLearned(learnedKey, newValue);
 		if (newValue) {
 			justLearned = true;
-			setTimeout(() => (justLearned = false), 600);
 			await markLearned(auth.user.uid, data.column.id, data.index);
+			// Auto-advance after pulse animation completes
+			setTimeout(() => {
+				justLearned = false;
+				if (data.nextIndex !== null) {
+					showDetails = false;
+					goto(`/${data.column.id}/${data.nextIndex}`);
+				}
+			}, 600);
 		} else {
 			await unmarkLearned(auth.user.uid, data.column.id, data.index);
 		}
@@ -77,12 +84,12 @@
 	let charCount = $derived(data.item.character.length);
 	let charFontSize = $derived(
 		charCount === 1
-			? 'clamp(7rem, 28vw, 18rem)'
+			? 'clamp(9rem, 34vw, 22rem)'
 			: charCount === 2
-				? 'clamp(4rem, 18vw, 11rem)'
+				? 'clamp(5rem, 22vw, 14rem)'
 				: charCount <= 4
-					? 'clamp(2.5rem, 12vw, 7rem)'
-					: 'clamp(1.8rem, 8vw, 5rem)'
+					? 'clamp(3.2rem, 15vw, 9rem)'
+					: 'clamp(2.2rem, 10vw, 6.5rem)'
 	);
 
 	let touchStartX = 0;
