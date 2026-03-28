@@ -1,98 +1,278 @@
 @import 'tailwindcss';
 
+/* ═══════════════════════════════════════════════
+   コツ — Design System: Washi + Sumi Edition
+   ═══════════════════════════════════════════════ */
+
 :root {
-	--color-paper: #fafaf8;
-	--color-ink: #111111;
-	--color-ink-mid: #555555;
-	--color-ink-light: #999999;
-	--color-ink-ghost: #cccccc;
-	--color-divider: #e0ddd8;
-	--font-jp: 'Noto Sans JP', sans-serif;
-	--font-jp-brush: 'Shippori Mincho', serif;
-	--font-jp-serif: 'Zen Old Mincho', serif;
+	/* Paper & Ink */
+	--color-paper: #f8f5ef;
+	--color-paper-warm: #f3ede4;
+	--color-paper-deep: #ebe5d9;
+	--color-ink: #1a1816;
+	--color-ink-mid: #4a4540;
+	--color-ink-light: #8a8478;
+	--color-ink-ghost: #c4bdb2;
+	--color-ink-whisper: #ddd7cc;
+	--color-divider: #e2ddd4;
 
-	/* Traditional Japanese palette — 和色 (washoku) — bolder */
-	--color-sumi: #1a1a1a;           /* 墨 sumi — deeper ink stone */
-	--color-hai: #6e6e6e;             /* 灰 hai — ash gray */
-	--color-ai: #1e4a6e;              /* 藍 ai — deeper indigo */
-	--color-matcha: #3d6b40;          /* 抹茶 matcha — richer green */
-	--color-fuji: #644a7a;            /* 藤 fuji — deeper wisteria */
-	--color-shu: #a04030;             /* 朱 shu — bolder vermillion */
-	--color-asagi: #2e7a84;           /* 浅葱 asagi — richer teal */
+	/* Traditional Japanese pigments — 和色 */
+	--color-sumi: #1a1a1a;
+	--color-ai: #1e4a6e;          /* 藍 indigo */
+	--color-matcha: #3d6b40;      /* 抹茶 green */
+	--color-fuji: #644a7a;        /* 藤 wisteria */
+	--color-shu: #b04030;         /* 朱 vermillion */
+	--color-asagi: #2e7a84;       /* 浅葱 teal */
+	--color-kitsune: #c67832;     /* 狐 fox orange */
+	--color-sakura: #d4758a;      /* 桜 cherry blossom */
 
-	/* Column accent colors */
-	--color-col-hiragana: var(--color-sumi);
+	/* Column accents */
+	--color-col-hiragana: var(--color-shu);
 	--color-col-katakana: var(--color-ai);
 	--color-col-radicals: var(--color-matcha);
 	--color-col-kanji: var(--color-fuji);
 	--color-col-vocabulary: var(--color-asagi);
 
-	/* Learned state */
-	--color-learned: var(--color-hai);
+	/* Fonts */
+	--font-jp: 'Noto Sans JP', sans-serif;
+	--font-jp-brush: 'Shippori Mincho', serif;
+	--font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
+
+	/* Spacing scale */
+	--space-xs: 0.25rem;
+	--space-sm: 0.5rem;
+	--space-md: 1rem;
+	--space-lg: 1.5rem;
+	--space-xl: 2.5rem;
+	--space-2xl: 4rem;
+
+	/* Sidebar */
+	--sidebar-width: 260px;
+
+	/* Transitions */
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* ─── Base ─── */
 
 html {
 	font-family: var(--font-jp);
 	background-color: var(--color-paper);
 	color: var(--color-ink);
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 body {
 	margin: 0;
 	min-height: 100vh;
+	overflow-x: hidden;
 }
 
-/* Hide all scrollbars */
-.no-scrollbar::-webkit-scrollbar {
-	display: none;
+/* ─── Scrollbar ─── */
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Styled scrollbar for main content */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-ink-ghost); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-light); }
+
+/* ─── Washi Paper Texture ─── */
+
+.washi-texture {
+	position: relative;
 }
-.no-scrollbar {
-	-ms-overflow-style: none;
-	scrollbar-width: none;
+.washi-texture::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+	background-repeat: repeat;
+	background-size: 512px 512px;
+	z-index: 0;
 }
 
-/* Character hover */
-.char-glow {
-	transition: all 0.2s ease;
-}
-.char-glow:hover {
-	text-shadow: 0 0 40px rgba(0, 0, 0, 0.06);
+/* ─── Animations ─── */
+
+@keyframes fadeUp {
+	from { opacity: 0; transform: translateY(16px); }
+	to { opacity: 1; transform: translateY(0); }
 }
 
-/* Unlearned character — ghosted out */
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+	from { opacity: 0; transform: translateX(-20px); }
+	to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes springIn {
+	0% { opacity: 0; transform: translateY(24px) scale(0.95); }
+	60% { opacity: 1; transform: translateY(-4px) scale(1.01); }
+	80% { transform: translateY(2px) scale(0.995); }
+	100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes brushReveal {
+	from { clip-path: inset(0 100% 0 0); }
+	to { clip-path: inset(0 0% 0 0); }
+}
+
+@keyframes inkDrop {
+	0% { opacity: 0; transform: scale(0.3); filter: blur(4px); }
+	50% { opacity: 1; transform: scale(1.05); filter: blur(0); }
+	100% { transform: scale(1); }
+}
+
+@keyframes pulseGlow {
+	0%, 100% { opacity: 0.4; }
+	50% { opacity: 0.8; }
+}
+
+@keyframes shimmer {
+	0% { background-position: -200% center; }
+	100% { background-position: 200% center; }
+}
+
+.animate-fade-up {
+	animation: fadeUp 0.4s var(--ease-out-expo) both;
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.3s ease both;
+}
+
+.animate-slide-left {
+	animation: slideInLeft 0.35s var(--ease-out-expo) both;
+}
+
+.animate-spring-in {
+	animation: springIn 0.5s var(--ease-spring) both;
+}
+
+.animate-ink-drop {
+	animation: inkDrop 0.4s var(--ease-out-expo) both;
+}
+
+.animate-brush-reveal {
+	animation: brushReveal 0.6s var(--ease-out-expo) both;
+}
+
+/* ─── Character States ─── */
+
 .char-unlearned {
-	color: var(--color-hai);
+	color: var(--color-ink-ghost);
+	transition: color 0.3s ease, transform 0.2s var(--ease-spring);
+}
+.char-unlearned:hover {
+	color: var(--color-ink-light);
+	transform: scale(1.08);
 }
 
-/* Learned character — full ink, clean */
 .char-learned {
 	color: var(--color-ink);
+	position: relative;
+	transition: transform 0.2s var(--ease-spring);
+}
+.char-learned:hover {
+	transform: scale(1.08);
 }
 
-/* Staggered fade-in */
-@keyframes fadeUp {
-	from {
-		opacity: 0;
-		transform: translateY(12px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-.animate-fade-up {
-	animation: fadeUp 0.35s ease both;
+/* Gold leaf effect for learned characters */
+.char-learned-accent::after {
+	content: '';
+	position: absolute;
+	bottom: -2px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 60%;
+	height: 2px;
+	border-radius: 1px;
+	background: linear-gradient(90deg, transparent, var(--color-kitsune), transparent);
+	opacity: 0.6;
 }
 
-/* Reduced motion */
+/* ─── Interactive ─── */
+
+.hover-lift {
+	transition: transform 0.25s var(--ease-spring), box-shadow 0.25s ease;
+}
+.hover-lift:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 24px -8px rgba(26, 24, 22, 0.08);
+}
+
+.press-scale {
+	transition: transform 0.15s ease;
+}
+.press-scale:active {
+	transform: scale(0.97);
+}
+
+/* ─── Progress Ring ─── */
+
+.progress-ring {
+	transform: rotate(-90deg);
+}
+.progress-ring circle {
+	transition: stroke-dashoffset 0.6s var(--ease-out-expo);
+}
+
+/* ─── Search Input ─── */
+
+.search-glow {
+	transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.search-glow:focus-within {
+	box-shadow: 0 0 0 3px rgba(30, 74, 110, 0.08);
+	border-color: var(--color-ai);
+}
+
+/* ─── Scroll-driven animations ─── */
+
+@supports (animation-timeline: scroll()) {
+	.scroll-reveal {
+		animation: fadeUp 0.5s both;
+		animation-timeline: view();
+		animation-range: entry 0% entry 30%;
+	}
+}
+
+/* Fallback for browsers without scroll-driven animations */
+@supports not (animation-timeline: scroll()) {
+	.scroll-reveal {
+		animation: fadeUp 0.4s var(--ease-out-expo) both;
+	}
+}
+
+/* ─── Reduced Motion ─── */
+
 @media (prefers-reduced-motion: reduce) {
-	.animate-fade-up {
-		animation: none;
-		opacity: 1;
+	.animate-fade-up,
+	.animate-fade-in,
+	.animate-slide-left,
+	.animate-spring-in,
+	.animate-ink-drop,
+	.animate-brush-reveal,
+	.scroll-reveal {
+		animation: none !important;
+		opacity: 1 !important;
+		transform: none !important;
+	}
+	.hover-lift:hover {
 		transform: none;
 	}
-	.char-glow:hover {
-		text-shadow: none;
+	.char-unlearned:hover,
+	.char-learned:hover {
+		transform: none;
 	}
 }

@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { markLearned, unmarkLearned } from '$lib/firebase';
 	import { getAuthState, isLearned, setLearned } from '$lib/stores/auth.svelte';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -113,9 +114,14 @@
 
 <svelte:window onkeydown={handleKeydown} ontouchstart={onTouchStart} ontouchend={onTouchEnd} />
 
+<!-- Sidebar (hidden on mobile for detail page) -->
+<div class="hidden md:block">
+	<Sidebar activeColumn={data.column.id} onselect={(id) => goto(id === 'home' ? '/' : '/')} />
+</div>
+
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="detail-page relative flex h-[calc(100dvh-3.5rem)] flex-col items-center justify-between overflow-hidden bg-[var(--color-paper)]"
+	class="detail-page relative flex h-dvh flex-col items-center justify-between overflow-hidden bg-[var(--color-paper)] md:ml-[var(--sidebar-width)]"
 	onmousemove={handleMouseMove}
 >
 	<!-- Paper texture overlay -->

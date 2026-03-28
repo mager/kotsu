@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css';
-	import Nav from '$lib/components/Nav.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import type { Snippet } from 'svelte';
 	import { page } from '$app/stores';
@@ -16,7 +15,6 @@
 	let { children }: Props = $props();
 
 	let isDetailPage = $derived($page.params.index !== undefined);
-	let isAboutPage = $derived($page.url.pathname === '/about');
 
 	// Init Firebase auth on client only
 	if (browser) {
@@ -27,10 +25,8 @@
 	injectAnalytics({ mode: dev ? 'development' : 'production' });
 </script>
 
-<div class="flex min-h-screen flex-col bg-[var(--color-paper)]">
-	<Nav />
-
-	<main class="flex-1">
+<div class="flex min-h-screen flex-col bg-[var(--color-paper)] washi-texture">
+	<main class="relative z-10 flex-1">
 		{@render children()}
 	</main>
 
