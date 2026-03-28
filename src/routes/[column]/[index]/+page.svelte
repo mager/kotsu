@@ -74,6 +74,17 @@
 		}
 	}
 
+	let charCount = $derived(data.item.character.length);
+	let charFontSize = $derived(
+		charCount === 1
+			? 'clamp(7rem, 28vw, 18rem)'
+			: charCount === 2
+				? 'clamp(4rem, 18vw, 11rem)'
+				: charCount <= 4
+					? 'clamp(2.5rem, 12vw, 7rem)'
+					: 'clamp(1.8rem, 8vw, 5rem)'
+	);
+
 	let touchStartX = 0;
 
 	function onTouchStart(e: TouchEvent) {
@@ -123,8 +134,8 @@
 				style="transform: translate({charOffsetX}px, {charOffsetY}px);"
 			>
 				<span
-					class="block font-black leading-none"
-					style="font-size: clamp(10rem, 35vw, 26rem);"
+					class="block font-black leading-none text-center px-4"
+					style="font-size: {charFontSize}; max-width: 90vw; word-break: keep-all;"
 				>
 					{data.item.character}
 				</span>
