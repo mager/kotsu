@@ -72,7 +72,7 @@
 
 <div class="mx-auto w-full max-w-2xl">
 	<!-- Search input -->
-	<div class="search-glow relative rounded-2xl border border-[var(--color-divider)] bg-white/60 px-5 py-4 backdrop-blur-sm transition-all duration-300">
+	<div class="search-glow relative rounded-2xl border border-[var(--color-divider)] px-5 py-4 transition-all duration-300" style="background: var(--card-bg);">
 		<div class="flex items-center gap-3">
 			<span class="text-2xl text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">探</span>
 			<input
@@ -102,7 +102,7 @@
 		<div class="mt-3 space-y-2">
 			{#each results as result, i (result.word + result.meaning)}
 				<div
-					class="animate-spring-in group relative overflow-hidden rounded-xl border border-[var(--color-divider)] bg-white/40 px-5 py-4 backdrop-blur-sm transition-all duration-200 hover:border-[var(--color-ink-ghost)] hover:bg-white/60"
+					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl px-5 py-4 transition-all duration-200 hover:border-[var(--color-ai)]"
 					style="animation-delay: {i * 60}ms;"
 				>
 					<div class="flex items-start justify-between gap-4">

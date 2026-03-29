@@ -1,30 +1,47 @@
 @import 'tailwindcss';
 
 /* ═══════════════════════════════════════════════
-   コツ — Design System: Washi + Sumi Edition
+   コツ — Design System: Tokyo Drift Edition
+   Hard white / Hard black. Neon soul. Zen restraint.
    ═══════════════════════════════════════════════ */
 
-:root {
-	/* Paper & Ink */
-	--color-paper: #f8f5ef;
-	--color-paper-warm: #f3ede4;
-	--color-paper-deep: #ebe5d9;
-	--color-ink: #1a1816;
-	--color-ink-mid: #4a4540;
-	--color-ink-light: #8a8478;
-	--color-ink-ghost: #c4bdb2;
-	--color-ink-whisper: #ddd7cc;
-	--color-divider: #e2ddd4;
+/* ─── @property for animatable neon glow ─── */
+@property --neon-glow {
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 0;
+}
 
-	/* Traditional Japanese pigments — 和色 */
-	--color-sumi: #1a1a1a;
-	--color-ai: #1e4a6e;          /* 藍 indigo */
-	--color-matcha: #3d6b40;      /* 抹茶 green */
-	--color-fuji: #644a7a;        /* 藤 wisteria */
-	--color-shu: #b04030;         /* 朱 vermillion */
-	--color-asagi: #2e7a84;       /* 浅葱 teal */
-	--color-kitsune: #c67832;     /* 狐 fox orange */
-	--color-sakura: #d4758a;      /* 桜 cherry blossom */
+:root {
+	/* ── Hard White Foundation (Light) ── */
+	--color-paper: #ffffff;
+	--color-paper-warm: #f7f7f7;
+	--color-paper-deep: #eeeeee;
+	--color-ink: #080808;
+	--color-ink-mid: #2c2c2c;
+	--color-ink-light: #5a5a5a;
+	--color-ink-ghost: #aaaaaa;
+	--color-ink-whisper: #d4d4d4;
+	--color-divider: #e4e4e4;
+
+	/* ── Tokyo Drift Neons — 和色 × 東京ドリフト ── */
+	--color-sumi: #080808;
+	--color-ai: #0091ff;          /* 藍 indigo → electric blue */
+	--color-matcha: #00c070;      /* 抹茶 → neon green */
+	--color-fuji: #bf4fff;        /* 藤 wisteria → electric violet */
+	--color-shu: #ff5f1f;         /* 朱 vermillion → neon orange */
+	--color-asagi: #00c8ff;       /* 浅葱 teal → neon cyan */
+	--color-kitsune: #ff8c00;     /* 狐 fox → hot orange */
+	--color-sakura: #ff3d9a;      /* 桜 → neon pink */
+
+	/* Raw neon palette */
+	--neon-cyan: #00c8ff;
+	--neon-orange: #ff5f1f;
+	--neon-green: #00e676;
+	--neon-violet: #bf4fff;
+	--neon-blue: #0091ff;
+	--neon-pink: #ff3d9a;
+	--neon-yellow: #ffe600;
 
 	/* Column accents */
 	--color-col-hiragana: var(--color-shu);
@@ -32,6 +49,16 @@
 	--color-col-radicals: var(--color-matcha);
 	--color-col-kanji: var(--color-fuji);
 	--color-col-vocabulary: var(--color-asagi);
+
+	/* Glow vars — off in light mode */
+	--glow-spread: 0px;
+	--glow-blur: 0px;
+	--neon-glow-opacity: 0;
+	--scanline-opacity: 0;
+	--card-bg: rgba(0, 0, 0, 0.03);
+	--card-bg-hover: rgba(0, 0, 0, 0.06);
+	--button-bg: #f5f5f5;
+	--button-bg-hover: #ebebeb;
 
 	/* Fonts */
 	--font-jp: 'Noto Sans JP', sans-serif;
@@ -49,10 +76,48 @@
 	/* Sidebar */
 	--sidebar-width: 260px;
 
+	/* Nav */
+	--nav-height: 56px;
+
 	/* Transitions */
 	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 	--ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Dark Mode: Hard Black + Neon Soul ─── */
+@media (prefers-color-scheme: dark) {
+	:root {
+		/* Hard black foundation */
+		--color-paper: #000000;
+		--color-paper-warm: #0d0d0d;
+		--color-paper-deep: #141414;
+		--color-ink: #f5f5f5;
+		--color-ink-mid: #cccccc;
+		--color-ink-light: #888888;
+		--color-ink-ghost: #3a3a3a;
+		--color-ink-whisper: #1c1c1c;
+		--color-divider: #1e1e1e;
+
+		/* Neons amp up slightly for dark canvas */
+		--color-shu: #ff6b2b;
+		--color-ai: #1a9eff;
+		--color-asagi: #00d4ff;
+		--color-matcha: #00e676;
+		--color-fuji: #cc55ff;
+		--color-kitsune: #ff9900;
+		--color-sakura: #ff4da6;
+
+		/* Glow enabled in dark mode */
+		--glow-spread: 0px;
+		--glow-blur: 16px;
+		--neon-glow-opacity: 0.9;
+		--scanline-opacity: 0.025;
+		--card-bg: rgba(255, 255, 255, 0.03);
+		--card-bg-hover: rgba(255, 255, 255, 0.06);
+		--button-bg: rgba(255, 255, 255, 0.07);
+		--button-bg-hover: rgba(255, 255, 255, 0.12);
+	}
 }
 
 /* ─── Base ─── */
@@ -76,26 +141,37 @@ body {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Styled scrollbar for main content */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-ink-ghost); border-radius: 2px; }
+::-webkit-scrollbar-thumb {
+	background: var(--color-ink-ghost);
+	border-radius: 2px;
+}
 ::-webkit-scrollbar-thumb:hover { background: var(--color-ink-light); }
 
-/* ─── Washi Paper Texture ─── */
+/* ─── Tokyo Drift: Scanline overlay (dark only) ─── */
 
-.washi-texture {
+.drift-surface {
 	position: relative;
 }
-.washi-texture::before {
+.drift-surface::after {
 	content: '';
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
-	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-	background-repeat: repeat;
-	background-size: 512px 512px;
-	z-index: 0;
+	background-image: repeating-linear-gradient(
+		0deg,
+		transparent,
+		transparent 2px,
+		rgba(255, 255, 255, var(--scanline-opacity)) 2px,
+		rgba(255, 255, 255, var(--scanline-opacity)) 3px
+	);
+	z-index: 1;
+}
+
+/* Legacy washi — replaced by drift-surface */
+.washi-texture {
+	position: relative;
 }
 
 /* ─── Animations ─── */
@@ -133,12 +209,43 @@ body {
 	100% { transform: scale(1); }
 }
 
-@keyframes pulseGlow {
-	0%, 100% { opacity: 0.4; }
-	50% { opacity: 0.8; }
+@keyframes neonPulse {
+	0%, 100% { opacity: 0.85; }
+	50% { opacity: 1; }
+}
+
+@keyframes neonFlicker {
+	0%, 93%, 96%, 100% { opacity: 1; }
+	94%, 95% { opacity: 0.7; }
 }
 
 @keyframes shimmer {
+	0% { background-position: -200% center; }
+	100% { background-position: 200% center; }
+}
+
+/* Speed lines: radial drift burst from center on load */
+@keyframes driftBurst {
+	0% {
+		opacity: 0;
+		clip-path: circle(0% at 50% 50%);
+	}
+	60% {
+		opacity: 0.5;
+		clip-path: circle(80% at 50% 50%);
+	}
+	100% {
+		opacity: 0;
+		clip-path: circle(120% at 50% 50%);
+	}
+}
+
+@keyframes neonRingExpand {
+	0% { box-shadow: 0 0 0 0 currentColor; opacity: 0.8; }
+	100% { box-shadow: 0 0 0 12px transparent; opacity: 0; }
+}
+
+@keyframes progressShimmer {
 	0% { background-position: -200% center; }
 	100% { background-position: 200% center; }
 }
@@ -167,11 +274,25 @@ body {
 	animation: brushReveal 0.6s var(--ease-out-expo) both;
 }
 
+/* ─── Neon Glow Utility ─── */
+
+.neon-text {
+	transition: text-shadow 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+	.neon-text-shu { text-shadow: 0 0 8px var(--color-shu), 0 0 20px color-mix(in srgb, var(--color-shu) 40%, transparent); }
+	.neon-text-ai  { text-shadow: 0 0 8px var(--color-ai), 0 0 20px color-mix(in srgb, var(--color-ai) 40%, transparent); }
+	.neon-text-asagi { text-shadow: 0 0 8px var(--color-asagi), 0 0 20px color-mix(in srgb, var(--color-asagi) 40%, transparent); }
+	.neon-text-fuji { text-shadow: 0 0 8px var(--color-fuji), 0 0 20px color-mix(in srgb, var(--color-fuji) 40%, transparent); }
+	.neon-text-matcha { text-shadow: 0 0 8px var(--color-matcha), 0 0 20px color-mix(in srgb, var(--color-matcha) 40%, transparent); }
+}
+
 /* ─── Character States ─── */
 
 .char-unlearned {
 	color: var(--color-ink-ghost);
-	transition: color 0.3s ease, transform 0.2s var(--ease-spring);
+	transition: color 0.25s ease, transform 0.2s var(--ease-spring), text-shadow 0.25s ease;
 }
 .char-unlearned:hover {
 	color: var(--color-ink-light);
@@ -181,13 +302,24 @@ body {
 .char-learned {
 	color: var(--color-ink);
 	position: relative;
-	transition: transform 0.2s var(--ease-spring);
+	transition: transform 0.2s var(--ease-spring), text-shadow 0.25s ease, color 0.25s ease;
 }
 .char-learned:hover {
-	transform: scale(1.08);
+	transform: scale(1.1);
 }
 
-/* Gold leaf effect for learned characters */
+/* Dark mode: characters glow when hovered */
+@media (prefers-color-scheme: dark) {
+	.char-learned:hover {
+		text-shadow: 0 0 12px currentColor, 0 0 28px color-mix(in srgb, currentColor 50%, transparent);
+	}
+	.char-unlearned:hover {
+		color: var(--color-ink-mid);
+		text-shadow: 0 0 8px var(--color-ink-ghost);
+	}
+}
+
+/* Neon underline for learned chars */
 .char-learned-accent::after {
 	content: '';
 	position: absolute;
@@ -195,10 +327,10 @@ body {
 	left: 50%;
 	transform: translateX(-50%);
 	width: 60%;
-	height: 2px;
+	height: 1.5px;
 	border-radius: 1px;
-	background: linear-gradient(90deg, transparent, var(--color-kitsune), transparent);
-	opacity: 0.6;
+	background: linear-gradient(90deg, transparent, currentColor, transparent);
+	opacity: 0.5;
 }
 
 /* ─── Interactive ─── */
@@ -208,7 +340,13 @@ body {
 }
 .hover-lift:hover {
 	transform: translateY(-2px);
-	box-shadow: 0 8px 24px -8px rgba(26, 24, 22, 0.08);
+	box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+	.hover-lift:hover {
+		box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.8);
+	}
 }
 
 .press-scale {
@@ -216,6 +354,19 @@ body {
 }
 .press-scale:active {
 	transform: scale(0.97);
+}
+
+/* ─── Neon progress bar ─── */
+
+.neon-progress {
+	background-size: 200% auto;
+	animation: progressShimmer 3s linear infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+	.neon-progress {
+		box-shadow: 0 0 6px currentColor, 0 0 12px color-mix(in srgb, currentColor 40%, transparent);
+	}
 }
 
 /* ─── Progress Ring ─── */
@@ -227,14 +378,43 @@ body {
 	transition: stroke-dashoffset 0.6s var(--ease-out-expo);
 }
 
+@media (prefers-color-scheme: dark) {
+	.progress-ring circle[stroke]:not([stroke="var(--color-divider)"]) {
+		filter: drop-shadow(0 0 3px currentColor);
+	}
+}
+
 /* ─── Search Input ─── */
 
 .search-glow {
 	transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .search-glow:focus-within {
-	box-shadow: 0 0 0 3px rgba(30, 74, 110, 0.08);
+	box-shadow: 0 0 0 3px rgba(0, 145, 255, 0.1);
 	border-color: var(--color-ai);
+}
+
+@media (prefers-color-scheme: dark) {
+	.search-glow:focus-within {
+		box-shadow: 0 0 0 2px var(--color-ai), 0 0 16px color-mix(in srgb, var(--color-ai) 25%, transparent);
+	}
+}
+
+/* ─── Card base ─── */
+
+.drift-card {
+	background: var(--card-bg);
+	border: 1px solid var(--color-divider);
+	transition: background 0.2s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s var(--ease-spring);
+}
+.drift-card:hover {
+	background: var(--card-bg-hover);
+}
+
+@media (prefers-color-scheme: dark) {
+	.drift-card:hover {
+		box-shadow: 0 0 0 1px var(--color-divider), 0 4px 24px -4px rgba(0, 0, 0, 0.6);
+	}
 }
 
 /* ─── Scroll-driven animations ─── */
@@ -247,10 +427,41 @@ body {
 	}
 }
 
-/* Fallback for browsers without scroll-driven animations */
 @supports not (animation-timeline: scroll()) {
 	.scroll-reveal {
 		animation: fadeUp 0.4s var(--ease-out-expo) both;
+	}
+}
+
+/* ─── Tokyo Logo Glow (dark mode only) ─── */
+
+@media (prefers-color-scheme: dark) {
+	.logo-jp {
+		animation: neonFlicker 8s ease-in-out infinite;
+		text-shadow:
+			0 0 6px color-mix(in srgb, var(--color-shu) 60%, transparent),
+			0 0 20px color-mix(in srgb, var(--color-shu) 30%, transparent);
+	}
+}
+
+/* ─── Sidebar neon accent bars ─── */
+
+.sidebar-accent-bar {
+	transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+	.sidebar-accent-bar[style*="opacity: 1"] {
+		box-shadow: 0 0 6px currentColor, 0 0 12px color-mix(in srgb, currentColor 30%, transparent);
+	}
+}
+
+/* ─── Nav border glow in dark ─── */
+
+@media (prefers-color-scheme: dark) {
+	nav {
+		border-bottom-color: var(--color-divider);
+		box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.04);
 	}
 }
 
@@ -263,10 +474,13 @@ body {
 	.animate-spring-in,
 	.animate-ink-drop,
 	.animate-brush-reveal,
-	.scroll-reveal {
+	.scroll-reveal,
+	.neon-progress,
+	.logo-jp {
 		animation: none !important;
 		opacity: 1 !important;
 		transform: none !important;
+		text-shadow: none !important;
 	}
 	.hover-lift:hover {
 		transform: none;
@@ -274,5 +488,6 @@ body {
 	.char-unlearned:hover,
 	.char-learned:hover {
 		transform: none;
+		text-shadow: none;
 	}
 }

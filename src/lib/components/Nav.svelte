@@ -24,7 +24,7 @@
 	}
 </script>
 
-<nav class="flex items-center justify-between px-5 py-3 md:px-10 md:py-4">
+<nav class="flex items-center justify-between px-5 md:px-10 border-b border-[var(--color-divider)] bg-[var(--color-paper)]" style="height: var(--nav-height, 56px)">
 	<!-- Logo -->
 	<a
 		href="/"
@@ -33,8 +33,8 @@
 		onmouseleave={() => (showTooltip = false)}
 	>
 		<span
-			class="text-2xl font-black transition-transform duration-200 group-hover:scale-105 md:text-3xl"
-			style="font-family: var(--font-jp-brush);"
+			class="logo-jp text-2xl font-black transition-transform duration-200 group-hover:scale-105 md:text-3xl"
+			style="font-family: var(--font-jp-brush); color: var(--color-shu);"
 		>
 			コツ
 		</span>
@@ -55,8 +55,8 @@
 				<div class="hidden items-center gap-2 md:flex">
 					<div class="h-1 w-20 overflow-hidden rounded-full bg-[var(--color-divider)]">
 						<div
-							class="h-full rounded-full bg-[var(--color-hai)] transition-all duration-700 ease-out"
-							style="width: {progressPct}%;"
+							class="neon-progress h-full rounded-full transition-all duration-700 ease-out"
+						style="width: {progressPct}%; background: linear-gradient(90deg, var(--color-shu), var(--color-asagi)); color: var(--color-shu);"
 						></div>
 					</div>
 					<span class="text-[10px] font-bold tracking-wide text-[var(--color-ink-light)]">
@@ -80,7 +80,8 @@
 			</a>
 		{:else}
 			<button
-				class="flex cursor-pointer items-center gap-2 rounded-full border border-[var(--color-divider)] bg-white px-4 py-2 text-xs font-bold tracking-[0.1em] uppercase text-[var(--color-ink)] shadow-sm transition-all duration-150 hover:shadow-md hover:border-[var(--color-ink-ghost)] active:scale-95"
+				class="flex cursor-pointer items-center gap-2 rounded-full border border-[var(--color-divider)] px-4 py-2 text-xs font-bold tracking-[0.1em] uppercase text-[var(--color-ink)] shadow-sm transition-all duration-150 hover:shadow-md hover:border-[var(--color-ai)] active:scale-95"
+			style="background: var(--button-bg);"
 				onclick={handleSignIn}
 				title="Sign in with Google"
 			>

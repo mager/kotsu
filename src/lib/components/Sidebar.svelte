@@ -47,7 +47,7 @@
 {/if}
 
 <aside
-	class="fixed top-0 left-0 z-50 flex h-dvh flex-col border-r border-[var(--color-divider)] bg-[var(--color-paper)] transition-transform duration-300 ease-[var(--ease-out-expo)]
+	class="drift-surface fixed top-0 left-0 z-50 flex h-dvh flex-col border-r border-[var(--color-divider)] bg-[var(--color-paper)] transition-transform duration-300 ease-[var(--ease-out-expo)]
 		w-[var(--sidebar-width)]
 		{mobileOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0"
 >
@@ -55,8 +55,8 @@
 	<div class="px-6 pt-6 pb-2">
 		<a href="/" class="group inline-block" onclick={() => onclose?.()}>
 			<span
-				class="text-4xl font-black leading-none transition-transform duration-200 group-hover:scale-105 inline-block"
-				style="font-family: var(--font-jp-brush);"
+				class="logo-jp text-4xl font-black leading-none transition-transform duration-200 group-hover:scale-105 inline-block"
+				style="font-family: var(--font-jp-brush); color: var(--color-shu);"
 			>コツ</span>
 			<span class="ml-2 text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] align-middle">
 				Kotsu
@@ -76,8 +76,8 @@
 			</div>
 			<div class="h-[3px] w-full overflow-hidden rounded-full bg-[var(--color-divider)]">
 				<div
-					class="h-full rounded-full transition-all duration-700 ease-[var(--ease-out-expo)]"
-					style="width: {progressPct}%; background: linear-gradient(90deg, var(--color-shu), var(--color-kitsune));"
+					class="neon-progress h-full rounded-full transition-all duration-700 ease-[var(--ease-out-expo)]"
+					style="width: {progressPct}%; background: linear-gradient(90deg, var(--color-shu), var(--color-kitsune), var(--color-asagi)); color: var(--color-shu);"
 				></div>
 			</div>
 		</div>
@@ -114,8 +114,8 @@
 				>
 					<!-- Accent bar -->
 					<div
-						class="h-8 w-[3px] rounded-full transition-all duration-300"
-						style="background-color: {accentColors[col.id]}; opacity: {isActive ? 1 : 0.25};"
+						class="sidebar-accent-bar h-8 w-[3px] rounded-full transition-all duration-300"
+						style="background-color: {accentColors[col.id]}; opacity: {isActive ? 1 : 0.25}; color: {accentColors[col.id]};"
 					></div>
 
 					<div class="flex-1 min-w-0">
@@ -175,7 +175,8 @@
 			</div>
 		{:else}
 			<button
-				class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--color-divider)] bg-white px-4 py-2.5 text-xs font-bold tracking-[0.1em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink-ghost)] hover:shadow-sm press-scale"
+				class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--color-divider)] px-4 py-2.5 text-xs font-bold tracking-[0.1em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ai)] hover:shadow-sm press-scale"
+			style="background: var(--button-bg);"
 				onclick={handleSignIn}
 			>
 				<svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

@@ -27,7 +27,7 @@
 		<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
 			{#each words as item, i (item.id)}
 				<div
-					class="animate-spring-in group relative overflow-hidden rounded-xl border border-[var(--color-divider)] bg-white/30 px-4 py-5 transition-all duration-200 hover:border-[var(--color-ink-ghost)] hover:bg-white/50 {removing === item.id ? 'opacity-20 scale-95' : ''}"
+					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl px-4 py-5 transition-all duration-200 hover:border-[var(--color-ai)] {removing === item.id ? 'opacity-20 scale-95' : ''}"
 					style="animation-delay: {i * 40}ms;"
 				>
 					<!-- Remove button -->

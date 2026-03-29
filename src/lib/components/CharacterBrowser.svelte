@@ -47,8 +47,8 @@
 			<div class="mt-4 flex items-center gap-3">
 				<div class="h-[3px] flex-1 overflow-hidden rounded-full bg-[var(--color-divider)]">
 					<div
-						class="h-full rounded-full transition-all duration-700 ease-[var(--ease-out-expo)]"
-						style="width: {progressPct}%; background-color: {accent};"
+						class="neon-progress h-full rounded-full transition-all duration-700 ease-[var(--ease-out-expo)]"
+						style="width: {progressPct}%; background-color: {accent}; color: {accent};"
 					></div>
 				</div>
 				<span class="text-xs font-bold text-[var(--color-ink-light)]">{progress}/{items.length}</span>

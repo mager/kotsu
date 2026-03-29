@@ -3,7 +3,6 @@
 	import { goto } from '$app/navigation';
 	import { markLearned, unmarkLearned } from '$lib/firebase';
 	import { getAuthState, isLearned, setLearned } from '$lib/stores/auth.svelte';
-	import Sidebar from '$lib/components/Sidebar.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -114,28 +113,24 @@
 
 <svelte:window onkeydown={handleKeydown} ontouchstart={onTouchStart} ontouchend={onTouchEnd} />
 
-<!-- Sidebar (hidden on mobile for detail page) -->
-<div class="hidden md:block">
-	<Sidebar activeColumn={data.column.id} onselect={(id) => goto(id === 'home' ? '/' : '/')} />
-</div>
-
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="detail-page relative flex h-dvh flex-col items-center justify-between overflow-hidden bg-[var(--color-paper)] md:ml-[var(--sidebar-width)]"
+	class="detail-page relative flex flex-col items-center justify-between overflow-hidden bg-[var(--color-paper)]"
 	onmousemove={handleMouseMove}
+	style="height: calc(100dvh - var(--nav-height, 56px));"
 >
 	<!-- Paper texture overlay -->
 	<div class="paper-grain pointer-events-none absolute inset-0"></div>
 
 	<!-- Section label -->
 	{#if data.sectionTitle}
-		<div class="z-10 pt-4 text-center">
+		<div class="z-10 pt-3 text-center">
 			<span class="text-[9px] font-bold tracking-[0.3em] uppercase" style="color: var(--color-col-{data.column.id});">
 				{data.column.titleJp} · {data.sectionTitle}
 			</span>
 		</div>
 	{:else}
-		<div class="pt-4"></div>
+		<div class="pt-3"></div>
 	{/if}
 
 	<!-- Center: character + details + learn button -->

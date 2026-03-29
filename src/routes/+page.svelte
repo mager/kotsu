@@ -92,7 +92,7 @@
 					<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
 						{#each columns as col, i}
 							<button
-								class="animate-spring-in group rounded-xl border border-[var(--color-divider)] bg-white/30 px-4 py-5 text-center transition-all duration-200 hover:border-[var(--color-ink-ghost)] hover:bg-white/50 press-scale"
+								class="drift-card animate-spring-in group rounded-xl px-4 py-5 text-center transition-all duration-200 hover:border-[var(--color-ai)] press-scale"
 								style="animation-delay: {i * 60 + 300}ms;"
 								onclick={() => (activeView = col.id)}
 							>
