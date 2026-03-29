@@ -61,13 +61,31 @@
 		</div>
 	</div>
 {:else if auth.user}
-	<div class="mt-16 text-center animate-fade-in">
-		<div class="inline-block text-7xl mb-4" style="font-family: var(--font-jp-brush);">
-			言
+	<div class="mt-12 animate-fade-in">
+		<div class="rounded-2xl border border-dashed border-[var(--color-divider)] px-8 py-12 text-center">
+			<div
+				class="mb-4 inline-block font-black leading-none"
+				style="font-family: var(--font-jp-brush); font-size: 4rem; color: var(--color-ink-ghost);"
+			>
+				言
+			</div>
+			<p class="text-sm font-bold tracking-[0.15em] uppercase text-[var(--color-ink-ghost)]">
+				No words saved yet
+			</p>
+			<p class="mt-2 text-sm text-[var(--color-ink-light)] max-w-xs mx-auto leading-relaxed">
+				Search above and tap <span class="font-bold text-[var(--color-ink-mid)]">Save</span> to build your personal vocabulary list.
+			</p>
 		</div>
-		<p class="text-base text-[var(--color-ink-light)] max-w-sm mx-auto leading-relaxed">
-			Search for words above and save them here.<br/>
-			Build your vocabulary, one word at a time.
-		</p>
+	</div>
+{:else if !auth.loading && !auth.user}
+	<div class="mt-12 animate-fade-in">
+		<div class="rounded-2xl border border-dashed border-[var(--color-divider)] px-8 py-12 text-center">
+			<p class="text-sm font-bold tracking-[0.15em] uppercase text-[var(--color-ink-ghost)]">
+				Sign in to save words
+			</p>
+			<p class="mt-2 text-sm text-[var(--color-ink-light)] max-w-xs mx-auto leading-relaxed">
+				Your vocabulary list syncs across devices when you're signed in.
+			</p>
+		</div>
 	</div>
 {/if}
