@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { columns } from '$lib/data';
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import WordSearch from '$lib/components/WordSearch.svelte';
@@ -18,6 +19,10 @@
 	let activeColumn = $derived(
 		activeView !== 'home' ? columns.find((c) => c.id === activeView) || null : null
 	);
+
+	onMount(() => {
+		window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+	});
 </script>
 
 <!-- Sidebar -->

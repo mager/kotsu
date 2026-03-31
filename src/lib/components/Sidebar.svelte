@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { columns, getColumnItems } from '$lib/data';
 	import { getAuthState, getColumnProgress, getTotalProgress } from '$lib/stores/auth.svelte';
@@ -12,6 +13,7 @@
 	}
 
 	let { activeColumn = null, onselect, mobileOpen = false, onclose }: Props = $props();
+	let navEl: HTMLElement;
 
 	let auth = $derived(getAuthState());
 	let total = $derived(getTotalProgress());
@@ -34,6 +36,10 @@
 		kanji: 'var(--color-fuji)',
 		vocabulary: 'var(--color-asagi)'
 	};
+
+	onMount(() => {
+		navEl?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+	});
 </script>
 
 <!-- Mobile overlay -->
@@ -84,7 +90,7 @@
 	{/if}
 
 	<!-- Navigation -->
-	<nav class="flex-1 overflow-y-auto no-scrollbar px-3">
+	<nav bind:this={navEl} class="flex-1 overflow-y-auto no-scrollbar px-3">
 		<!-- Home -->
 		<button
 			class="mb-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all duration-200 press-scale
