@@ -13,8 +13,6 @@
 	);
 	let progressPct = $derived(totalItems > 0 ? Math.round((totalLearned / totalItems) * 100) : 0);
 
-	let showTooltip = $state(false);
-
 	async function handleSignIn() {
 		try {
 			await signInWithGoogle();
@@ -26,24 +24,16 @@
 
 <nav class="flex items-center justify-between px-5 md:px-10 border-b border-[var(--color-divider)] bg-[var(--color-paper)]" style="height: var(--nav-height, 56px)">
 	<!-- Logo -->
-	<a
-		href="/"
-		class="group relative"
-		onmouseenter={() => (showTooltip = true)}
-		onmouseleave={() => (showTooltip = false)}
-	>
+	<a href="/" class="group flex items-baseline gap-2">
 		<span
 			class="logo-jp text-2xl font-black transition-transform duration-200 group-hover:scale-105 md:text-3xl"
 			style="font-family: var(--font-jp-brush); color: var(--color-shu);"
 		>
 			コツ
 		</span>
-
-		{#if showTooltip}
-			<span class="absolute top-full left-0 mt-1 whitespace-nowrap text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">
-				The Knack of Japanese
-			</span>
-		{/if}
+		<span class="hidden text-xs font-bold tracking-[0.15em] uppercase text-[var(--color-ink-light)] md:inline">
+			Kotsu
+		</span>
 	</a>
 
 	<!-- Right side -->
