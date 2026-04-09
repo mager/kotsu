@@ -54,7 +54,7 @@
 					{/if}
 					<button
 						onclick={() => signOut()}
-						class="text-[9px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink-ghost)] press-scale"
+						class="cursor-pointer text-[9px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink-ghost)] press-scale"
 					>Sign out</button>
 				{:else if !auth.loading}
 					<button onclick={handleSignIn} class="text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] press-scale">Sign in</button>
@@ -66,7 +66,7 @@
 		<div class="mt-3 flex gap-2 overflow-x-auto no-scrollbar md:mt-0 md:flex-col md:gap-1">
 			<!-- Home -->
 			<button
-				class="shrink-0 rounded-lg px-3 py-2 text-left transition-all duration-200 press-scale
+				class="shrink-0 cursor-pointer rounded-lg px-3 py-2 text-left transition-all duration-200 press-scale
 					{activeView === 'home' ? 'bg-[var(--color-paper-warm)]' : 'hover:bg-[var(--color-paper-warm)]'}
 					md:flex md:w-full md:items-center md:gap-3"
 				onclick={() => (activeView = 'home')}
@@ -83,7 +83,7 @@
 				{@const progress = getColumnProgress(col.id, items.length)}
 				{@const isActive = activeView === col.id}
 				<button
-					class="shrink-0 rounded-lg px-3 py-2 text-left transition-all duration-200 press-scale
+					class="shrink-0 cursor-pointer rounded-lg px-3 py-2 text-left transition-all duration-200 press-scale
 						{isActive ? 'bg-[var(--color-paper-warm)]' : 'hover:bg-[var(--color-paper-warm)]'}
 						md:flex md:w-full md:items-center md:gap-3"
 					onclick={() => (activeView = col.id)}
@@ -211,7 +211,7 @@
 						<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
 							{#each columns as col, i}
 								<button
-									class="drift-card group rounded-xl px-4 py-5 text-center transition-all duration-200 hover:border-[var(--color-ai)] press-scale"
+									class="drift-card cursor-pointer group rounded-xl px-4 py-5 text-center transition-all duration-200 hover:border-[var(--color-ai)] press-scale"
 									onclick={() => (activeView = col.id)}
 								>
 									<span
