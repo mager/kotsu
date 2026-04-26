@@ -1,12 +1,12 @@
 # コツ — Kotsu
 
-**The knack of Japanese.** A dead-simple, mobile-first Japanese learning reference built for repetition.
+**The knack of Japanese.** A mobile-first Japanese learning course built around radicals, repetition, and visual recognition.
 
-No accounts. No gamification. No streak anxiety. Just thick black characters on paper-white, designed to pull up on your phone and drill until it sticks.
+No streak anxiety. No mascot clutter. Just a clear path from beginner sounds to radicals, kanji families, and the words that make them stick.
 
 ## What's here
 
-Five pillars, top to bottom:
+Five study shelves feed one required course tree:
 
 | Column | What | Count |
 |--------|------|-------|
@@ -16,7 +16,7 @@ Five pillars, top to bottom:
 | 漢字 | Kanji (JLPT N5) | 24 |
 | 語彙 | Vocabulary — baby words to real words | 15 |
 
-Tap any card for an immersive full-screen view. That's it. Learn by looking.
+Follow the course timeline, branch into radical families, then tap any character for an immersive full-screen study view.
 
 ## Stack
 
@@ -34,7 +34,7 @@ npm run dev
 
 ## Why
 
-I wanted something I could pull up on my phone in 10 seconds and just *see* the characters. Not a course. Not a quiz. A reference wall I can stare at on the train.
+I wanted something I could pull up on my phone in 10 seconds and just *see* how the characters are built. The course starts with sounds, moves through radicals, then keeps connecting kanji back to their parts.
 
 Inspired by the [Kana](https://apps.apple.com/app/kana/id1454200955) iOS app, [Genki](https://genki3.japantimes.co.jp/en/) textbooks, and [Kanshudo](https://www.kanshudo.com). Kotsu is the stripped-down complement — the thing you open when you just want to look at characters and let them sink in.
 
