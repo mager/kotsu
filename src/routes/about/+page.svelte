@@ -31,7 +31,7 @@
 		</p>
 
 		<p class="animate-fade-up" style="animation-delay: 500ms;">
-			Five pillars. Hiragana, katakana, radicals, kanji, vocabulary. Tap a character and it fills your screen. Arrow through them. Mark the ones you know. Come back tomorrow and do it again.
+			Five pillars. Hiragana, katakana, radicals, kanji, vocabulary. Tap a character and it fills your screen. Arrow through them. Mark the ones you know. On the radicals side, learn the recipe — which larger kanji each shape helps build. Come back tomorrow and do it again.
 		</p>
 
 		<p class="animate-fade-up" style="animation-delay: 600ms;">

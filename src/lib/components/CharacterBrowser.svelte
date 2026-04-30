@@ -14,6 +14,7 @@
 	let auth = $derived(getAuthState());
 	let progress = $derived(getColumnProgress(column.id, items.length));
 	let progressPct = $derived(items.length > 0 ? Math.round((progress / items.length) * 100) : 0);
+	let recipeCount = $derived(items.reduce((sum, item) => sum + (item.recipes?.length ?? 0), 0));
 
 	// Column accent
 	const accents: Record<string, string> = {
@@ -40,6 +41,11 @@
 			<div>
 				<span class="text-base font-bold tracking-[0.1em] uppercase text-[var(--color-ink)]">{column.title}</span>
 				<span class="block text-sm text-[var(--color-ink-light)]">{column.hint}</span>
+				{#if column.id === 'radicals'}
+					<span class="mt-1 block text-xs font-bold tracking-[0.16em] uppercase text-[var(--color-ink-ghost)]">
+						{items.length} forms · {recipeCount} recipes
+					</span>
+				{/if}
 			</div>
 		</div>
 
@@ -100,6 +106,15 @@
 					<span class="mt-1 text-[10px] font-bold text-[var(--color-ink-ghost)] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
 						{item.romaji}
 					</span>
+
+					{#if item.recipes?.length}
+						<span
+							class="mt-1 rounded-full border px-2 py-0.5 text-[9px] font-black tracking-[0.16em] uppercase text-[var(--color-ink-light)] opacity-80 transition-opacity duration-200 group-hover:opacity-100"
+							style="border-color: color-mix(in oklab, {accent} 28%, white);"
+						>
+							{item.recipes.length} recipe{item.recipes.length === 1 ? '' : 's'}
+						</span>
+					{/if}
 				</a>
 			{/each}
 		</div>

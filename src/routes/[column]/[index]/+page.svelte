@@ -91,6 +91,9 @@
 					? 'clamp(3.2rem, 15vw, 9rem)'
 					: 'clamp(2.2rem, 10vw, 6.5rem)'
 	);
+	let recipeCards = $derived(data.item.recipes ?? []);
+	let noteTags = $derived(data.item.tags ?? []);
+	let variants = $derived(data.item.variants ?? []);
 
 	let touchStartX = 0;
 
@@ -172,6 +175,22 @@
 					</div>
 				{/if}
 
+				{#if data.item.mnemonic}
+					<p class="mt-3 max-w-xl px-5 text-center text-sm leading-relaxed text-[var(--color-ink-mid)] md:text-base">
+						{data.item.mnemonic}
+					</p>
+				{/if}
+
+				{#if variants.length > 0}
+					<div class="mt-3 flex flex-wrap justify-center gap-2">
+						{#each variants as variant}
+							<span class="rounded-full border border-[var(--color-divider)] bg-[var(--color-paper-warm)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">
+								Variant {variant}
+							</span>
+						{/each}
+					</div>
+				{/if}
+
 				{#if data.item.readings}
 					<div class="mt-3 flex gap-12">
 						{#if data.item.readings.on}
@@ -186,6 +205,52 @@
 								<span class="mt-0.5 block text-base font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.kun.join('・')}</span>
 							</div>
 						{/if}
+					</div>
+				{/if}
+
+				{#if noteTags.length > 0}
+					<div class="mt-4 flex max-w-2xl flex-wrap justify-center gap-2 px-4">
+						{#each noteTags as tag}
+							<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-ghost)]">
+								{tag}
+							</span>
+						{/each}
+					</div>
+				{/if}
+
+				{#if recipeCards.length > 0}
+					<div class="mt-6 w-full max-w-5xl px-4 md:mt-8">
+						<div class="mb-3 text-center">
+							<span class="inline-flex items-center gap-2 rounded-full border border-[var(--color-divider)] bg-[var(--color-paper-warm)] px-3 py-1 text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--color-ink-light)]">
+								<span>Radical recipes</span>
+								<span class="h-1 w-1 rounded-full" style="background: var(--color-col-radicals);"></span>
+								<span>{recipeCards.length}</span>
+							</span>
+						</div>
+						<div class="grid gap-3 md:grid-cols-2">
+							{#each recipeCards as recipe}
+								<div class="rounded-3xl border border-[var(--color-divider)] bg-[var(--color-paper-warm)] p-4 text-left shadow-[0_18px_60px_rgba(24,24,27,0.08)]">
+									<div class="flex items-start justify-between gap-4">
+										<div>
+											<div class="flex items-end gap-3">
+												<span class="text-4xl font-black leading-none md:text-5xl">{recipe.kanji}</span>
+												<div>
+													<span class="block text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">Recipe</span>
+													{#if recipe.reading}
+														<span class="block text-sm font-black text-[var(--color-ink)]" style="font-family: var(--font-jp-brush);">{recipe.reading}</span>
+													{/if}
+												</div>
+											</div>
+											<p class="mt-2 text-sm font-bold text-[var(--color-ink)]">{recipe.meaning}</p>
+										</div>
+									</div>
+									<div class="mt-3 space-y-2 text-sm leading-relaxed text-[var(--color-ink-mid)]">
+										<p><span class="font-black uppercase tracking-[0.14em] text-[var(--color-ink-ghost)] text-[10px]">Build</span><br />{recipe.breakdown}</p>
+										<p><span class="font-black uppercase tracking-[0.14em] text-[var(--color-ink-ghost)] text-[10px]">Why it sticks</span><br />{recipe.clue}</p>
+									</div>
+								</div>
+							{/each}
+						</div>
 					</div>
 				{/if}
 
