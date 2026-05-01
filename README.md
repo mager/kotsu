@@ -4,6 +4,8 @@
 
 No streak anxiety. No mascot clutter. Just a clear path from beginner sounds to radicals, kanji families, and the words that make them stick.
 
+Kotsu is for me first, but it is built for anyone who wants to learn Japanese through calm repetition, visual structure, and a course that makes characters feel connected instead of random.
+
 ## What's here
 
 Five study shelves feed one required course tree:
@@ -17,6 +19,15 @@ Five study shelves feed one required course tree:
 | 語彙 | Vocabulary — baby words to real words | 15 |
 
 Follow the course timeline, branch into radical families, then tap any character for an immersive full-screen study view.
+
+## Product direction
+
+Kotsu is trying to balance two things at once:
+
+- **Japan-now usefulness** — fast access to kana, core words, and recognition patterns that help before and during a trip.
+- **Long-term literacy** — a radical-first model that teaches how kanji are built so later learning compounds.
+
+The intended feel is **calm, focused, quietly electric**.
 
 ## Stack
 

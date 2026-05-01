@@ -13,7 +13,6 @@
 	let learnedKey = $derived(`${data.column.id}_${data.index}`);
 	let learned = $derived(isLearned(data.column.id, data.index));
 
-	// Mouse parallax
 	let mouseX = $state(0);
 	let mouseY = $state(0);
 	let charOffsetX = $derived((mouseX - 0.5) * 12);
@@ -39,7 +38,6 @@
 		if (newValue) {
 			justLearned = true;
 			await markLearned(auth.user.uid, data.column.id, data.index);
-			// Auto-advance after pulse animation completes
 			setTimeout(() => {
 				justLearned = false;
 				if (data.nextIndex !== null) {
@@ -53,7 +51,6 @@
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		// Don't capture if typing in an input
 		if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
 		switch (e.key) {
@@ -94,6 +91,8 @@
 	let recipeCards = $derived(data.item.recipes ?? []);
 	let noteTags = $derived(data.item.tags ?? []);
 	let variants = $derived(data.item.variants ?? []);
+	let practicePrompts = $derived(getPracticePrompts());
+	let connectionNotes = $derived(getConnectionNotes());
 
 	let touchStartX = 0;
 
@@ -111,6 +110,52 @@
 			showDetails = false;
 			goto(`/${data.column.id}/${data.prevIndex}`);
 		}
+	}
+
+	function getPracticePrompts(): string[] {
+		if (data.column.id === 'hiragana' || data.column.id === 'katakana') {
+			return [
+				'Hide the romaji and say the sound before checking yourself.',
+				data.item.pair
+					? `Flip to ${data.item.pair} and confirm you can match the twin script instantly.`
+					: 'Scan nearby rows and spot the siblings that share the same mouth shape.',
+				'Use it inside a short borrowed word or kana chunk instead of naming letters one by one.'
+			];
+		}
+
+		if (data.column.id === 'radicals') {
+			return [
+				'Name the meaning first, then the radical name.',
+				'Spot where this shape compresses or shifts when it joins a full kanji.',
+				'Recall one kanji recipe that becomes easier once this piece is familiar.'
+			];
+		}
+
+		if (data.column.id === 'kanji') {
+			return [
+				'Say meaning → kun reading → on reading in that order.',
+				'Look for the radical clue before you look at the English gloss.',
+				'Put the kanji into a tiny word or compound you could meet again tomorrow.'
+			];
+		}
+
+		return [
+			'Read the whole word as one sound shape, not as separate kana.',
+			'Say when you would actually use it out loud.',
+			'Recall the key meaning without translating every piece back into English.'
+		];
+	}
+
+	function getConnectionNotes(): string[] {
+		const notes: string[] = [];
+
+		if (data.sectionTitle) notes.push(`Part of the ${data.sectionTitle} block in ${data.column.title}.`);
+		if (data.item.pair) notes.push(`Paired with ${data.item.pair} so learners can compare scripts instead of memorizing in isolation.`);
+		if (variants.length > 0) notes.push(`Shows up in alternate shapes: ${variants.join(' · ')}.`);
+		if (recipeCards.length > 0) notes.push(`Already connected to ${recipeCards.length} kanji build${recipeCards.length > 1 ? 's' : ''}, which keeps this lesson tied to future reading.`);
+		if (noteTags.length > 0) notes.push(`Carries semantic cues through ${noteTags.slice(0, 3).join(', ')}.`);
+
+		return notes.slice(0, 3);
 	}
 </script>
 
@@ -155,6 +200,19 @@
 
 		{#if showDetails}
 			<div class="mt-2 flex flex-col items-center gap-1.5 md:mt-4 md:gap-2" in:fade={{ duration: 250 }}>
+				<div class="mb-2 flex flex-wrap items-center justify-center gap-2 px-4 text-center">
+					<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">
+						{data.column.title}
+					</span>
+					{#if data.sectionTitle}
+						<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">
+							{data.sectionTitle}
+						</span>
+					{/if}
+					<span class="rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink)]" style="background: color-mix(in srgb, var(--color-col-{data.column.id}) 10%, var(--color-paper));">
+						item {data.index + 1} of {data.totalItems}
+					</span>
+				</div>
 				<span
 					class="text-xl font-black tracking-[0.3em] uppercase text-[var(--color-ink)] md:text-3xl"
 					style="font-family: var(--font-jp-brush);"
@@ -215,6 +273,35 @@
 								{tag}
 							</span>
 						{/each}
+					</div>
+				{/if}
+
+				{#if practicePrompts.length > 0 || connectionNotes.length > 0}
+					<div class="mt-6 grid w-full max-w-5xl gap-3 px-4 md:mt-8 md:grid-cols-2">
+						<div class="rounded-3xl border border-[var(--color-divider)] bg-[var(--color-paper-warm)] p-4 text-left shadow-[0_18px_60px_rgba(24,24,27,0.08)]">
+							<span class="text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Practice now</span>
+							<div class="mt-3 space-y-2.5">
+								{#each practicePrompts as prompt, promptIndex}
+									<div class="flex gap-3">
+										<span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--color-paper)] text-[10px] font-black text-[var(--color-ink)]">{promptIndex + 1}</span>
+										<p class="text-sm leading-6 text-[var(--color-ink-mid)]">{prompt}</p>
+									</div>
+								{/each}
+							</div>
+						</div>
+
+						<div class="rounded-3xl border border-[var(--color-divider)] bg-[var(--color-paper-warm)] p-4 text-left shadow-[0_18px_60px_rgba(24,24,27,0.08)]">
+							<span class="text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Why this unlocks more</span>
+							<div class="mt-3 space-y-2.5">
+								{#if connectionNotes.length > 0}
+									{#each connectionNotes as note}
+										<p class="text-sm leading-6 text-[var(--color-ink-mid)]">{note}</p>
+									{/each}
+								{:else}
+									<p class="text-sm leading-6 text-[var(--color-ink-mid)]">This lesson sits inside a larger route, so the goal is not isolated recall — it is faster recognition inside the next kanji, word, or phrase that depends on it.</p>
+								{/if}
+							</div>
+						</div>
 					</div>
 				{/if}
 

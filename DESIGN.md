@@ -106,43 +106,68 @@ components:
 ---
 
 ## Overview
-Kotsu should feel like disciplined Japanese study material that got dropped into a Tokyo drift poster. The base is hard white, hard black, and calm structure. The excitement comes from precise shots of neon color tied to learning categories.
+Kotsu should feel like disciplined Japanese study material with a pulse of Tokyo night energy. The base is hard white, hard black, calm structure, and deliberate spacing. The excitement comes from precise shots of neon color tied to learning categories and progress moments.
 
-It is not maximalist anime UI. It is restrained, elegant, and sharp, with flashes of speed and nightlife. That contrast is the identity.
+It is not maximalist anime UI. It is not Duolingo. It is restrained, elegant, mobile-first, and sharp, with just enough nightlife electricity to feel memorable.
+
+## Design Context
+
+### Users
+Kotsu is for Mager first, but it should work for anyone learning Japanese, especially early learners, returning learners, and travelers preparing for Japan. Most sessions should be short, phone-first, and easy to re-enter.
+
+### Brand Personality
+Calm, focused, quietly electric.
+
+The interface should feel confident and art-directed without becoming loud. It should be warm enough for beginners, serious enough for repetition, and visually distinctive enough to stay memorable.
+
+### Aesthetic Direction
+Think editorial study object, Tokyo transit signage, refined flashcard cabinet, and modern language-learning tool. The product should feel distilled rather than gamified, with excellent typography, clear information hierarchy, and selective use of color.
+
+### Design Principles
+1. Teach from atoms to meaning.
+2. Make progress feel navigable.
+3. Optimize for short, repeatable phone sessions.
+4. Balance Japan-now usefulness with long-term literacy.
+5. Keep the energy restrained.
 
 ## Colors
-The foundation is almost monochrome. White paper backgrounds, black ink text, pale dividers, and subtle gray surfaces create the feeling of a serious tool. Neon accents act like highlighters or underglow, never like full-screen decoration.
+The foundation is almost monochrome. White paper backgrounds, black ink text, pale dividers, and subtle gray surfaces create the feeling of a serious tool. Neon accents should act like highlighters, route markers, or underglow — never like full-screen decoration.
 
 Each learning column owns a distinct color. Those hues should stay stable across navigation, progress, and categorization so the product feels teachable at a glance.
 
 ## Typography
 Typography is doing double duty: cultural texture and clarity. Cormorant Garamond gives the product literary elegance. Shippori Mincho gives Japanese headlines ceremonial weight. Noto Sans JP handles interface utility and long-form legibility.
 
-The headline lockup on the home screen is the model to follow: expressive serif English, bold Japanese centerpiece, then a softer italic supporting line.
+The headline model is expressive serif English, bold Japanese centerpiece, then quieter utility text. Avoid generic sans-serif-only hierarchy.
 
 ## Layout & Spacing
 Use a clean split-pane learning layout on desktop and a stacked, scrollable structure on mobile. Navigation should feel like a well-organized study cabinet, while the main content can breathe more.
 
-Spacing should be generous enough to make learning calm, but not so roomy that the interface loses momentum. Grid modules and cards should feel crisp and aligned, not floaty.
+Spacing should be generous enough to make learning calm, but not so roomy that the interface loses momentum. Every screen should help the learner re-orient quickly.
 
 ## Elevation & Depth
 Depth is mostly created through contrast, not shadow. In light mode, the system should feel nearly flat. In dark mode, neon glows and scanline textures can come forward slightly to create a late-night street-tech atmosphere.
 
-Motion can feel springy and alive, especially on hover, reveal, and progress moments, but it should never distract from the act of studying.
+Motion can feel springy and alive on hover, reveal, and progress moments, but it should never distract from studying.
 
 ## Shapes
-Use rounded rectangles with a modern but controlled radius. Pills and large radii are acceptable for search and progress affordances, while cards and nav items should stay structured and sturdy.
+Use rounded rectangles with a modern but controlled radius. Pills and large radii are appropriate for search, tags, and progress affordances, while cards and navigation items should stay structured and sturdy.
 
 ## Components
 Search should feel soft and inviting. Category cards should feel collectible and color-coded. Progress bars can take on the brightest gradients because they represent momentum and reward.
 
-The sidebar is not an admin nav. It should feel like a curated index of study tracks.
+The sidebar is not an admin nav. It should feel like a curated index of study tracks. Course maps and lesson cards should help the learner feel both local progress and larger direction.
+
+## Japan Mode
+Kotsu should support immediate travel usefulness without collapsing into phrasebook mode. Use vocabulary, labels, and examples that help a learner feel more capable in Japan now, while preserving the radical-first model that makes future kanji learning compound.
 
 ## Do's and Don'ts
 Do pair monochrome structure with electric category accents.
 Do let Japanese typography feel prominent and proud.
-Do keep the product calm enough for repeated daily use.
+Do optimize for calm, fast, repeatable study on a phone.
+Do make each lesson feel connected to a larger route.
 
 Don't turn every surface into a neon object.
 Don't make the layout feel like a gaming dashboard.
-Don't use generic sans-serif-only hierarchy.
+Don't use streak pressure, mascot patterns, or dopamine-heavy reward loops.
+Don't use generic productivity UI where a stronger learning identity is possible.

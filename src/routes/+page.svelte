@@ -9,7 +9,7 @@
 		getTotalProgress,
 		isLearned
 	} from '$lib/stores/auth.svelte';
-	import { getColumnItems } from '$lib/data';
+	import { getColumnItems, type Column } from '$lib/data';
 	import {
 		courseUnits,
 		getCoursePreview,
@@ -53,8 +53,61 @@
 		Words: 'var(--color-asagi)'
 	};
 
+	const columnChips: Record<string, string[]> = {
+		hiragana: ['sounds', 'rows', 'starter'],
+		katakana: ['mirror set', 'loanwords', 'contrast'],
+		radicals: ['meaning pieces', 'recipes', 'families'],
+		kanji: ['N5', 'readings', 'core set'],
+		vocabulary: ['daily words', 'chunks', 'recall']
+	};
+
+	const studySprints = [
+		{
+			title: '5-minute warm-up',
+			jp: '準備',
+			description: 'Run one sound unit, then one matching katakana branch while the contrast is still fresh.',
+			accent: 'var(--color-ai)',
+			href: '/hiragana/0'
+		},
+		{
+			title: 'Radical recipe loop',
+			jp: '組み立て',
+			description: 'Spot a radical, recall the meaning, then jump into the kanji it unlocks.',
+			accent: 'var(--color-matcha)',
+			href: '/radicals/0'
+		},
+		{
+			title: 'Read a real word',
+			jp: 'ことば',
+			description: 'Finish a short session by reading one usable word chunk without spelling it out.',
+			accent: 'var(--color-asagi)',
+			href: '/vocabulary/0'
+		}
+	];
+
 	function getPhaseColor(phase: string): string {
 		return phaseColors[phase] ?? 'var(--color-ink)';
+	}
+
+	function getColumnSummary(column: Column): string {
+		switch (column.id) {
+			case 'hiragana':
+				return 'Structured kana rows with voiced sounds, contractions, and doubles grouped into one clear path.';
+			case 'katakana':
+				return 'A mirror course for borrowed sounds so learners can compare shape, sound, and usage side by side.';
+			case 'radicals':
+				return 'Semantic building blocks taught as reusable parts, not isolated trivia.';
+			case 'kanji':
+				return 'Starter kanji ordered to feel reachable, with readings and meaning attached early.';
+			case 'vocabulary':
+				return 'Short everyday words and greetings that make the symbols feel immediately useful.';
+			default:
+				return column.hint;
+		}
+	}
+
+	function getColumnHref(column: Column): string {
+		return `/${column.id}/0`;
 	}
 
 	function getStatusLabel(progress: CourseProgress): string {
@@ -391,6 +444,61 @@
 							</div>
 						</section>
 					</div>
+				</section>
+
+				<section class="mt-10 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+					{#each columns as column}
+						{@const items = getColumnItems(column)}
+						<a
+							href={getColumnHref(column)}
+							class="group rounded-xl border border-[var(--color-divider)] px-5 py-5 transition-all duration-200 hover:bg-[var(--color-paper-warm)] press-scale"
+						>
+							<div class="flex items-start justify-between gap-4">
+								<div>
+									<div class="flex flex-wrap items-baseline gap-2">
+										<span class="text-xl font-black text-[var(--color-ink)]">{column.title}</span>
+										<span class="text-2xl font-black leading-none" style="font-family: var(--font-jp-brush); color: {accentColors[column.id]};">{column.titleJp}</span>
+									</div>
+									<p class="mt-2 text-sm leading-6 text-[var(--color-ink-light)]">{getColumnSummary(column)}</p>
+								</div>
+								<div class="text-right">
+									<span class="block text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Items</span>
+									<span class="mt-1 block text-xl font-black text-[var(--color-ink)]">{items.length}</span>
+								</div>
+							</div>
+							<div class="mt-4 flex flex-wrap gap-2">
+								{#each column.sections as section}
+									<span class="rounded-full border border-[var(--color-divider)] px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] uppercase text-[var(--color-ink-light)]">
+										{section.title} · {section.items.length}
+									</span>
+								{/each}
+							</div>
+							<div class="mt-4 flex flex-wrap gap-2">
+								{#each columnChips[column.id] ?? [] as chip}
+									<span class="rounded-full px-2.5 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink)]" style="background: color-mix(in srgb, {accentColors[column.id]} 10%, var(--color-paper));">
+										{chip}
+									</span>
+								{/each}
+							</div>
+						</a>
+					{/each}
+				</section>
+
+				<section class="mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
+					{#each studySprints as sprint}
+						<a
+							href={sprint.href}
+							class="group rounded-xl border border-[var(--color-divider)] px-5 py-5 transition-all duration-200 hover:bg-[var(--color-paper-warm)] press-scale"
+							style="background: color-mix(in srgb, {sprint.accent} 6%, var(--color-paper));"
+						>
+							<span class="text-[10px] font-bold tracking-[0.24em] uppercase" style="color: {sprint.accent};">{sprint.jp}</span>
+							<h3 class="mt-2 text-xl font-black text-[var(--color-ink)]">{sprint.title}</h3>
+							<p class="mt-2 text-sm leading-6 text-[var(--color-ink-light)]">{sprint.description}</p>
+							<span class="mt-4 inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--color-ink-ghost)] transition-colors group-hover:text-[var(--color-ink)]">
+								start sprint <span aria-hidden="true">→</span>
+							</span>
+						</a>
+					{/each}
 				</section>
 
 				<section class="mt-12 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.75fr)]">
