@@ -33,20 +33,28 @@
 
 	async function toggleLearned() {
 		if (!auth.user) return;
-		const newValue = !learned;
+		const previousValue = learned;
+		const newValue = !previousValue;
 		setLearned(learnedKey, newValue);
-		if (newValue) {
-			justLearned = true;
-			await markLearned(auth.user.uid, data.column.id, data.index);
-			setTimeout(() => {
-				justLearned = false;
-				if (data.nextIndex !== null) {
-					showDetails = false;
-					goto(`/${data.column.id}/${data.nextIndex}`);
-				}
-			}, 600);
-		} else {
-			await unmarkLearned(auth.user.uid, data.column.id, data.index);
+
+		try {
+			if (newValue) {
+				justLearned = true;
+				await markLearned(auth.user.uid, data.column.id, data.index);
+				setTimeout(() => {
+					justLearned = false;
+					if (data.nextIndex !== null) {
+						showDetails = false;
+						goto(`/${data.column.id}/${data.nextIndex}`);
+					}
+				}, 600);
+			} else {
+				await unmarkLearned(auth.user.uid, data.column.id, data.index);
+			}
+		} catch (error) {
+			justLearned = false;
+			setLearned(learnedKey, previousValue);
+			console.error('Failed to update learned state', error);
 		}
 	}
 

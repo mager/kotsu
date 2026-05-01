@@ -126,7 +126,7 @@
 </script>
 
 <!-- Mobile: 1 column, Desktop: sidebar + content -->
-<div class="grid min-h-screen grid-cols-1 md:grid-cols-[260px_1fr]">
+<div class="grid min-h-dvh grid-cols-1 md:grid-cols-[260px_1fr]">
 
 	<!-- Sidebar / Nav -->
 	<nav class="flex flex-col border-b border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-4 md:sticky md:top-0 md:h-screen md:overflow-y-auto md:border-b-0 md:border-r md:px-5 md:py-6">
@@ -275,7 +275,7 @@
 	</nav>
 
 	<!-- Main content -->
-	<div class="px-4 py-8 md:px-8 md:py-10">
+	<div class="px-4 pt-8 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:px-8 md:py-10">
 		<div class="mx-auto {activeView === 'home' ? 'max-w-6xl' : 'max-w-3xl'}">
 			{#if activeView === 'home'}
 				<section class="animate-fade-up">

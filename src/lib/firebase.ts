@@ -33,20 +33,26 @@ export const db = getFirestore(app);
 
 const provider = new GoogleAuthProvider();
 
+async function ensureUserDoc(user: Pick<User, 'uid' | 'displayName' | 'email' | 'photoURL'>) {
+	const userRef = doc(db, 'users', user.uid);
+	const userDoc = await getDoc(userRef);
+	if (userDoc.exists()) return userRef;
+
+	await setDoc(userRef, {
+		displayName: user.displayName,
+		email: user.email,
+		photoURL: user.photoURL,
+		username: '',
+		createdAt: new Date().toISOString(),
+		learned: {}
+	});
+
+	return userRef;
+}
+
 export async function signInWithGoogle() {
 	const result = await signInWithPopup(auth, provider);
-	const userRef = doc(db, 'users', result.user.uid);
-	const userDoc = await getDoc(userRef);
-	if (!userDoc.exists()) {
-		await setDoc(userRef, {
-			displayName: result.user.displayName,
-			email: result.user.email,
-			photoURL: result.user.photoURL,
-			username: '',
-			createdAt: new Date().toISOString(),
-			learned: {}
-		});
-	}
+	await ensureUserDoc(result.user);
 	return result.user;
 }
 
@@ -73,15 +79,21 @@ export function onAuth(callback: (user: User | null) => void) {
 }
 
 export async function markLearned(uid: string, columnId: string, index: number) {
-	const userRef = doc(db, 'users', uid);
-	const key = `learned.${columnId}_${index}`;
-	await updateDoc(userRef, { [key]: true });
+	const userRef = await ensureUserDoc({ uid, displayName: null, email: null, photoURL: null });
+	await setDoc(
+		userRef,
+		{ learned: { [`${columnId}_${index}`]: true } },
+		{ merge: true }
+	);
 }
 
 export async function unmarkLearned(uid: string, columnId: string, index: number) {
-	const userRef = doc(db, 'users', uid);
-	const key = `learned.${columnId}_${index}`;
-	await updateDoc(userRef, { [key]: false });
+	const userRef = await ensureUserDoc({ uid, displayName: null, email: null, photoURL: null });
+	await setDoc(
+		userRef,
+		{ learned: { [`${columnId}_${index}`]: false } },
+		{ merge: true }
+	);
 }
 
 export async function getProgress(uid: string): Promise<Record<string, boolean>> {

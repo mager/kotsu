@@ -75,7 +75,7 @@
 </script>
 
 {#if auth.user}
-	<div class="min-h-screen">
+	<div class="min-h-dvh">
 		<!-- Hero section — full width, dramatic -->
 		<div class="relative overflow-hidden px-6 pb-16 pt-8 md:px-12 md:pb-24 md:pt-12">
 			<!-- Decorative background character -->

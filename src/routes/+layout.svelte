@@ -28,7 +28,7 @@
 	injectAnalytics({ mode: dev ? 'development' : 'production' });
 </script>
 
-<div class="flex min-h-screen flex-col bg-[var(--color-paper)]">
+<div class="flex min-h-dvh flex-col bg-[var(--color-paper)]">
 	{#if !isHomePage}
 		<Nav />
 	{/if}
