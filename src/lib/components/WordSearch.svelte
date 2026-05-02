@@ -66,6 +66,10 @@
 		}, 2000);
 	}
 
+	function getLookupHref(result: any): string {
+		return `/lookup/${encodeURIComponent(result.word || result.reading)}`;
+	}
+
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === '/' && document.activeElement !== searchInput) {
 			e.preventDefault();
@@ -107,12 +111,15 @@
 	{#if results.length > 0}
 		<div class="{isHeader ? 'absolute top-[calc(100%+0.5rem)] right-0 left-0 max-h-[min(70dvh,32rem)] overflow-y-auto rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper)] p-2 shadow-2xl shadow-black/10' : 'mt-3 space-y-2'}">
 			{#each results as result, i (result.word + result.meaning)}
-				<div
-					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl transition-all duration-200 hover:border-[var(--color-ai)] {isHeader ? 'mb-2 px-4 py-3 last:mb-0' : 'px-5 py-4'}"
+				<article
+					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl transition-all duration-200 hover:border-[var(--color-ai)] {isHeader ? 'mb-2 last:mb-0' : ''}"
 					style="animation-delay: {i * 60}ms;"
 				>
 					<div class="flex items-start justify-between gap-4">
-						<div class="flex-1 min-w-0">
+						<a
+							href={getLookupHref(result)}
+							class="block min-w-0 flex-1 text-inherit no-underline {isHeader ? 'px-4 py-3' : 'px-5 py-4'}"
+						>
 							<!-- Word -->
 							<div class="flex items-baseline gap-3">
 								<span
@@ -147,23 +154,23 @@
 									</span>
 								{/if}
 							</div>
-						</div>
+						</a>
 
 						<!-- Save button -->
 						{#if auth.user}
 							{#if justSaved === result.word}
-								<span class="animate-spring-in mt-1 text-sm font-bold text-[var(--color-matcha)]">✓ Saved</span>
+								<span class="animate-spring-in mt-4 mr-4 shrink-0 text-sm font-bold text-[var(--color-matcha)]">✓ Saved</span>
 							{:else}
 								<button
 									onclick={() => saveWord(result)}
-									class="mt-1 cursor-pointer rounded-lg border border-[var(--color-divider)] px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
+									class="mt-4 mr-4 shrink-0 cursor-pointer rounded-lg border border-[var(--color-divider)] px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
 								>
 									+ Save
 								</button>
 							{/if}
 						{/if}
 					</div>
-				</div>
+				</article>
 			{/each}
 		</div>
 	{:else if query.trim().length > 0 && !searching}
