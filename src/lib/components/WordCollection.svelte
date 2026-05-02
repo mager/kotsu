@@ -42,12 +42,12 @@
 			</div>
 		</div>
 
-		<div class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
+		<div class="grid max-w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
 			{#each words as item, i (item.id)}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
 					onclick={() => openWord(item)}
-					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl px-4 py-5 text-left transition-all duration-200 hover:border-[var(--color-ai)] press-scale cursor-pointer {removing === item.id ? 'opacity-20 scale-95' : ''}"
+					class="drift-card animate-spring-in group relative min-w-0 overflow-hidden rounded-xl px-4 py-5 text-left transition-all duration-200 hover:border-[var(--color-ai)] press-scale cursor-pointer {removing === item.id ? 'opacity-20 scale-95' : ''}"
 					style="animation-delay: {i * 40}ms;"
 					role="button"
 					tabindex="0"
@@ -63,14 +63,14 @@
 					>✕</button>
 
 					<div
-						class="text-center font-black leading-none"
+						class="min-w-0 text-center font-black leading-none"
 						style="font-family: var(--font-jp-brush); font-size: {item.character.length <= 2 ? 'clamp(2.4rem, 5vw, 3.2rem)' : item.character.length <= 4 ? 'clamp(1.6rem, 3.5vw, 2.4rem)' : 'clamp(1.3rem, 3vw, 1.8rem)'};"
 					>
 						{item.character}
 					</div>
 
 					{#if item.romaji}
-						<div class="mt-2 text-center text-sm text-[var(--color-ink-light)]" style="font-family: var(--font-jp-brush);">
+						<div class="mt-2 truncate text-center text-sm text-[var(--color-ink-light)]" style="font-family: var(--font-jp-brush);">
 							{item.romaji}
 						</div>
 					{/if}

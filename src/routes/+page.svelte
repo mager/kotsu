@@ -126,7 +126,7 @@
 </script>
 
 <!-- Mobile: 1 column, Desktop: sidebar + content -->
-<div class="grid min-h-dvh grid-cols-1 md:grid-cols-[260px_1fr]">
+<div class="grid min-h-dvh max-w-full grid-cols-1 overflow-x-clip md:grid-cols-[260px_1fr]">
 
 	<!-- Sidebar / Nav -->
 	<nav class="flex flex-col border-b border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-4 md:sticky md:top-0 md:h-screen md:overflow-y-auto md:border-b-0 md:border-r md:px-5 md:py-6">
@@ -159,7 +159,7 @@
 		</div>
 
 		<!-- Mobile: horizontal scroll nav -->
-		<div class="mt-3 flex gap-2 overflow-x-auto no-scrollbar md:mt-0 md:flex-col md:gap-1">
+		<div class="mt-3 flex flex-wrap gap-2 md:mt-0 md:flex-col md:gap-1">
 			<!-- Home -->
 			<button
 				class="shrink-0 cursor-pointer rounded-lg px-3 py-2 text-left transition-all duration-200 press-scale
@@ -275,7 +275,7 @@
 	</nav>
 
 	<!-- Main content -->
-	<div class="px-4 pt-8 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:px-8 md:py-10">
+	<div class="max-w-full overflow-x-clip px-4 pt-8 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:px-8 md:py-10">
 		<div class="mx-auto {activeView === 'home' ? 'max-w-6xl' : 'max-w-3xl'}">
 			{#if activeView === 'home'}
 				<section class="animate-fade-up">
@@ -317,7 +317,7 @@
 							<span class="text-[10px] font-bold tracking-[0.25em] uppercase text-[var(--color-ink-light)]">Full course timeline</span>
 							<span class="text-[10px] font-bold text-[var(--color-ink-light)]">{courseTotal.pct}%</span>
 						</div>
-						<div class="no-scrollbar flex h-8 gap-1 overflow-x-auto rounded-full border border-[var(--color-divider)] bg-[var(--color-paper-warm)] p-1" aria-label="Kotsu course timeline">
+						<div class="flex flex-wrap gap-1 rounded-[1.25rem] border border-[var(--color-divider)] bg-[var(--color-paper-warm)] p-1" aria-label="Kotsu course timeline">
 							{#each courseUnits as unit, unitIndex}
 								{@const unitProgress = getCourseUnitProgress(unit, isLearned)}
 								<a

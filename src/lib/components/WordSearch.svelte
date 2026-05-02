@@ -74,13 +74,13 @@
 	<!-- Search input -->
 	<div class="search-glow relative rounded-2xl border border-[var(--color-divider)] px-5 py-4 transition-all duration-300" style="background: var(--card-bg);">
 		<div class="flex items-center gap-3">
-			<span class="text-2xl text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">探</span>
+			<span class="shrink-0 text-2xl text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">探</span>
 			<input
 				bind:this={searchInput}
 				type="text"
 				bind:value={query}
 				placeholder="Type English or Japanese to search..."
-				class="flex-1 bg-transparent text-lg font-medium text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-ghost)]"
+				class="min-w-0 flex-1 bg-transparent text-lg font-medium text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-ghost)]"
 				autocomplete="off"
 				spellcheck="false"
 			/>
