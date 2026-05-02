@@ -287,10 +287,10 @@
 					<div class="mb-5 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 						<div class="max-w-3xl">
 							<h1 class="max-w-2xl text-4xl font-black leading-[1.02] md:text-6xl" style="font-family: var(--font-display);">
-								Learn kanji through radicals.
+								Japanese that actually clicks.
 							</h1>
 							<p class="mt-4 max-w-2xl text-base leading-7 text-[var(--color-ink-light)] md:text-lg">
-								Kotsu starts with beginner sounds, then turns radicals into kanji families, readings, and real words. The path branches, but every branch counts toward the full course.
+								Kotsu turns kana, radicals, kanji, and useful words into one serious little study system, built for quick sessions before Japan and the long game after.
 							</p>
 						</div>
 
