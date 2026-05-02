@@ -2,6 +2,7 @@
 	import { signInWithGoogle, signOut } from '$lib/firebase';
 	import { getAuthState, getColumnProgress } from '$lib/stores/auth.svelte';
 	import { columns, getColumnItems } from '$lib/data';
+	import WordSearch from '$lib/components/WordSearch.svelte';
 
 	let auth = $derived(getAuthState());
 
@@ -22,22 +23,23 @@
 	}
 </script>
 
-<nav class="flex items-center justify-between px-5 md:px-10 border-b border-[var(--color-divider)] bg-[var(--color-paper)]" style="height: var(--nav-height, 56px)">
-	<!-- Logo -->
-	<a href="/" class="group flex items-baseline gap-2">
-		<span
-			class="logo-jp text-2xl font-black transition-transform duration-200 group-hover:scale-105 md:text-3xl"
-			style="font-family: var(--font-jp-brush); color: var(--color-shu);"
-		>
-			コツ
-		</span>
-		<span class="hidden text-xs font-bold tracking-[0.15em] uppercase text-[var(--color-ink-light)] md:inline">
-			Kotsu
-		</span>
-	</a>
+<nav class="relative z-40 flex flex-col gap-3 border-b border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-3 md:flex-row md:items-center md:gap-5 md:px-8" style="min-height: var(--nav-height, 72px)">
+	<div class="flex min-w-0 items-center justify-between gap-4 md:contents">
+		<!-- Logo -->
+		<a href="/" class="group flex shrink-0 items-baseline gap-2">
+			<span
+				class="logo-jp text-2xl font-black transition-transform duration-200 group-hover:scale-105 md:text-3xl"
+				style="font-family: var(--font-jp-brush); color: var(--color-shu);"
+			>
+				コツ
+			</span>
+			<span class="hidden text-xs font-bold tracking-[0.15em] uppercase text-[var(--color-ink-light)] md:inline">
+				Kotsu
+			</span>
+		</a>
 
-	<!-- Right side -->
-	<div class="flex items-center gap-5">
+		<!-- Right side -->
+		<div class="flex shrink-0 items-center gap-5 md:order-3">
 		{#if auth.loading}
 			<span class="h-4 w-16 animate-pulse rounded bg-[var(--color-divider)]"></span>
 		{:else if auth.user}
@@ -84,5 +86,10 @@
 				Sign in
 			</button>
 		{/if}
+		</div>
+	</div>
+
+	<div class="w-full min-w-0 md:order-2 md:mx-auto md:max-w-3xl md:flex-1">
+		<WordSearch variant="header" />
 	</div>
 </nav>

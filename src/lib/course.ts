@@ -34,6 +34,7 @@ export interface CourseUnit {
 }
 
 export interface RadicalRecipe {
+	id: string;
 	parts: string[];
 	result: string;
 	meaning: string;
@@ -186,12 +187,12 @@ export const courseUnits: CourseUnit[] = [
 ];
 
 export const radicalRecipes: RadicalRecipe[] = [
-	{ parts: ['日', '月'], result: '明', meaning: 'bright', pattern: 'sun plus moon' },
-	{ parts: ['木', '木'], result: '林', meaning: 'woods', pattern: 'tree beside tree' },
-	{ parts: ['人', '木'], result: '休', meaning: 'rest', pattern: 'person by a tree' },
-	{ parts: ['火', '火'], result: '炎', meaning: 'flame', pattern: 'fire stacked on fire' },
-	{ parts: ['門', '日'], result: '間', meaning: 'interval', pattern: 'sun through a gate' },
-	{ parts: ['言', '五', '口'], result: '語', meaning: 'language', pattern: 'speech joined to a sound part' }
+	{ id: 'sun-moon-bright', parts: ['日', '月'], result: '明', meaning: 'bright', pattern: 'sun plus moon' },
+	{ id: 'two-trees-woods', parts: ['木', '木'], result: '林', meaning: 'woods', pattern: 'tree beside tree' },
+	{ id: 'person-tree-rest', parts: ['人', '木'], result: '休', meaning: 'rest', pattern: 'person by a tree' },
+	{ id: 'two-fires-flame', parts: ['火', '火'], result: '炎', meaning: 'flame', pattern: 'fire stacked on fire' },
+	{ id: 'gate-sun-interval', parts: ['門', '日'], result: '間', meaning: 'interval', pattern: 'sun through a gate' },
+	{ id: 'speech-five-mouth-language', parts: ['言', '五', '口'], result: '語', meaning: 'language', pattern: 'speech joined to a sound part' }
 ];
 
 function getColumn(columnId: string): Column | undefined {

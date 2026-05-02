@@ -93,14 +93,12 @@
 	<nav bind:this={navEl} class="flex-1 overflow-y-auto no-scrollbar px-3">
 		<!-- Home -->
 		<button
-			class="mb-1 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all duration-200 press-scale
-				{activeColumn === null ? 'bg-[var(--color-paper-warm)]' : 'hover:bg-[var(--color-paper-warm)]'}"
+			class="mb-1 flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors duration-200 press-scale
+				{activeColumn === null ? 'text-[var(--color-ink)]' : 'text-[var(--color-ink-ghost)] hover:text-[var(--color-ink)]'}"
 			onclick={() => { activeColumn = null; onselect?.('home'); onclose?.(); }}
 		>
-			<span class="text-xl">🏠</span>
 			<div>
-				<span class="text-sm font-bold tracking-[0.15em] uppercase text-[var(--color-ink)]">My Words</span>
-				<span class="block text-xs text-[var(--color-ink-light)]">私の言葉</span>
+				<span class="text-sm font-bold tracking-[0.15em] uppercase">Course</span>
 			</div>
 		</button>
 
@@ -136,7 +134,6 @@
 								{col.title}
 							</span>
 						</div>
-						<span class="mt-0.5 block text-[10px] text-[var(--color-ink-light)]">{col.hint}</span>
 					</div>
 
 					<!-- Mini progress -->

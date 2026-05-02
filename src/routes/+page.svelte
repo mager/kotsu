@@ -22,6 +22,7 @@
 		type CourseUnit
 	} from '$lib/course';
 	import { signInWithGoogle, signOut } from '$lib/firebase';
+	import { getCharacterHref } from '$lib/links';
 
 	let activeView = $state<string>('home');
 	let auth = $derived(getAuthState());
@@ -129,7 +130,7 @@
 <div class="grid min-h-dvh max-w-full grid-cols-1 overflow-x-clip md:grid-cols-[260px_1fr]">
 
 	<!-- Sidebar / Nav -->
-	<nav class="flex flex-col border-b border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-4 md:sticky md:top-0 md:h-screen md:overflow-y-auto md:border-b-0 md:border-r md:px-5 md:py-6">
+	<nav class="flex min-w-0 flex-col border-b border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-4 md:sticky md:top-0 md:h-screen md:overflow-y-auto md:border-b-0 md:border-r md:px-5 md:py-6">
 		<!-- Logo -->
 		<div class="flex items-center justify-between md:mb-6">
 			<a href="/" class="group inline-flex items-baseline gap-2">
@@ -162,14 +163,14 @@
 		<div class="mt-3 flex flex-wrap gap-2 md:mt-0 md:flex-col md:gap-1">
 			<!-- Home -->
 			<button
-				class="shrink-0 cursor-pointer rounded-lg px-3 py-2 text-left transition-all duration-200 press-scale
-					{activeView === 'home' ? 'bg-[var(--color-paper-warm)]' : 'hover:bg-[var(--color-paper-warm)]'}
+				class="shrink-0 cursor-pointer px-3 py-2 text-left transition-colors duration-200 press-scale
+					{activeView === 'home' ? 'text-[var(--color-ink)]' : 'text-[var(--color-ink-ghost)] hover:text-[var(--color-ink)]'}
 					md:flex md:w-full md:items-center md:gap-3"
-					onclick={() => (activeView = 'home')}
-				>
-					<span class="text-sm font-bold tracking-[0.1em] uppercase text-[var(--color-ink)]">Course</span>
-					<span class="hidden text-xs text-[var(--color-ink-light)] md:block">部首の道</span>
-				</button>
+				onclick={() => (activeView = 'home')}
+				aria-current={activeView === 'home' ? 'page' : undefined}
+			>
+				<span class="text-sm font-bold tracking-[0.1em] uppercase">Course</span>
+			</button>
 
 			<div class="hidden md:mx-3 md:my-2 md:block md:h-px md:bg-[var(--color-divider)]"></div>
 
@@ -200,7 +201,6 @@
 								{col.title}
 							</span>
 						</div>
-						<span class="mt-0.5 hidden text-[10px] text-[var(--color-ink-light)] md:block">{col.hint}</span>
 					</div>
 
 					<!-- Progress ring (desktop) -->
@@ -275,20 +275,17 @@
 	</nav>
 
 	<!-- Main content -->
+	<div class="min-w-0 overflow-x-hidden">
+		<header class="sticky top-0 z-30 border-b border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-3 md:px-8">
+			<WordSearch variant="header" />
+		</header>
+
 	<div class="max-w-full overflow-x-clip px-4 pt-8 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:px-8 md:py-10">
-		<div class="mx-auto {activeView === 'home' ? 'max-w-6xl' : 'max-w-3xl'}">
+		<div class="home-content-shell mx-auto w-full {activeView === 'home' ? 'is-home' : 'is-column'}">
 			{#if activeView === 'home'}
 				<section class="animate-fade-up">
 					<div class="mb-5 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 						<div class="max-w-3xl">
-							<div class="mb-3 flex flex-wrap items-center gap-2">
-								<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-light)]">
-									部首の道
-								</span>
-								<span class="rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink)]" style="background: color-mix(in srgb, var(--color-matcha) 14%, var(--color-paper));">
-									radicals first
-								</span>
-							</div>
 							<h1 class="max-w-2xl text-4xl font-black leading-[1.02] md:text-6xl" style="font-family: var(--font-display);">
 								Learn kanji through radicals.
 							</h1>
@@ -414,19 +411,32 @@
 							<h2 class="mt-2 text-2xl font-black text-[var(--color-ink)]" style="font-family: var(--font-display);">Pieces become meaning.</h2>
 							<div class="mt-4 space-y-3">
 								{#each radicalRecipes as recipe}
+									{@const resultHref = getCharacterHref(recipe.result, ['kanji', 'radicals'])}
 									<div class="rounded-lg border border-[var(--color-divider)] px-4 py-3">
 										<div class="flex flex-wrap items-center gap-2">
 											{#each recipe.parts as part, partIndex}
-												<span class="text-2xl font-black leading-none text-[var(--color-ink)]" style="font-family: var(--font-jp-brush);">{part}</span>
+												{@const partHref = getCharacterHref(part, ['radicals', 'kanji'])}
+												{#if partHref}
+													<a href={partHref} class="rounded-md px-1 text-2xl font-black leading-none text-[var(--color-ink)] transition-colors hover:bg-[var(--color-paper-warm)]" style="font-family: var(--font-jp-brush);">{part}</a>
+												{:else}
+													<span class="text-2xl font-black leading-none text-[var(--color-ink)]" style="font-family: var(--font-jp-brush);">{part}</span>
+												{/if}
 												{#if partIndex < recipe.parts.length - 1}
 													<span class="text-xs font-black text-[var(--color-ink-ghost)]">+</span>
 												{/if}
 											{/each}
 											<span class="text-xs font-black text-[var(--color-ink-ghost)]">=</span>
-											<span class="text-3xl font-black leading-none text-[var(--color-matcha)]" style="font-family: var(--font-jp-brush);">{recipe.result}</span>
+											{#if resultHref}
+												<a href={resultHref} class="rounded-md px-1 text-3xl font-black leading-none text-[var(--color-matcha)] transition-colors hover:bg-[var(--color-paper-warm)]" style="font-family: var(--font-jp-brush);">{recipe.result}</a>
+											{:else}
+												<span class="text-3xl font-black leading-none text-[var(--color-matcha)]" style="font-family: var(--font-jp-brush);">{recipe.result}</span>
+											{/if}
 											<span class="text-sm font-bold text-[var(--color-ink)]">{recipe.meaning}</span>
 										</div>
-										<p class="mt-2 text-xs leading-5 text-[var(--color-ink-light)]">{recipe.pattern}</p>
+										<div class="mt-2 flex items-center justify-between gap-3">
+											<p class="text-xs leading-5 text-[var(--color-ink-light)]">{recipe.pattern}</p>
+											<a href="/recipes/{recipe.id}" class="shrink-0 text-[10px] font-black tracking-[0.16em] uppercase text-[var(--color-ink)] transition-colors hover:text-[var(--color-matcha)]">Open</a>
+										</div>
 									</div>
 								{/each}
 							</div>
@@ -501,29 +511,16 @@
 					{/each}
 				</section>
 
-				<section class="mt-12 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.75fr)]">
-					<div>
-						<div class="mb-4 flex items-baseline gap-3">
-							<h2 class="text-2xl font-black text-[var(--color-ink)]" style="font-family: var(--font-display);">Lookup Bench</h2>
-							<span class="text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">語彙</span>
-						</div>
-						<WordSearch />
-					</div>
-
-					<div>
-						<WordCollection />
-					</div>
+				<section class="mt-12">
+					<WordCollection />
 				</section>
 
 				<footer class="mt-12 border-t border-[var(--color-divider)] py-5 text-center">
-					<a
-						href="https://github.com/magerbot"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-shu)]"
-					>
-						built by @magerbot
-					</a>
+					<p class="text-[10px] font-bold tracking-[0.14em] uppercase text-[var(--color-ink-ghost)]">
+						<a href="https://x.com/mager" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-shu)]">@mager</a>
+						<span> with help from </span>
+						<a href="https://x.com/magerbot" target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[var(--color-shu)]">@magerbot</a>
+					</p>
 				</footer>
 			{:else if activeColumn}
 				<!-- Character Browser -->
@@ -531,4 +528,21 @@
 			{/if}
 		</div>
 	</div>
+	</div>
 </div>
+
+<style>
+	.home-content-shell {
+		max-width: calc(100vw - 2rem);
+	}
+
+	@media (min-width: 768px) {
+		.home-content-shell.is-home {
+			max-width: 72rem;
+		}
+
+		.home-content-shell.is-column {
+			max-width: 48rem;
+		}
+	}
+</style>

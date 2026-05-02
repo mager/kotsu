@@ -420,7 +420,13 @@ const kanji: CardItem[] = [
 	{ character: '中', romaji: 'chuu / naka', meaning: 'middle / inside', readings: { on: ['チュウ'], kun: ['なか'] } },
 	{ character: '上', romaji: 'jou / ue', meaning: 'up / above', readings: { on: ['ジョウ'], kun: ['うえ', 'あ-'] } },
 	{ character: '下', romaji: 'ka / shita', meaning: 'down / below', readings: { on: ['カ', 'ゲ'], kun: ['した', 'さ-', 'くだ-'] } },
-	{ character: '年', romaji: 'nen / toshi', meaning: 'year', readings: { on: ['ネン'], kun: ['とし'] } }
+	{ character: '年', romaji: 'nen / toshi', meaning: 'year', readings: { on: ['ネン'], kun: ['とし'] } },
+	{ character: '明', romaji: 'mei / aka', meaning: 'bright / light', readings: { on: ['メイ', 'ミョウ'], kun: ['あか-', 'あかり'] } },
+	{ character: '林', romaji: 'rin / hayashi', meaning: 'woods / grove', readings: { on: ['リン'], kun: ['はやし'] } },
+	{ character: '休', romaji: 'kyuu / yasu', meaning: 'rest', readings: { on: ['キュウ'], kun: ['やす-'] } },
+	{ character: '炎', romaji: 'en / honoo', meaning: 'flame', readings: { on: ['エン'], kun: ['ほのお'] } },
+	{ character: '間', romaji: 'kan / aida', meaning: 'interval / between', readings: { on: ['カン', 'ケン'], kun: ['あいだ', 'ま'] } },
+	{ character: '語', romaji: 'go / kata', meaning: 'language / word', readings: { on: ['ゴ'], kun: ['かた-'] } }
 ];
 
 const vocabulary: CardItem[] = [
@@ -481,16 +487,16 @@ export const columns: Column[] = [
 	},
 	{
 		id: 'kanji',
-		title: 'Kanji N5',
+		title: 'Kanji',
 		titleJp: '漢字',
-		hint: 'JLPT N5 starters',
+		hint: 'Reference sheets',
 		sections: [{ id: 'n5', title: 'N5', titleJp: 'N5', items: kanji }]
 	},
 	{
 		id: 'vocabulary',
 		title: 'Vocabulary',
 		titleJp: '語彙',
-		hint: 'Baby to pro',
+		hint: 'Daily words',
 		sections: [{ id: 'common', title: 'Common', titleJp: '日常', items: vocabulary }]
 	}
 ];

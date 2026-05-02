@@ -2,7 +2,13 @@
 	import { getAuthState, addVocabItem } from '$lib/stores/auth.svelte';
 	import type { CustomVocabItem } from '$lib/firebase';
 
+	interface Props {
+		variant?: 'default' | 'header';
+	}
+
+	let { variant = 'default' }: Props = $props();
 	let auth = $derived(getAuthState());
+	let isHeader = $derived(variant === 'header');
 
 	let query = $state('');
 	let results = $state<any[]>([]);
@@ -70,17 +76,17 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="mx-auto w-full max-w-2xl">
+<div class="lookup-search relative z-30 w-full min-w-0 {isHeader ? 'lookup-search-header' : 'mx-auto max-w-2xl'}">
 	<!-- Search input -->
-	<div class="search-glow relative rounded-2xl border border-[var(--color-divider)] px-5 py-4 transition-all duration-300" style="background: var(--card-bg);">
+	<div class="search-glow relative border border-[var(--color-divider)] transition-all duration-300 {isHeader ? 'rounded-xl px-4 py-2.5 shadow-sm' : 'rounded-2xl px-5 py-4'}" style="background: {isHeader ? 'var(--color-paper)' : 'var(--card-bg)'};">
 		<div class="flex items-center gap-3">
-			<span class="shrink-0 text-2xl text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">探</span>
+			<span class="shrink-0 {isHeader ? 'text-xl' : 'text-2xl'} text-[var(--color-ink-ghost)]" style="font-family: var(--font-jp-brush);">探</span>
 			<input
 				bind:this={searchInput}
 				type="text"
 				bind:value={query}
-				placeholder="Type English or Japanese to search..."
-				class="min-w-0 flex-1 bg-transparent text-lg font-medium text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-ghost)]"
+				placeholder={isHeader ? 'Search Japanese, romaji, English...' : 'Type English or Japanese to search...'}
+				class="min-w-0 flex-1 bg-transparent font-medium text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-ghost)] {isHeader ? 'text-base md:text-lg' : 'text-lg'}"
 				autocomplete="off"
 				spellcheck="false"
 			/>
@@ -89,7 +95,7 @@
 			{:else if query}
 				<button
 					onclick={() => { query = ''; results = []; searchInput?.focus(); }}
-					class="text-sm text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] press-scale"
+					class="cursor-pointer text-sm text-[var(--color-ink-ghost)] transition-colors hover:text-[var(--color-ink)] press-scale"
 				>✕</button>
 			{:else}
 				<kbd class="hidden rounded border border-[var(--color-divider)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--color-ink-ghost)] md:inline">/</kbd>
@@ -99,10 +105,10 @@
 
 	<!-- Results -->
 	{#if results.length > 0}
-		<div class="mt-3 space-y-2">
+		<div class="{isHeader ? 'absolute top-[calc(100%+0.5rem)] right-0 left-0 max-h-[min(70dvh,32rem)] overflow-y-auto rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper)] p-2 shadow-2xl shadow-black/10' : 'mt-3 space-y-2'}">
 			{#each results as result, i (result.word + result.meaning)}
 				<div
-					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl px-5 py-4 transition-all duration-200 hover:border-[var(--color-ai)]"
+					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl transition-all duration-200 hover:border-[var(--color-ai)] {isHeader ? 'mb-2 px-4 py-3 last:mb-0' : 'px-5 py-4'}"
 					style="animation-delay: {i * 60}ms;"
 				>
 					<div class="flex items-start justify-between gap-4">
@@ -150,7 +156,7 @@
 							{:else}
 								<button
 									onclick={() => saveWord(result)}
-									class="mt-1 rounded-lg border border-[var(--color-divider)] px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
+									class="mt-1 cursor-pointer rounded-lg border border-[var(--color-divider)] px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
 								>
 									+ Save
 								</button>
@@ -161,9 +167,11 @@
 			{/each}
 		</div>
 	{:else if query.trim().length > 0 && !searching}
-		<div class="mt-6 text-center animate-fade-in">
-			<span class="text-5xl" style="font-family: var(--font-jp-brush);">🤷</span>
-			<p class="mt-2 text-base text-[var(--color-ink-light)]">No results for "{query}"</p>
+		<div class="{isHeader ? 'absolute top-[calc(100%+0.5rem)] right-0 left-0 rounded-xl border border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-3 text-left shadow-xl shadow-black/10' : 'mt-6 text-center'} animate-fade-in">
+			{#if !isHeader}
+				<span class="text-5xl" style="font-family: var(--font-jp-brush);">?</span>
+			{/if}
+			<p class="{isHeader ? 'text-sm' : 'mt-2 text-base'} text-[var(--color-ink-light)]">No results for "{query}"</p>
 		</div>
 	{/if}
 </div>
