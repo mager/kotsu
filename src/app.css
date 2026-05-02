@@ -77,7 +77,7 @@
 	--sidebar-width: 260px;
 
 	/* Nav */
-	--nav-height: 112px;
+	--nav-height: 154px;
 
 	/* Transitions */
 	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -87,7 +87,7 @@
 
 @media (min-width: 768px) {
 	:root {
-		--nav-height: 72px;
+		--nav-height: 114px;
 	}
 }
 

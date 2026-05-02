@@ -16,7 +16,6 @@
 	let { children }: Props = $props();
 
 	let isDetailPage = $derived($page.params.index !== undefined);
-	// Homepage uses its own Sidebar layout — no global nav/footer needed
 	let isHomePage = $derived($page.url.pathname === '/');
 
 	// Init Firebase auth on client only
@@ -29,9 +28,7 @@
 </script>
 
 <div class="flex min-h-dvh flex-col bg-[var(--color-paper)]">
-	{#if !isHomePage}
-		<Nav />
-	{/if}
+	<Nav />
 	<main class="relative z-10 flex-1">
 		{@render children()}
 	</main>
