@@ -116,7 +116,7 @@
 					style="--pill-accent: {accentColors[col.id]};"
 					aria-current={isActive ? 'page' : undefined}
 				>
-					<span class="course-pill-jp">{col.titleJp}</span>
+					<span class="course-pill-jp {col.id === 'hiragana' || col.id === 'katakana' ? 'kana-study-type' : ''}">{col.titleJp}</span>
 					<span>{col.title}</span>
 					{#if auth.user && progress > 0}
 						<span class="course-pill-count">{progress}</span>
@@ -259,6 +259,11 @@
 		line-height: 1;
 		opacity: 0.72;
 		text-transform: none;
+	}
+
+	.course-pill-jp.kana-study-type {
+		font-family: var(--font-kana-study);
+		font-weight: 700;
 	}
 
 	.course-pill-count {

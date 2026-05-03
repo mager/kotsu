@@ -205,7 +205,7 @@
 									<span class="min-w-0">
 										<span class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
 											<span class="text-lg font-black text-[var(--color-ink)]">{unit.title}</span>
-											<span class="text-xl font-black leading-none" style="font-family: var(--font-jp-brush); color: var(--unit-accent);">{unit.titleJp}</span>
+											<span class="text-xl font-black leading-none {unit.phase === 'Beginner' || unit.phase === 'Words' ? 'kana-study-type' : ''}" style="font-family: {unit.phase === 'Beginner' || unit.phase === 'Words' ? 'var(--font-kana-study)' : 'var(--font-jp-brush)'}; color: var(--unit-accent);">{unit.titleJp}</span>
 											<span class="rounded-full px-2 py-0.5 text-[9px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]" style="background: color-mix(in srgb, var(--unit-accent) 10%, var(--color-paper));">
 												{unit.phase}
 											</span>
@@ -213,7 +213,7 @@
 										<span class="mt-1 block text-sm leading-6 text-[var(--color-ink-light)]">{unit.summary}</span>
 										<span class="mt-3 flex flex-wrap gap-1.5">
 											{#each getCoursePreview(unit) as preview}
-												<span class="flex h-8 min-w-8 items-center justify-center rounded-md border border-[var(--color-divider)] px-2 text-lg font-black leading-none text-[var(--color-ink)]" style="font-family: var(--font-jp-brush);">
+												<span class="flex h-8 min-w-8 items-center justify-center rounded-md border border-[var(--color-divider)] px-2 text-lg font-black leading-none text-[var(--color-ink)] {unit.phase === 'Beginner' || unit.phase === 'Words' ? 'kana-study-type' : ''}" style="font-family: {unit.phase === 'Beginner' || unit.phase === 'Words' ? 'var(--font-kana-study)' : 'var(--font-jp-brush)'};">
 													{preview}
 												</span>
 											{/each}
@@ -293,7 +293,7 @@
 								<div>
 									<div class="flex flex-wrap items-baseline gap-2">
 										<span class="text-xl font-black text-[var(--color-ink)]">{column.title}</span>
-										<span class="text-2xl font-black leading-none" style="font-family: var(--font-jp-brush); color: {accentColors[column.id]};">{column.titleJp}</span>
+										<span class="text-2xl font-black leading-none {column.id === 'hiragana' || column.id === 'katakana' ? 'kana-study-type' : ''}" style="font-family: {column.id === 'hiragana' || column.id === 'katakana' ? 'var(--font-kana-study)' : 'var(--font-jp-brush)'}; color: {accentColors[column.id]};">{column.titleJp}</span>
 									</div>
 									<p class="mt-2 text-sm leading-6 text-[var(--color-ink-light)]">{getColumnSummary(column)}</p>
 								</div>

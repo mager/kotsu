@@ -62,6 +62,7 @@
 
 	/* Fonts */
 	--font-jp: 'Noto Sans JP', sans-serif;
+	--font-kana-study: 'BIZ UDPGothic', 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
 	--font-jp-brush: 'Shippori Mincho', serif;
 	--font-display: 'Cormorant Garamond', 'Shippori Mincho', serif;
 
@@ -308,6 +309,12 @@ button:disabled {
 }
 
 /* ─── Character States ─── */
+
+.kana-study-type {
+	font-family: var(--font-kana-study);
+	font-weight: 700;
+	letter-spacing: 0;
+}
 
 .char-unlearned {
 	color: var(--color-ink-ghost);

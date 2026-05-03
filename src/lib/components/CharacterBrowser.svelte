@@ -15,6 +15,7 @@
 	let progress = $derived(getColumnProgress(column.id, items.length));
 	let progressPct = $derived(items.length > 0 ? Math.round((progress / items.length) * 100) : 0);
 	let recipeCount = $derived(items.reduce((sum, item) => sum + (item.recipes?.length ?? 0), 0));
+	let isKanaColumn = $derived(column.id === 'hiragana' || column.id === 'katakana');
 
 	// Column accent
 	const accents: Record<string, string> = {
@@ -33,8 +34,8 @@
 	<div class="mb-8 animate-fade-up">
 		<div class="flex items-end gap-4">
 			<h1
-				class="text-6xl font-black leading-none md:text-7xl"
-				style="font-family: var(--font-jp-brush); color: {accent};"
+				class="text-6xl font-black leading-none md:text-7xl {isKanaColumn ? 'kana-study-type' : ''}"
+				style="font-family: {isKanaColumn ? 'var(--font-kana-study)' : 'var(--font-jp-brush)'}; color: {accent};"
 			>
 				{column.titleJp}
 			</h1>
@@ -70,7 +71,7 @@
 			<div class="mb-4 mt-10 first:mt-0 animate-fade-up" style="animation-delay: {sIdx * 80}ms;">
 				<div class="flex items-center gap-3">
 					<div class="h-[2px] w-8 rounded-full" style="background-color: {accent}; opacity: 0.4;"></div>
-					<span class="text-xs font-bold tracking-[0.25em] uppercase" style="color: {accent};">
+					<span class="text-xs font-bold tracking-[0.25em] uppercase {isKanaColumn ? 'kana-study-type' : ''}" style="color: {accent};">
 						{section.titleJp} · {section.title}
 					</span>
 				</div>
@@ -89,7 +90,7 @@
 				>
 					<!-- Character -->
 					<span
-						class="relative inline-block font-black leading-none transition-all duration-200 {isMarked ? 'char-learned' : 'char-unlearned'}"
+						class="relative inline-block font-black leading-none transition-all duration-200 {isKanaColumn ? 'kana-study-type' : ''} {isMarked ? 'char-learned' : 'char-unlearned'}"
 						style="font-size: {item.character.length <= 1 ? 'clamp(2.4rem, 4.5vw, 3.2rem)' : item.character.length <= 3 ? 'clamp(1.6rem, 3vw, 2.2rem)' : 'clamp(1.3rem, 2.5vw, 1.8rem)'};"
 					>
 						{item.character}

@@ -86,6 +86,7 @@
 		}
 	}
 
+	let isKana = $derived(data.column.id === 'hiragana' || data.column.id === 'katakana');
 	let isKanji = $derived(data.column.id === 'kanji');
 	let charCount = $derived(data.item.character.length);
 	let charFontSize = $derived(
@@ -192,8 +193,8 @@
 				{#if data.sectionTitle}
 					<span class="h-px w-5 shrink-0 bg-[var(--color-divider)]"></span>
 					<span
-						class="truncate text-sm font-black leading-none text-[var(--color-ink-mid)]"
-						style="font-family: var(--font-jp-brush);"
+						class="truncate text-sm font-black leading-none text-[var(--color-ink-mid)] {isKana ? 'kana-study-type' : ''}"
+						style="font-family: {isKana ? 'var(--font-kana-study)' : 'var(--font-jp-brush)'};"
 					>
 						{data.sectionTitle}
 					</span>
@@ -217,7 +218,7 @@
 				style="transform: translate({charOffsetX}px, {charOffsetY}px);"
 			>
 				<span
-					class="block font-black leading-none text-center px-4"
+					class="block font-black leading-none text-center px-4 {isKana ? 'kana-study-type' : ''}"
 					style="font-size: {charFontSize}; max-width: 90vw; word-break: keep-all;"
 				>
 					{data.item.character}
@@ -242,7 +243,6 @@
 				</div>
 				<span
 					class="text-xl font-black tracking-[0.3em] uppercase text-[var(--color-ink)] md:text-3xl"
-					style="font-family: var(--font-jp-brush);"
 				>
 					{data.item.romaji}
 				</span>
@@ -259,13 +259,13 @@
 						{#if data.pairHref}
 							<a
 								href={data.pairHref}
-								class="pair-link mt-0.5 inline-flex items-center justify-center text-3xl font-black text-[var(--color-ink-light)] md:text-4xl"
+								class="pair-link kana-study-type mt-0.5 inline-flex items-center justify-center text-3xl font-black text-[var(--color-ink-light)] md:text-4xl"
 								aria-label="Open hiragana {data.item.pair}"
 							>
 								{data.item.pair}
 							</a>
 						{:else}
-							<span class="mt-0.5 block text-3xl font-black text-[var(--color-ink-light)] md:text-4xl">{data.item.pair}</span>
+							<span class="kana-study-type mt-0.5 block text-3xl font-black text-[var(--color-ink-light)] md:text-4xl">{data.item.pair}</span>
 						{/if}
 					</div>
 				{/if}
@@ -291,13 +291,13 @@
 						{#if data.item.readings.on}
 							<div class="text-center">
 								<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">On</span>
-								<span class="mt-0.5 block text-base font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.on.join('・')}</span>
+								<span class="kana-study-type mt-0.5 block text-base font-black">{data.item.readings.on.join('・')}</span>
 							</div>
 						{/if}
 						{#if data.item.readings.kun}
 							<div class="text-center">
 								<span class="block text-[9px] font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]">Kun</span>
-								<span class="mt-0.5 block text-base font-black" style="font-family: var(--font-jp-brush);">{data.item.readings.kun.join('・')}</span>
+								<span class="kana-study-type mt-0.5 block text-base font-black">{data.item.readings.kun.join('・')}</span>
 							</div>
 						{/if}
 					</div>
@@ -320,13 +320,13 @@
 							<div class="mt-4 grid gap-3 sm:grid-cols-2">
 								<div>
 									<span class="block text-[9px] font-black tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">On</span>
-									<p class="mt-1 text-xl font-black leading-tight text-[var(--color-ink)]" style="font-family: var(--font-jp-brush);">
+									<p class="kana-study-type mt-1 text-xl font-black leading-tight text-[var(--color-ink)]">
 										{data.item.readings?.on?.join('・') ?? '—'}
 									</p>
 								</div>
 								<div>
 									<span class="block text-[9px] font-black tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Kun</span>
-									<p class="mt-1 text-xl font-black leading-tight text-[var(--color-ink)]" style="font-family: var(--font-jp-brush);">
+									<p class="kana-study-type mt-1 text-xl font-black leading-tight text-[var(--color-ink)]">
 										{data.item.readings?.kun?.join('・') ?? '—'}
 									</p>
 								</div>

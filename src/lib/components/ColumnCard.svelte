@@ -12,6 +12,7 @@
 	let { item, columnId, index, delay = 0, learned = false }: Props = $props();
 
 	let href = $derived(`/${columnId}/${index}`);
+	let isKanaColumn = $derived(columnId === 'hiragana' || columnId === 'katakana');
 
 	// Scale font for multi-char items
 	let charLen = $derived(item.character.length);
@@ -32,7 +33,7 @@
 	style="animation-delay: {delay}ms; --color-accent: var(--color-col-{columnId});"
 >
 	<span
-		class="relative inline-block font-black leading-none transition-transform duration-200 group-hover:scale-110 {learned ? 'char-learned' : 'char-unlearned'}"
+		class="relative inline-block font-black leading-none transition-transform duration-200 group-hover:scale-110 {isKanaColumn ? 'kana-study-type' : ''} {learned ? 'char-learned' : 'char-unlearned'}"
 		style="font-size: {fontSize};"
 	>
 		{item.character}

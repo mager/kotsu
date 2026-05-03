@@ -125,8 +125,8 @@
 					<div class="flex-1 min-w-0">
 						<div class="flex items-baseline gap-2">
 							<span
-								class="text-xl font-black leading-none"
-								style="font-family: var(--font-jp-brush); color: {isActive ? accentColors[col.id] : 'var(--color-ink)'};"
+								class="text-xl font-black leading-none {col.id === 'hiragana' || col.id === 'katakana' ? 'kana-study-type' : ''}"
+								style="font-family: {col.id === 'hiragana' || col.id === 'katakana' ? 'var(--font-kana-study)' : 'var(--font-jp-brush)'}; color: {isActive ? accentColors[col.id] : 'var(--color-ink)'};"
 							>
 								{col.titleJp}
 							</span>

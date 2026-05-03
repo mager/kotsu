@@ -33,7 +33,8 @@ The intended feel is **calm, focused, quietly electric**.
 
 - [SvelteKit 5](https://svelte.dev) (runes syntax)
 - [Tailwind CSS v4](https://tailwindcss.com)
-- [Noto Sans JP](https://fonts.google.com/noto/specimen/Noto+Sans+JP) (700 + 900)
+- [BIZ UDPGothic](https://fonts.google.com/specimen/BIZ+UDPGothic) for kana study surfaces
+- [Noto Sans JP](https://fonts.google.com/noto/specimen/Noto+Sans+JP) for core UI text
 - Firebase (auth + progress tracking — coming soon)
 
 ## Dev

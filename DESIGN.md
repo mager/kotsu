@@ -53,6 +53,12 @@ typography:
     fontWeight: "700"
     lineHeight: 1.2
     letterSpacing: 0.2em
+  kana-study:
+    fontFamily: "BIZ UDPGothic"
+    fontSize: 4.5rem
+    fontWeight: "700"
+    lineHeight: 1
+    letterSpacing: 0
 rounded:
   sm: 8px
   md: 12px
@@ -136,7 +142,7 @@ The foundation is almost monochrome. White paper backgrounds, black ink text, pa
 Each learning column owns a distinct color. Those hues should stay stable across navigation, progress, and categorization so the product feels teachable at a glance.
 
 ## Typography
-Typography is doing double duty: cultural texture and clarity. Cormorant Garamond gives the product literary elegance. Shippori Mincho gives Japanese headlines ceremonial weight. Noto Sans JP handles interface utility and long-form legibility.
+Typography is doing double duty: cultural texture and clarity. Cormorant Garamond gives the product literary elegance. Shippori Mincho gives Japanese headlines ceremonial weight. BIZ UDPGothic handles kana study surfaces where beginner shape recognition matters most. Noto Sans JP handles interface utility and long-form legibility.
 
 The headline model is expressive serif English, bold Japanese centerpiece, then quieter utility text. Avoid generic sans-serif-only hierarchy.
 
