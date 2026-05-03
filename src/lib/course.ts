@@ -189,10 +189,21 @@ export const courseUnits: CourseUnit[] = [
 export const radicalRecipes: RadicalRecipe[] = [
 	{ id: 'sun-moon-bright', parts: ['日', '月'], result: '明', meaning: 'bright', pattern: 'sun plus moon' },
 	{ id: 'two-trees-woods', parts: ['木', '木'], result: '林', meaning: 'woods', pattern: 'tree beside tree' },
+	{ id: 'three-trees-forest', parts: ['木', '木', '木'], result: '森', meaning: 'forest', pattern: 'three trees become forest' },
 	{ id: 'person-tree-rest', parts: ['人', '木'], result: '休', meaning: 'rest', pattern: 'person by a tree' },
 	{ id: 'two-fires-flame', parts: ['火', '火'], result: '炎', meaning: 'flame', pattern: 'fire stacked on fire' },
+	{ id: 'mountain-stone-boulder', parts: ['山', '石'], result: '岩', meaning: 'boulder', pattern: 'mountain plus stone' },
+	{ id: 'woman-child-like', parts: ['女', '子'], result: '好', meaning: 'like', pattern: 'woman plus child' },
+	{ id: 'field-power-man', parts: ['田', '力'], result: '男', meaning: 'man', pattern: 'field plus strength' },
 	{ id: 'gate-sun-interval', parts: ['門', '日'], result: '間', meaning: 'interval', pattern: 'sun through a gate' },
-	{ id: 'speech-five-mouth-language', parts: ['言', '五', '口'], result: '語', meaning: 'language', pattern: 'speech joined to a sound part' }
+	{ id: 'gate-ear-hear', parts: ['門', '耳'], result: '聞', meaning: 'hear', pattern: 'ear inside a gate' },
+	{ id: 'speech-five-mouth-language', parts: ['言', '五', '口'], result: '語', meaning: 'language', pattern: 'speech joined to a sound part' },
+	{ id: 'roof-woman-peace', parts: ['宀', '女'], result: '安', meaning: 'peaceful', pattern: 'woman under a roof' },
+	{ id: 'roof-child-character', parts: ['宀', '子'], result: '字', meaning: 'character', pattern: 'child under a roof' },
+	{ id: 'grain-fire-autumn', parts: ['禾', '火'], result: '秋', meaning: 'autumn', pattern: 'grain plus fire' },
+	{ id: 'mouth-ten-old', parts: ['十', '口'], result: '古', meaning: 'old', pattern: 'ten over a mouth' },
+	{ id: 'hand-eye-watch', parts: ['手', '目'], result: '看', meaning: 'watch over', pattern: 'hand over eye' },
+	{ id: 'field-heart-think', parts: ['田', '心'], result: '思', meaning: 'think', pattern: 'field over heart' }
 ];
 
 function getColumn(columnId: string): Column | undefined {

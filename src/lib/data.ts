@@ -423,10 +423,21 @@ const kanji: CardItem[] = [
 	{ character: '年', romaji: 'nen / toshi', meaning: 'year', readings: { on: ['ネン'], kun: ['とし'] } },
 	{ character: '明', romaji: 'mei / aka', meaning: 'bright / light', readings: { on: ['メイ', 'ミョウ'], kun: ['あか-', 'あかり'] } },
 	{ character: '林', romaji: 'rin / hayashi', meaning: 'woods / grove', readings: { on: ['リン'], kun: ['はやし'] } },
+	{ character: '森', romaji: 'shin / mori', meaning: 'forest', readings: { on: ['シン'], kun: ['もり'] } },
 	{ character: '休', romaji: 'kyuu / yasu', meaning: 'rest', readings: { on: ['キュウ'], kun: ['やす-'] } },
 	{ character: '炎', romaji: 'en / honoo', meaning: 'flame', readings: { on: ['エン'], kun: ['ほのお'] } },
+	{ character: '岩', romaji: 'gan / iwa', meaning: 'boulder / rock', readings: { on: ['ガン'], kun: ['いわ'] } },
+	{ character: '好', romaji: 'kou / su', meaning: 'like / fond', readings: { on: ['コウ'], kun: ['す-'] } },
+	{ character: '男', romaji: 'dan / otoko', meaning: 'man', readings: { on: ['ダン', 'ナン'], kun: ['おとこ'] } },
 	{ character: '間', romaji: 'kan / aida', meaning: 'interval / between', readings: { on: ['カン', 'ケン'], kun: ['あいだ', 'ま'] } },
-	{ character: '語', romaji: 'go / kata', meaning: 'language / word', readings: { on: ['ゴ'], kun: ['かた-'] } }
+	{ character: '聞', romaji: 'bun / ki', meaning: 'hear / ask', readings: { on: ['ブン', 'モン'], kun: ['き-'] } },
+	{ character: '語', romaji: 'go / kata', meaning: 'language / word', readings: { on: ['ゴ'], kun: ['かた-'] } },
+	{ character: '安', romaji: 'an / yasu', meaning: 'peaceful / cheap', readings: { on: ['アン'], kun: ['やす-'] } },
+	{ character: '字', romaji: 'ji', meaning: 'character / letter', readings: { on: ['ジ'] } },
+	{ character: '秋', romaji: 'shuu / aki', meaning: 'autumn', readings: { on: ['シュウ'], kun: ['あき'] } },
+	{ character: '古', romaji: 'ko / furu', meaning: 'old', readings: { on: ['コ'], kun: ['ふる-'] } },
+	{ character: '看', romaji: 'kan', meaning: 'watch over', readings: { on: ['カン'], kun: ['み-'] } },
+	{ character: '思', romaji: 'shi / omo', meaning: 'think', readings: { on: ['シ'], kun: ['おも-'] } }
 ];
 
 const vocabulary: CardItem[] = [
