@@ -13,6 +13,7 @@
 	let query = $state('');
 	let results = $state<any[]>([]);
 	let searching = $state(false);
+	let dropdownOpen = $state(false);
 	let justSaved = $state<string | null>(null);
 	let searchInput: HTMLInputElement;
 	let lookupTimer: ReturnType<typeof setTimeout>;
@@ -22,7 +23,11 @@
 		const q = query.trim();
 		clearTimeout(lookupTimer);
 		results = [];
-		if (!q || q.length < 1) return;
+		if (!q || q.length < 1) {
+			dropdownOpen = false;
+			return;
+		}
+		dropdownOpen = true;
 		lookupTimer = setTimeout(() => searchJisho(q), 400);
 	});
 
@@ -70,7 +75,17 @@
 		return `/lookup/${encodeURIComponent(result.word || result.reading)}`;
 	}
 
+	function closeDropdown() {
+		dropdownOpen = false;
+	}
+
 	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape' && dropdownOpen) {
+			e.preventDefault();
+			closeDropdown();
+			return;
+		}
+
 		if (e.key === '/' && document.activeElement !== searchInput) {
 			e.preventDefault();
 			searchInput?.focus();
@@ -93,6 +108,9 @@
 				class="min-w-0 flex-1 bg-transparent font-medium text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-ghost)] {isHeader ? 'text-base md:text-lg' : 'text-lg'}"
 				autocomplete="off"
 				spellcheck="false"
+				onfocus={() => {
+					if (query.trim().length > 0) dropdownOpen = true;
+				}}
 			/>
 			{#if searching}
 				<div class="h-4 w-4 animate-spin rounded-full border-2 border-[var(--color-ink-ghost)] border-t-[var(--color-ink)]"></div>
@@ -108,7 +126,7 @@
 	</div>
 
 	<!-- Results -->
-	{#if results.length > 0}
+	{#if dropdownOpen && results.length > 0}
 		<div class="{isHeader ? 'absolute top-[calc(100%+0.5rem)] right-0 left-0 max-h-[min(70dvh,32rem)] overflow-y-auto rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper)] p-2 shadow-2xl shadow-black/10' : 'mt-3 space-y-2'}">
 			{#each results as result, i (result.word + result.meaning)}
 				<article
@@ -118,6 +136,7 @@
 					<div class="flex items-start justify-between gap-4">
 						<a
 							href={getLookupHref(result)}
+							onclick={closeDropdown}
 							class="block min-w-0 flex-1 text-inherit no-underline {isHeader ? 'px-4 py-3' : 'px-5 py-4'}"
 						>
 							<!-- Word -->
@@ -173,7 +192,7 @@
 				</article>
 			{/each}
 		</div>
-	{:else if query.trim().length > 0 && !searching}
+	{:else if dropdownOpen && query.trim().length > 0 && !searching}
 		<div class="{isHeader ? 'absolute top-[calc(100%+0.5rem)] right-0 left-0 rounded-xl border border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-3 text-left shadow-xl shadow-black/10' : 'mt-6 text-center'} animate-fade-in">
 			{#if !isHeader}
 				<span class="text-5xl" style="font-family: var(--font-jp-brush);">?</span>
