@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "llm:serve": "scripts/start-gemma-server.sh",
+    "knacks:generate": "node scripts/generate-kanji-knacks.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^6.0.0",

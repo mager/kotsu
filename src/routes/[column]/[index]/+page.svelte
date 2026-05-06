@@ -355,6 +355,40 @@
 							</div>
 						</section>
 
+						{#if data.knack}
+							<section class="kanji-panel knack-panel md:col-span-3">
+								<div class="flex flex-wrap items-start justify-between gap-3">
+									<div>
+										<span class="kanji-panel-label">Kotsu</span>
+										<p class="mt-3 text-2xl font-black leading-tight text-[var(--color-ink)] md:text-3xl">
+											{data.knack.the_kotsu}
+										</p>
+									</div>
+									<div class="pitch-chip">
+										<span>{data.knack.pitch_accent.reading}</span>
+										<strong>{data.knack.pitch_accent.pattern}</strong>
+									</div>
+								</div>
+
+								<div class="mt-5 grid gap-3 md:grid-cols-[0.8fr_1.2fr]">
+									<div>
+										<span class="block text-[9px] font-black tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Parts</span>
+										<div class="mt-2 flex flex-wrap gap-2">
+											{#each data.knack.radicals as radical}
+												<span class="radical-chip">{radical}</span>
+											{/each}
+										</div>
+									</div>
+									<div>
+										<span class="block text-[9px] font-black tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Mnemonic</span>
+										<p class="mt-2 text-sm leading-6 text-[var(--color-ink-mid)]">
+											{data.knack.mnemonic}
+										</p>
+									</div>
+								</div>
+							</section>
+						{/if}
+
 						{#if data.relatedRecipes.length > 0}
 							<section class="kanji-panel md:col-span-3">
 								<span class="kanji-panel-label">Composition</span>
@@ -496,6 +530,51 @@
 		letter-spacing: 0.22em;
 		line-height: 1;
 		text-transform: uppercase;
+	}
+
+	.knack-panel {
+		background:
+			linear-gradient(135deg, color-mix(in srgb, var(--detail-accent) 7%, transparent), transparent 42%),
+			color-mix(in srgb, var(--color-ink) 2.5%, var(--color-paper));
+	}
+
+	.pitch-chip,
+	.radical-chip {
+		border: 1px solid var(--color-divider);
+		background: color-mix(in srgb, var(--color-paper) 88%, var(--detail-accent));
+		color: var(--color-ink);
+		font-weight: 900;
+	}
+
+	.pitch-chip {
+		display: grid;
+		gap: 0.3rem;
+		min-width: 8.5rem;
+		border-radius: 0.9rem;
+		padding: 0.75rem 0.85rem;
+		text-align: right;
+	}
+
+	.pitch-chip span {
+		font-family: var(--font-jp-brush);
+		font-size: 1.05rem;
+		line-height: 1;
+	}
+
+	.pitch-chip strong {
+		color: var(--color-ink-ghost);
+		font-size: 0.58rem;
+		letter-spacing: 0.16em;
+		line-height: 1;
+		text-transform: uppercase;
+	}
+
+	.radical-chip {
+		border-radius: 9999px;
+		padding: 0.45rem 0.65rem;
+		font-family: var(--font-jp-brush);
+		font-size: 1rem;
+		line-height: 1;
 	}
 
 	.kanji-link {

@@ -44,6 +44,65 @@ npm install
 npm run dev
 ```
 
+## Local Gemma Knacks
+
+Kotsu can pre-process kanji study notes with a local OpenAI-compatible Gemma server.
+The quickest local path is the GGUF model at:
+
+```text
+~/Code/local-llm-quickstart/models/gemma-4-E4B-it-Q4_K_M.gguf
+```
+
+Install `llama.cpp` once:
+
+```bash
+brew install llama.cpp
+```
+
+Start the local server:
+
+```bash
+cd ~/Code/kotsu
+npm run llm:serve
+```
+
+Generate Knacks in another terminal:
+
+```bash
+npm run knacks:generate -- 明 森
+npm run knacks:generate -- --limit 5
+```
+
+If you want to use the full safetensors model instead, download it to:
+
+```text
+~/LLM/models/gemma-4-E4B-it
+```
+
+Then install the shared Transformers serving runtime:
+
+```bash
+cd ~/LLM
+source .venv/bin/activate
+pip install -U "transformers[serving]" torch accelerate torchvision pillow
+```
+
+If the GGUF file is not present, `npm run llm:serve` falls back to the Transformers server.
+You can point generation at any compatible server with environment variables:
+
+```bash
+KOTSU_LLM_ENDPOINT=http://127.0.0.1:8080 KOTSU_LLM_MODEL=local npm run knacks:generate -- 明
+```
+
+The generated artifact is:
+
+```text
+src/lib/generated/kanji-knacks.json
+```
+
+The Svelte app reads that file at build time and shows a Kotsu panel on kanji lesson pages
+when a generated entry exists.
+
 ## Why
 
 I wanted something I could pull up on my phone in 10 seconds and just *see* how the characters are built. The course starts with sounds, moves through radicals, then keeps connecting kanji back to their parts.

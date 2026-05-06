@@ -1,0 +1,45 @@
+{
+	"森": {
+		"kanji": "森",
+		"meaning": "forest",
+		"radicals": [
+			"木 (tree)",
+			"木 (tree)",
+			"木 (tree)"
+		],
+		"mnemonic": "One tree is 木, two make 林, and three crowd the page into a forest.",
+		"the_kotsu": "森 is what happens when 林 gets one more tree and turns dense.",
+		"pitch_accent": {
+			"reading": "シン",
+			"pattern": "Heiban"
+		}
+	},
+	"明": {
+		"kanji": "明",
+		"meaning": "bright / light",
+		"radicals": [
+			"日 (sun)",
+			"月 (moon)"
+		],
+		"mnemonic": "Sun plus moon is the most literal lighting rig in kanji.",
+		"the_kotsu": "明 is brightness made from the two big lights: sun and moon.",
+		"pitch_accent": {
+			"reading": "メイ",
+			"pattern": "Heiban"
+		}
+	},
+	"林": {
+		"kanji": "林",
+		"meaning": "woods / grove",
+		"radicals": [
+			"木 (tree)",
+			"木 (tree)"
+		],
+		"mnemonic": "Two trees side by side are not a forest yet, just a grove getting started.",
+		"the_kotsu": "林 is the small woods: two 木 standing together.",
+		"pitch_accent": {
+			"reading": "リン",
+			"pattern": "Heiban"
+		}
+	}
+}

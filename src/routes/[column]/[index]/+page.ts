@@ -1,5 +1,6 @@
 import { radicalRecipes } from '$lib/course';
 import { columns, getColumnItems, getSectionForIndex } from '$lib/data';
+import { getKanjiKnack } from '$lib/knacks';
 import { findCharacterLink } from '$lib/links';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
@@ -29,6 +30,7 @@ export const load: PageLoad = ({ params }) => {
 			})),
 			resultHref: findCharacterLink(recipe.result, ['kanji', 'radicals'])?.href ?? null
 		}));
+	const knack = column.id === 'kanji' ? getKanjiKnack(item.character) : null;
 
 	return {
 		item,
@@ -39,6 +41,7 @@ export const load: PageLoad = ({ params }) => {
 		totalItems: items.length,
 		sectionTitle: sectionInfo?.section.titleJp ?? null,
 		pairHref,
-		relatedRecipes
+		relatedRecipes,
+		knack
 	};
 };
