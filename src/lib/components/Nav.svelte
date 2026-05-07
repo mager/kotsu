@@ -4,6 +4,7 @@
 	import { getAuthState, getColumnProgress } from '$lib/stores/auth.svelte';
 	import { columns, getColumnItems, type Column } from '$lib/data';
 	import WordSearch from '$lib/components/WordSearch.svelte';
+	import { isLearned } from '$lib/stores/auth.svelte';
 
 	let auth = $derived(getAuthState());
 	let activeColumn = $derived(typeof $page.params.column === 'string' ? $page.params.column : null);
@@ -11,9 +12,7 @@
 	let totalLearned = $derived(
 		columns.reduce((sum, col) => sum + getColumnProgress(col.id, getColumnItems(col).length), 0)
 	);
-	let totalItems = $derived(
-		columns.reduce((sum, col) => sum + getColumnItems(col).length, 0)
-	);
+	let totalItems = $derived(columns.reduce((sum, col) => sum + getColumnItems(col).length, 0));
 	let progressPct = $derived(totalItems > 0 ? Math.round((totalLearned / totalItems) * 100) : 0);
 
 	const accentColors: Record<string, string> = {
@@ -25,7 +24,10 @@
 	};
 
 	function getColumnHref(column: Column): string {
-		return `/${column.id}/0`;
+		const items = getColumnItems(column);
+		const firstUnlearnedIndex = items.findIndex((_, index) => !isLearned(column.id, index));
+		const startIndex = auth.user && firstUnlearnedIndex !== -1 ? firstUnlearnedIndex : 0;
+		return `/${column.id}/${startIndex}`;
 	}
 
 	async function handleSignIn() {
@@ -60,31 +62,44 @@
 				{#if auth.loading}
 					<span class="h-4 w-16 animate-pulse rounded bg-[var(--color-divider)]"></span>
 				{:else if auth.user}
-					{#if totalLearned > 0}
-						<div class="progress-mini" aria-label="{totalLearned} of {totalItems} learned">
-							<div class="h-1 w-16 overflow-hidden rounded-full bg-[var(--color-divider)] md:w-20">
-								<div
-									class="neon-progress h-full rounded-full transition-all duration-700 ease-out"
-									style="width: {progressPct}%; background: linear-gradient(90deg, var(--color-shu), var(--color-asagi));"
-								></div>
-							</div>
-							<span class="text-[10px] font-bold tracking-wide text-[var(--color-ink-light)]">
-								{totalLearned}/{totalItems}
-							</span>
-						</div>
-					{/if}
-
 					<a
 						href="/profile"
-						class="profile-link"
+						class="profile-chip"
+						aria-label="View profile and progress"
 					>
-						{#if auth.user.photoURL}
-							<img
-								src={auth.user.photoURL}
-								alt=""
-								class="h-6 w-6 rounded-full ring-1 ring-[var(--color-divider)]"
-							/>
+						{#if totalLearned > 0}
+							<div class="profile-progress" aria-label="{totalLearned} of {totalItems} learned">
+								<div class="profile-progress-meta">
+									<span>Progress</span>
+									<strong>{progressPct}%</strong>
+								</div>
+								<div class="h-1 overflow-hidden rounded-full bg-[var(--color-divider)]">
+									<div
+										class="neon-progress h-full rounded-full transition-all duration-700 ease-out"
+										style="width: {progressPct}%; background: linear-gradient(90deg, var(--color-shu), var(--color-kitsune), var(--color-asagi));"
+									></div>
+								</div>
+							</div>
 						{/if}
+
+						<div class="profile-avatar-wrap">
+							{#if auth.user.photoURL}
+								<img
+									src={auth.user.photoURL}
+									alt=""
+									class="h-7 w-7 rounded-full ring-1 ring-[var(--color-divider)] transition-transform duration-200 group-hover:scale-[1.04]"
+								/>
+							{:else}
+								<div class="profile-fallback">
+									{auth.user.displayName?.charAt(0) ?? 'K'}
+								</div>
+							{/if}
+
+							{#if totalLearned > 0}
+								<span class="profile-badge">{progressPct}%</span>
+							{/if}
+						</div>
+
 						<span class="hidden md:inline">{auth.user.displayName?.split(' ')[0]}</span>
 					</a>
 				{:else}
@@ -147,7 +162,7 @@
 	}
 
 	.brand-lockup,
-	.profile-link,
+	.profile-chip,
 	.course-pill {
 		text-decoration: none;
 	}
@@ -173,24 +188,89 @@
 		min-width: max-content;
 	}
 
-	.progress-mini,
-	.profile-link {
+	.profile-chip {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.profile-link {
-		color: var(--color-ink-mid);
+		gap: 0.65rem;
+		border: 1px solid var(--color-divider);
+		border-radius: 9999px;
+		padding: 0.35rem 0.55rem;
+		background: color-mix(in srgb, var(--color-paper) 88%, var(--color-asagi) 12%);
+		color: var(--color-ink);
 		font-size: 0.85rem;
 		font-weight: 800;
-		transition: color 160ms ease;
+		transition:
+			border-color 160ms ease,
+			background 160ms ease,
+			color 160ms ease,
+			transform 160ms var(--ease-out-expo);
 	}
 
-	.profile-link:hover,
-	.profile-link:focus-visible {
+	.profile-chip:hover,
+	.profile-chip:focus-visible {
+		border-color: var(--color-ai);
+		background: var(--color-paper-warm);
 		color: var(--color-ink);
 		outline: none;
+		transform: translateY(-1px);
+	}
+
+	.profile-progress {
+		display: none;
+		min-width: 92px;
+	}
+
+	.profile-progress-meta {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-bottom: 0.25rem;
+		font-size: 9px;
+		font-weight: 800;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-ink-ghost);
+	}
+
+	.profile-progress-meta strong {
+		font-size: 10px;
+		letter-spacing: 0;
+		text-transform: none;
+		color: var(--color-ink-light);
+	}
+
+	.profile-avatar-wrap {
+		position: relative;
+		flex-shrink: 0;
+	}
+
+	.profile-fallback {
+		display: flex;
+		height: 1.75rem;
+		width: 1.75rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background: var(--color-paper-warm);
+		color: var(--color-ink);
+		font-size: 10px;
+		font-weight: 900;
+		ring: 1px solid var(--color-divider);
+	}
+
+	.profile-badge {
+		position: absolute;
+		right: -0.25rem;
+		bottom: -0.25rem;
+		border: 1px solid var(--color-paper);
+		border-radius: 9999px;
+		padding: 0.125rem 0.375rem;
+		background: color-mix(in srgb, var(--color-kitsune) 24%, var(--color-paper));
+		color: var(--color-ink);
+		font-size: 8px;
+		font-weight: 900;
+		line-height: 1;
 	}
 
 	.signin-button {
@@ -309,6 +389,10 @@
 			max-width: 58rem;
 		}
 
+		.profile-progress {
+			display: block;
+		}
+
 		.course-rail {
 			justify-content: center;
 			margin-inline: 0;
@@ -328,14 +412,17 @@
 	@media (prefers-reduced-motion: reduce) {
 		.logo-jp,
 		.signin-button,
-		.course-pill {
+		.course-pill,
+		.profile-chip {
 			transition: none;
 		}
 
 		.signin-button:hover,
 		.course-pill:hover,
 		.course-pill:focus-visible,
-		.course-pill.is-active {
+		.course-pill.is-active,
+		.profile-chip:hover,
+		.profile-chip:focus-visible {
 			transform: none;
 		}
 	}

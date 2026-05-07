@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { markLearned, unmarkLearned } from '$lib/firebase';
 	import { getAuthState, isLearned, setLearned } from '$lib/stores/auth.svelte';
+	import { getColumnItems } from '$lib/data';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -12,11 +13,27 @@
 
 	let learnedKey = $derived(`${data.column.id}_${data.index}`);
 	let learned = $derived(isLearned(data.column.id, data.index));
+	let columnItems = $derived(getColumnItems(data.column));
+	let pendingIndices = $derived(
+		columnItems
+			.map((_, index) => index)
+			.filter((index) => index === data.index || !isLearned(data.column.id, index))
+	);
 
 	let mouseX = $state(0);
 	let mouseY = $state(0);
 	let charOffsetX = $derived((mouseX - 0.5) * 12);
 	let charOffsetY = $derived((mouseY - 0.5) * 8);
+
+	function getVisibleNeighbor(direction: -1 | 1): number | null {
+		if (!auth.user) return direction === -1 ? data.prevIndex : data.nextIndex;
+		const currentPos = pendingIndices.indexOf(data.index);
+		if (currentPos === -1) return direction === -1 ? data.prevIndex : data.nextIndex;
+		return pendingIndices[currentPos + direction] ?? null;
+	}
+
+	let visiblePrevIndex = $derived(getVisibleNeighbor(-1));
+	let visibleNextIndex = $derived(getVisibleNeighbor(1));
 
 	$effect(() => {
 		const _idx = data.index;
@@ -43,9 +60,9 @@
 				await markLearned(auth.user.uid, data.column.id, data.index);
 				setTimeout(() => {
 					justLearned = false;
-					if (data.nextIndex !== null) {
+					if (visibleNextIndex !== null) {
 						showDetails = false;
-						goto(`/${data.column.id}/${data.nextIndex}`);
+						goto(`/${data.column.id}/${visibleNextIndex}`);
 					}
 				}, 600);
 			} else {
@@ -67,16 +84,16 @@
 				break;
 			case 'ArrowRight':
 			case 'l':
-				if (data.nextIndex !== null) {
+				if (visibleNextIndex !== null) {
 					showDetails = false;
-					goto(`/${data.column.id}/${data.nextIndex}`);
+					goto(`/${data.column.id}/${visibleNextIndex}`);
 				}
 				break;
 			case 'ArrowLeft':
 			case 'h':
-				if (data.prevIndex !== null) {
+				if (visiblePrevIndex !== null) {
 					showDetails = false;
-					goto(`/${data.column.id}/${data.prevIndex}`);
+					goto(`/${data.column.id}/${visiblePrevIndex}`);
 				}
 				break;
 			case ' ':
@@ -116,12 +133,12 @@
 	function onTouchEnd(e: TouchEvent) {
 		const delta = e.changedTouches[0].clientX - touchStartX;
 		if (Math.abs(delta) < 50) return;
-		if (delta < 0 && data.nextIndex !== null) {
+		if (delta < 0 && visibleNextIndex !== null) {
 			showDetails = false;
-			goto(`/${data.column.id}/${data.nextIndex}`);
-		} else if (delta > 0 && data.prevIndex !== null) {
+			goto(`/${data.column.id}/${visibleNextIndex}`);
+		} else if (delta > 0 && visiblePrevIndex !== null) {
 			showDetails = false;
-			goto(`/${data.column.id}/${data.prevIndex}`);
+			goto(`/${data.column.id}/${visiblePrevIndex}`);
 		}
 	}
 
@@ -174,16 +191,13 @@
 
 <svelte:window onkeydown={handleKeydown} ontouchstart={onTouchStart} ontouchend={onTouchEnd} />
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="detail-page relative flex flex-col items-center justify-between bg-[var(--color-paper)] {isKanji ? 'overflow-y-auto' : 'overflow-hidden'}"
 	onmousemove={handleMouseMove}
 	style="--detail-accent: var(--color-col-{data.column.id}); --detail-progress: {progressPercent}%; min-height: calc(100dvh - var(--nav-height, 56px)); {isKanji ? '' : 'height: calc(100dvh - var(--nav-height, 56px));'}"
 >
-	<!-- Paper texture overlay -->
 	<div class="paper-grain pointer-events-none absolute inset-0"></div>
 
-	<!-- Quiet lesson context -->
 	<div class="lesson-rail pointer-events-none absolute inset-x-0 top-0 z-10 px-5 pt-4 md:px-8 md:pt-5">
 		<div class="mx-auto flex max-w-5xl items-center gap-3">
 			<div class="min-w-0 flex items-baseline gap-2">
@@ -209,7 +223,6 @@
 		</div>
 	</div>
 
-	<!-- Center: character + details + learn button -->
 	<div class="z-10 flex flex-1 flex-col items-center px-4 pt-12 {isKanji ? 'w-full justify-start pb-20 md:pt-16' : 'justify-center'}">
 		{#key data.index + data.column.id}
 			<div
@@ -218,7 +231,7 @@
 				style="transform: translate({charOffsetX}px, {charOffsetY}px);"
 			>
 				<span
-					class="block font-black leading-none text-center px-4 {isKana ? 'kana-study-type' : ''}"
+					class="block px-4 text-center font-black leading-none {isKana ? 'kana-study-type' : ''}"
 					style="font-size: {charFontSize}; max-width: 90vw; word-break: keep-all;"
 				>
 					{data.item.character}
@@ -241,9 +254,7 @@
 						item {data.index + 1} of {data.totalItems}
 					</span>
 				</div>
-				<span
-					class="text-xl font-black tracking-[0.3em] uppercase text-[var(--color-ink)] md:text-3xl"
-				>
+				<span class="text-xl font-black tracking-[0.3em] uppercase text-[var(--color-ink)] md:text-3xl">
 					{data.item.romaji}
 				</span>
 
@@ -428,11 +439,10 @@
 		{/if}
 	</div>
 
-	<!-- Bottom nav: prev / next -->
 	<div class="lesson-nav z-10 flex items-center gap-3 pb-5" aria-label="Lesson navigation">
-		{#if data.prevIndex !== null}
+		{#if visiblePrevIndex !== null}
 			<a
-				href="/{data.column.id}/{data.prevIndex}"
+				href="/{data.column.id}/{visiblePrevIndex}"
 				aria-label="Previous item"
 				class="lesson-arrow"
 				onclick={() => (showDetails = false)}
@@ -443,9 +453,13 @@
 			<span class="lesson-arrow is-disabled" aria-hidden="true"></span>
 		{/if}
 
-		{#if data.nextIndex !== null}
+		<span class="text-[10px] font-bold tracking-[0.2em] text-[var(--color-ink-ghost)]">
+			{data.index + 1} / {data.totalItems}
+		</span>
+
+		{#if visibleNextIndex !== null}
 			<a
-				href="/{data.column.id}/{data.nextIndex}"
+				href="/{data.column.id}/{visibleNextIndex}"
 				aria-label="Next item"
 				class="lesson-arrow"
 				onclick={() => (showDetails = false)}
@@ -457,7 +471,6 @@
 		{/if}
 	</div>
 
-	<!-- Bottom-right: kanshudo link -->
 	<a
 		href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
 		target="_blank"
@@ -467,7 +480,6 @@
 		kanshudo ↗
 	</a>
 
-	<!-- Bottom-left: keyboard hint -->
 	<span class="absolute bottom-3 left-4 z-10 hidden text-[10px] font-bold tracking-[0.15em] text-[var(--color-ink-ghost)] md:inline">
 		← → space
 	</span>
