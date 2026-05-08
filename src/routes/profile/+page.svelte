@@ -3,6 +3,7 @@
 	import { signOut, updateUsername, getUsername } from '$lib/firebase';
 	import { getAuthState, getColumnProgress, isLearned } from '$lib/stores/auth.svelte';
 	import { columns, getColumnItems } from '$lib/data';
+	import { getFeaturedLockedAwards, getUnlockedAwards } from '$lib/awards';
 	import { fade } from 'svelte/transition';
 
 	let auth = $derived(getAuthState());
@@ -38,6 +39,8 @@
 	let totalLearned = $derived(columnStats.reduce((sum, c) => sum + c.learned, 0));
 	let totalItems = $derived(columnStats.reduce((sum, c) => sum + c.total, 0));
 	let progressPct = $derived(totalItems > 0 ? Math.round((totalLearned / totalItems) * 100) : 0);
+	let unlockedAwards = $derived(getUnlockedAwards(isLearned));
+	let nextAwards = $derived(getFeaturedLockedAwards(isLearned, 4));
 
 	// Streak-like motivational text
 	let levelLabel = $derived(
@@ -169,6 +172,64 @@
 				</div>
 			</div>
 		</div>
+
+		<section class="border-t border-[var(--color-divider)] px-6 py-10 md:px-12 md:py-12">
+			<div class="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
+				<div>
+					<div class="mb-4 flex items-end justify-between gap-3">
+						<div>
+							<span class="text-[10px] font-bold tracking-[0.24em] uppercase text-[var(--color-ink-ghost)]">Award Shelf</span>
+							<h2 class="mt-1 text-2xl font-black text-[var(--color-ink)]" style="font-family: var(--font-display);">Trophies for finishing real chunks.</h2>
+						</div>
+						<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">{unlockedAwards.length} earned</span>
+					</div>
+
+					<div class="grid gap-3 md:grid-cols-2">
+						{#if unlockedAwards.length > 0}
+							{#each unlockedAwards as award}
+								<div class="rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper-warm)] px-4 py-4" style="box-shadow: inset 0 0 0 1px color-mix(in srgb, {award.accent} 14%, transparent);">
+									<div class="flex items-start justify-between gap-3">
+										<div>
+											<p class="text-[10px] font-bold tracking-[0.22em] uppercase" style="color: {award.accent};">{award.titleJp}</p>
+											<h3 class="mt-1 text-lg font-black text-[var(--color-ink)]">{award.title}</h3>
+										</div>
+										<span class="flex h-11 w-11 items-center justify-center rounded-full text-xl" style="background: color-mix(in srgb, {award.accent} 12%, var(--color-paper)); color: {award.accent};">{award.icon}</span>
+									</div>
+									<p class="mt-2 text-sm leading-6 text-[var(--color-ink-light)]">{award.description}</p>
+									<div class="mt-3 flex items-center justify-between gap-3">
+										<span class="text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-ghost)]">{award.progressLabel}</span>
+										<span class="rounded-full px-2.5 py-1 text-[9px] font-bold tracking-[0.16em] uppercase text-[var(--color-ink)]" style="background: color-mix(in srgb, {award.accent} 10%, var(--color-paper));">{award.rarity}</span>
+									</div>
+								</div>
+							{/each}
+						{:else}
+							<div class="rounded-2xl border border-dashed border-[var(--color-divider)] px-4 py-5 md:col-span-2">
+								<p class="text-sm font-bold text-[var(--color-ink)]">Your shelf is empty for now.</p>
+								<p class="mt-1 text-sm leading-6 text-[var(--color-ink-light)]">Clear a full category and Kotsu will promote it into an actual reward.</p>
+							</div>
+						{/if}
+					</div>
+				</div>
+
+				<aside class="rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper-warm)] px-5 py-5">
+					<span class="text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Up next</span>
+					<div class="mt-4 space-y-3">
+						{#each nextAwards as award}
+							<div class="rounded-xl border border-dashed border-[var(--color-divider)] px-3 py-3">
+								<div class="flex items-start justify-between gap-3">
+									<div>
+										<p class="text-sm font-black text-[var(--color-ink)]">{award.title}</p>
+										<p class="text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-ghost)]">{award.titleJp}</p>
+									</div>
+									<span class="rounded-full px-2 py-1 text-[9px] font-bold tracking-[0.16em] uppercase" style="background: color-mix(in srgb, {award.accent} 10%, var(--color-paper)); color: {award.accent};">{award.progressLabel}</span>
+								</div>
+								<p class="mt-2 text-xs leading-5 text-[var(--color-ink-light)]">{award.description}</p>
+							</div>
+						{/each}
+					</div>
+				</aside>
+			</div>
+		</section>
 
 		<!-- Column breakdown — full bleed sections -->
 		<div>

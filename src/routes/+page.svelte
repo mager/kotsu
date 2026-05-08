@@ -15,6 +15,7 @@
 		type CourseUnit
 	} from '$lib/course';
 	import { getCharacterHref } from '$lib/links';
+	import { getUnlockedAwards, getFeaturedLockedAwards } from '$lib/awards';
 
 	let auth = $derived(getAuthState());
 	let courseTotal = $derived(getCourseTotalProgress(isLearned));
@@ -23,6 +24,8 @@
 	let completedUnits = $derived(
 		courseUnits.filter((unit) => getCourseUnitProgress(unit, isLearned).status === 'complete').length
 	);
+	let unlockedAwards = $derived(getUnlockedAwards(isLearned));
+	let featuredLockedAwards = $derived(getFeaturedLockedAwards(isLearned, 3));
 
 	const accentColors: Record<string, string> = {
 		hiragana: 'var(--color-shu)',
@@ -176,10 +179,68 @@
 					<span class="mt-1 block text-2xl font-black text-[var(--color-ink)]">{completedUnits}/{courseUnits.length}</span>
 				</div>
 				<div class="rounded-lg border border-[var(--color-divider)] px-4 py-3">
-					<span class="block text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">Focus</span>
-					<span class="mt-1 block text-2xl font-black text-[var(--color-matcha)]">部首</span>
+					<span class="block text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">Awards</span>
+					<span class="mt-1 block text-2xl font-black text-[var(--color-matcha)]">{unlockedAwards.length}</span>
 				</div>
 			</div>
+
+			<section class="mt-5 rounded-[1.5rem] border border-[var(--color-divider)] bg-[var(--color-paper-warm)] px-4 py-4 md:px-5">
+				<div class="flex flex-wrap items-end justify-between gap-3">
+					<div>
+						<span class="text-[10px] font-bold tracking-[0.24em] uppercase text-[var(--color-ink-ghost)]">Awards</span>
+						<h2 class="mt-1 text-xl font-black text-[var(--color-ink)]" style="font-family: var(--font-display);">Make category clears feel earned.</h2>
+					</div>
+					<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">
+						{unlockedAwards.length} unlocked
+					</span>
+				</div>
+
+				<div class="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+					<div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+						{#if unlockedAwards.length > 0}
+							{#each unlockedAwards.slice(0, 6) as award}
+								<div class="rounded-xl border border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-4" style="box-shadow: inset 0 0 0 1px color-mix(in srgb, {award.accent} 14%, transparent);">
+									<div class="flex items-start justify-between gap-3">
+										<div>
+											<span class="text-[10px] font-bold tracking-[0.22em] uppercase" style="color: {award.accent};">{award.titleJp}</span>
+											<h3 class="mt-1 text-lg font-black text-[var(--color-ink)]">{award.title}</h3>
+										</div>
+										<span class="flex h-10 w-10 items-center justify-center rounded-full text-xl" style="background: color-mix(in srgb, {award.accent} 14%, var(--color-paper)); color: {award.accent};">{award.icon}</span>
+									</div>
+									<p class="mt-2 text-sm leading-6 text-[var(--color-ink-light)]">{award.description}</p>
+									<div class="mt-3 flex items-center justify-between gap-3">
+										<span class="text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-ghost)]">{award.progressLabel}</span>
+										<span class="rounded-full px-2.5 py-1 text-[9px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink)]" style="background: color-mix(in srgb, {award.accent} 10%, var(--color-paper));">{award.rarity}</span>
+									</div>
+								</div>
+							{/each}
+						{:else}
+							<div class="rounded-xl border border-dashed border-[var(--color-divider)] px-4 py-5 sm:col-span-2 xl:col-span-3">
+								<p class="text-sm font-bold text-[var(--color-ink)]">No awards yet — finish a category and Kotsu should hand you one.</p>
+								<p class="mt-1 text-sm leading-6 text-[var(--color-ink-light)]">The first clear is the point: progress should feel ceremonial, not invisible.</p>
+							</div>
+						{/if}
+					</div>
+
+					<div class="rounded-xl border border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-4">
+						<span class="text-[10px] font-bold tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Chasing next</span>
+						<div class="mt-3 space-y-3">
+							{#each featuredLockedAwards as award}
+								<div class="rounded-lg border border-dashed border-[var(--color-divider)] px-3 py-3 opacity-80">
+									<div class="flex items-start justify-between gap-3">
+										<div>
+											<p class="text-sm font-black text-[var(--color-ink)]">{award.title}</p>
+											<p class="text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-ghost)]">{award.titleJp}</p>
+										</div>
+										<span class="rounded-full px-2 py-1 text-[9px] font-bold tracking-[0.16em] uppercase" style="background: color-mix(in srgb, {award.accent} 10%, var(--color-paper)); color: {award.accent};">{award.progressLabel}</span>
+									</div>
+									<p class="mt-2 text-xs leading-5 text-[var(--color-ink-light)]">{award.description}</p>
+								</div>
+							{/each}
+						</div>
+					</div>
+				</div>
+			</section>
 		</section>
 
 		<section class="mt-8 grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">

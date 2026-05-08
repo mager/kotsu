@@ -3,6 +3,7 @@
 	import type { Column } from '$lib/data';
 	import { getColumnItems } from '$lib/data';
 	import { isLearned, getColumnProgress, getAuthState } from '$lib/stores/auth.svelte';
+	import { getColumnAward } from '$lib/awards';
 
 	interface Props {
 		column: Column;
@@ -42,6 +43,7 @@
 	};
 
 	let accent = $derived(accents[column.id] || 'var(--color-ink)');
+	let categoryAward = $derived(getColumnAward(column.id));
 </script>
 
 <div class="mx-auto max-w-3xl">
@@ -152,7 +154,19 @@
 	{#if auth.user && !showLearned && visibleCount === 0}
 		<div class="mt-10 rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper-warm)] px-5 py-6 text-center">
 			<p class="text-sm font-bold text-[var(--color-ink)]">Nice — you cleared this category.</p>
-			<p class="mt-1 text-xs text-[var(--color-ink-light)]">Turn on <span class="font-bold">show learned</span> if you want to review.</p>
+			{#if categoryAward}
+				<div class="mx-auto mt-4 max-w-md rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper)] px-4 py-4 text-left" style="box-shadow: inset 0 0 0 1px color-mix(in srgb, {categoryAward.accent} 16%, transparent);">
+					<div class="flex items-start justify-between gap-3">
+						<div>
+							<p class="text-[10px] font-bold tracking-[0.22em] uppercase" style="color: {categoryAward.accent};">Award unlocked · {categoryAward.titleJp}</p>
+							<p class="mt-1 text-lg font-black text-[var(--color-ink)]">{categoryAward.title}</p>
+						</div>
+						<span class="flex h-10 w-10 items-center justify-center rounded-full text-xl" style="background: color-mix(in srgb, {categoryAward.accent} 12%, var(--color-paper)); color: {categoryAward.accent};">{categoryAward.icon}</span>
+					</div>
+					<p class="mt-2 text-sm leading-6 text-[var(--color-ink-light)]">{categoryAward.description}</p>
+				</div>
+			{/if}
+			<p class="mt-3 text-xs text-[var(--color-ink-light)]">Turn on <span class="font-bold">show learned</span> if you want to review.</p>
 		</div>
 	{/if}
 
