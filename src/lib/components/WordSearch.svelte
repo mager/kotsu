@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getAuthState, addVocabItem } from '$lib/stores/auth.svelte';
+	import { addVocabItem } from '$lib/stores/auth.svelte';
 	import type { CustomVocabItem } from '$lib/firebase';
 
 	interface Props {
@@ -7,7 +7,6 @@
 	}
 
 	let { variant = 'default' }: Props = $props();
-	let auth = $derived(getAuthState());
 	let isHeader = $derived(variant === 'header');
 
 	let query = $state('');
@@ -56,7 +55,6 @@
 	}
 
 	async function saveWord(result: any) {
-		if (!auth.user) return;
 		const item: CustomVocabItem = {
 			id: crypto.randomUUID(),
 			character: result.word,
@@ -176,17 +174,15 @@
 						</a>
 
 						<!-- Save button -->
-						{#if auth.user}
-							{#if justSaved === result.word}
-								<span class="animate-spring-in mt-4 mr-4 shrink-0 text-sm font-bold text-[var(--color-matcha)]">✓ Saved</span>
-							{:else}
-								<button
-									onclick={() => saveWord(result)}
-									class="mt-4 mr-4 shrink-0 cursor-pointer rounded-lg border border-[var(--color-divider)] px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
-								>
-									+ Save
-								</button>
-							{/if}
+						{#if justSaved === result.word}
+							<span class="animate-spring-in mt-4 mr-4 shrink-0 text-sm font-bold text-[var(--color-matcha)]">✓ Saved</span>
+						{:else}
+							<button
+								onclick={() => saveWord(result)}
+								class="mt-4 mr-4 shrink-0 cursor-pointer rounded-lg border border-[var(--color-divider)] px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
+							>
+								+ Save
+							</button>
 						{/if}
 					</div>
 				</article>

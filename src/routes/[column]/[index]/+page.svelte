@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { fly, fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
-	import { markLearned, unmarkLearned } from '$lib/firebase';
-	import { getAuthState, isLearned, setLearned } from '$lib/stores/auth.svelte';
+	import { getAuthState, isLearned, setLearnedStatus } from '$lib/stores/auth.svelte';
 	import { getColumnItems } from '$lib/data';
+	import { getColumnAward, type Award } from '$lib/awards';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	let showDetails = $state(false);
 	let auth = $derived(getAuthState());
 	let justLearned = $state(false);
+	let unlockedAward = $state<Award | null>(null);
 
 	let learnedKey = $derived(`${data.column.id}_${data.index}`);
 	let learned = $derived(isLearned(data.column.id, data.index));
@@ -26,7 +27,6 @@
 	let charOffsetY = $derived((mouseY - 0.5) * 8);
 
 	function getVisibleNeighbor(direction: -1 | 1): number | null {
-		if (!auth.user) return direction === -1 ? data.prevIndex : data.nextIndex;
 		const currentPos = pendingIndices.indexOf(data.index);
 		if (currentPos === -1) return direction === -1 ? data.prevIndex : data.nextIndex;
 		return pendingIndices[currentPos + direction] ?? null;
@@ -39,6 +39,7 @@
 		const _idx = data.index;
 		showDetails = false;
 		justLearned = false;
+		unlockedAward = null;
 		const t = setTimeout(() => (showDetails = true), 200);
 		return () => clearTimeout(t);
 	});
@@ -49,28 +50,31 @@
 	}
 
 	async function toggleLearned() {
-		if (!auth.user) return;
 		const previousValue = learned;
 		const newValue = !previousValue;
-		setLearned(learnedKey, newValue);
+		const willCompleteColumn = newValue && columnItems.every((_, index) => index === data.index || isLearned(data.column.id, index));
 
 		try {
 			if (newValue) {
 				justLearned = true;
-				await markLearned(auth.user.uid, data.column.id, data.index);
+				unlockedAward = willCompleteColumn ? getColumnAward(data.column.id) : null;
+			}
+
+			await setLearnedStatus(data.column.id, data.index, newValue);
+
+			if (newValue) {
 				setTimeout(() => {
 					justLearned = false;
 					if (visibleNextIndex !== null) {
 						showDetails = false;
 						goto(`/${data.column.id}/${visibleNextIndex}`);
 					}
-				}, 600);
-			} else {
-				await unmarkLearned(auth.user.uid, data.column.id, data.index);
+				}, unlockedAward ? 1100 : 600);
 			}
 		} catch (error) {
 			justLearned = false;
-			setLearned(learnedKey, previousValue);
+			unlockedAward = null;
+			await setLearnedStatus(data.column.id, data.index, previousValue);
 			console.error('Failed to update learned state', error);
 		}
 	}
@@ -224,6 +228,22 @@
 	</div>
 
 	<div class="z-10 flex flex-1 flex-col items-center px-4 pt-12 {isKanji ? 'w-full justify-start pb-20 md:pt-16' : 'justify-center'}">
+		{#if unlockedAward}
+			<div
+				in:fade={{ duration: 180 }}
+				class="mb-4 w-full max-w-md rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper-warm)] px-4 py-4 text-left shadow-[0_20px_60px_rgba(15,23,42,0.08)]"
+				style="box-shadow: inset 0 0 0 1px color-mix(in srgb, {unlockedAward.accent} 16%, transparent);"
+			>
+				<div class="flex items-start justify-between gap-3">
+					<div>
+						<p class="text-[10px] font-bold tracking-[0.22em] uppercase" style="color: {unlockedAward.accent};">Award unlocked · {unlockedAward.titleJp}</p>
+						<h2 class="mt-1 text-lg font-black text-[var(--color-ink)]">{unlockedAward.title}</h2>
+					</div>
+					<span class="flex h-10 w-10 items-center justify-center rounded-full text-xl" style="background: color-mix(in srgb, {unlockedAward.accent} 12%, var(--color-paper)); color: {unlockedAward.accent};">{unlockedAward.icon}</span>
+				</div>
+				<p class="mt-2 text-sm leading-6 text-[var(--color-ink-light)]">{unlockedAward.description}</p>
+			</div>
+		{/if}
 		{#key data.index + data.column.id}
 			<div
 				in:fly={{ y: 30, duration: 350, delay: 50 }}

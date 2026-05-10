@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getAuthState, addVocabItem } from '$lib/stores/auth.svelte';
+	import { addVocabItem } from '$lib/stores/auth.svelte';
 	import type { CustomVocabItem } from '$lib/firebase';
 	import { bind, unbind, isKana } from 'wanakana';
 
@@ -9,7 +9,6 @@
 
 	let { open = $bindable(false) }: Props = $props();
 
-	let authState = $derived(getAuthState());
 	let saving = $state(false);
 	let looking = $state(false);
 
@@ -91,18 +90,17 @@
 	}
 </script>
 
-{#if authState.user}
-	{#if !open}
-		<button
-			onclick={() => (open = true)}
-			class="mt-2 flex w-full items-center justify-center gap-1 py-3 text-[11px] font-bold tracking-[0.15em] uppercase transition-opacity duration-200 hover:opacity-70"
-			style="color: var(--color-ink-ghost);"
-		>
-			<span class="text-lg leading-none">+</span>
-			<span>add word</span>
-		</button>
-	{:else}
-		<div class="mt-2 px-1">
+{#if !open}
+	<button
+		onclick={() => (open = true)}
+		class="mt-2 flex w-full items-center justify-center gap-1 py-3 text-[11px] font-bold tracking-[0.15em] uppercase transition-opacity duration-200 hover:opacity-70"
+		style="color: var(--color-ink-ghost);"
+	>
+		<span class="text-lg leading-none">+</span>
+		<span>add word</span>
+	</button>
+{:else}
+	<div class="mt-2 px-1">
 			<!-- Word field — romaji converts to kana, Jisho upgrades to kanji -->
 			<div class="relative mb-2">
 				<input
@@ -152,6 +150,5 @@
 					cancel
 				</button>
 			</div>
-		</div>
-	{/if}
+	</div>
 {/if}

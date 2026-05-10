@@ -18,9 +18,15 @@
 	let isDetailPage = $derived($page.params.index !== undefined);
 	let isHomePage = $derived($page.url.pathname === '/');
 
-	// Init Firebase auth on client only
+	// Init Firebase auth + offline support on client only
 	if (browser) {
 		initAuth();
+
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js').catch(() => {
+				// no-op
+			});
+		}
 	}
 
 	// Vercel Analytics

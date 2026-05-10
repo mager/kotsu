@@ -1,0 +1,17 @@
+{
+  "name": "Kotsu",
+  "short_name": "Kotsu",
+  "description": "Offline Japanese study for kana, radicals, kanji, and useful words.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f5ef",
+  "theme_color": "#f8f5ef",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
