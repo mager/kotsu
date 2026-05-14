@@ -15,25 +15,20 @@
 	let learnedKey = $derived(`${data.column.id}_${data.index}`);
 	let learned = $derived(isLearned(data.column.id, data.index));
 	let columnItems = $derived(getColumnItems(data.column));
-	let pendingIndices = $derived(
-		columnItems
-			.map((_, index) => index)
-			.filter((index) => index === data.index || !isLearned(data.column.id, index))
-	);
-
 	let mouseX = $state(0);
 	let mouseY = $state(0);
 	let charOffsetX = $derived((mouseX - 0.5) * 12);
 	let charOffsetY = $derived((mouseY - 0.5) * 8);
 
-	function getVisibleNeighbor(direction: -1 | 1): number | null {
-		const currentPos = pendingIndices.indexOf(data.index);
-		if (currentPos === -1) return direction === -1 ? data.prevIndex : data.nextIndex;
-		return pendingIndices[currentPos + direction] ?? null;
-	}
+	let visiblePrevIndex = $derived(data.prevIndex);
+	let visibleNextIndex = $derived(data.nextIndex);
 
-	let visiblePrevIndex = $derived(getVisibleNeighbor(-1));
-	let visibleNextIndex = $derived(getVisibleNeighbor(1));
+	function getNextUnlearnedIndex(): number | null {
+		for (let i = data.index + 1; i < columnItems.length; i++) {
+			if (!isLearned(data.column.id, i)) return i;
+		}
+		return data.nextIndex;
+	}
 
 	$effect(() => {
 		const _idx = data.index;
@@ -65,9 +60,10 @@
 			if (newValue) {
 				setTimeout(() => {
 					justLearned = false;
-					if (visibleNextIndex !== null) {
+					const nextIdx = getNextUnlearnedIndex();
+					if (nextIdx !== null) {
 						showDetails = false;
-						goto(`/${data.column.id}/${visibleNextIndex}`);
+						goto(`/${data.column.id}/${nextIdx}`);
 					}
 				}, unlockedAward ? 1100 : 600);
 			}
