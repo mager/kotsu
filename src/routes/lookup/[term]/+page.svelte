@@ -3,6 +3,7 @@
 	import { getAuthState } from '$lib/stores/auth.svelte';
 	import type { CustomVocabItem } from '$lib/firebase';
 	import type { PageData } from './$types';
+	import { toRomaji } from 'wanakana';
 
 	let { data }: { data: PageData } = $props();
 	let auth = $derived(getAuthState());
@@ -53,6 +54,9 @@
 					{#if data.result.reading && data.result.reading !== data.result.word}
 						<p class="mt-2 text-3xl font-black text-[var(--color-ink-mid)] md:text-5xl" style="font-family: var(--font-jp-brush);">
 							{data.result.reading}
+						</p>
+						<p class="mt-1 text-xs font-bold tracking-[0.14em] text-[var(--color-ink-ghost)]">
+							{toRomaji(data.result.reading)}
 						</p>
 					{/if}
 					<p class="mt-5 max-w-3xl text-2xl font-black leading-tight text-[var(--color-ink)] md:text-4xl">
