@@ -186,6 +186,8 @@
 		justify-self: end;
 		gap: 0.9rem;
 		min-width: max-content;
+		grid-row: 1;
+		grid-column: 2;
 	}
 
 	.profile-chip {
@@ -387,6 +389,11 @@
 			grid-column: auto;
 			justify-self: center;
 			max-width: 58rem;
+		}
+
+		.nav-account {
+			grid-row: auto;
+			grid-column: auto;
 		}
 
 		.profile-progress {
