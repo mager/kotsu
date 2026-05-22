@@ -89,9 +89,29 @@
 			searchInput?.focus();
 		}
 	}
+
+	function handleFocus() {
+		if (query.trim().length > 0) dropdownOpen = true;
+		// On mobile, scroll the input into view so keyboard doesn't cover it
+		setTimeout(() => searchInput?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+	}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
+
+<style>
+	/* Dropdown height: constrain to visual viewport so keyboard doesn't cover results */
+	.search-dropdown {
+		max-height: min(50dvh, 28rem);
+	}
+
+	/* On small screens respect the visual viewport even more aggressively */
+	@media (max-width: 640px) {
+		.search-dropdown {
+			max-height: 42dvh;
+		}
+	}
+</style>
 
 <div class="lookup-search relative z-30 w-full min-w-0 {isHeader ? 'lookup-search-header' : 'mx-auto max-w-2xl'}">
 	<!-- Search input -->
@@ -106,9 +126,7 @@
 				class="min-w-0 flex-1 bg-transparent font-medium text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink-ghost)] {isHeader ? 'text-base md:text-lg' : 'text-lg'}"
 				autocomplete="off"
 				spellcheck="false"
-				onfocus={() => {
-					if (query.trim().length > 0) dropdownOpen = true;
-				}}
+				onfocus={handleFocus}
 			/>
 			{#if searching}
 				<div class="h-4 w-4 animate-spin rounded-full border-2 border-[var(--color-ink-ghost)] border-t-[var(--color-ink)]"></div>
@@ -125,61 +143,64 @@
 
 	<!-- Results -->
 	{#if dropdownOpen && results.length > 0}
-		<div class="{isHeader ? 'absolute top-[calc(100%+0.5rem)] right-0 left-0 max-h-[min(70dvh,32rem)] overflow-y-auto rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper)] p-2 shadow-2xl shadow-black/10' : 'mt-3 space-y-2'}">
+		<div class="{isHeader ? 'search-dropdown absolute top-[calc(100%+0.5rem)] right-0 left-0 overflow-y-auto rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper)] p-1.5 shadow-2xl shadow-black/10' : 'mt-3 space-y-2'}">
 			{#each results as result, i (result.word + result.meaning)}
 				<article
-					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl transition-all duration-200 hover:border-[var(--color-ai)] {isHeader ? 'mb-2 last:mb-0' : ''}"
-					style="animation-delay: {i * 60}ms;"
+					class="drift-card animate-spring-in group relative overflow-hidden rounded-xl transition-all duration-200 hover:border-[var(--color-ai)] {isHeader ? 'mb-1 last:mb-0' : ''}"
+					style="animation-delay: {i * 40}ms;"
 				>
-					<div class="flex items-start justify-between gap-4">
+					<div class="flex items-center justify-between gap-2">
 						<a
 							href={getLookupHref(result)}
 							onclick={closeDropdown}
-							class="block min-w-0 flex-1 text-inherit no-underline {isHeader ? 'px-4 py-3' : 'px-5 py-4'}"
+							class="block min-w-0 flex-1 text-inherit no-underline {isHeader ? 'px-3 py-2.5' : 'px-5 py-4'}"
 						>
-							<!-- Word -->
-							<div class="flex items-baseline gap-3">
-								<span
-									class="text-4xl font-black leading-none md:text-5xl"
-									style="font-family: var(--font-jp-brush);"
-								>{result.word}</span>
-								{#if result.reading && result.reading !== result.word}
-									<span class="text-lg text-[var(--color-ink-light)]" style="font-family: var(--font-jp-brush);">
-										{result.reading}
-									</span>
-								{/if}
-							</div>
-
-							<!-- Meaning -->
-							<p class="mt-2 text-base text-[var(--color-ink-mid)]">{result.meaning}</p>
-
-							<!-- Tags -->
-							<div class="mt-2.5 flex flex-wrap gap-1.5">
-								{#if result.isCommon}
-									<span class="rounded-full bg-[var(--color-matcha)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-white">
-										common
-									</span>
-								{/if}
-								{#if result.jlpt}
-									<span class="rounded-full border border-[var(--color-divider)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-[var(--color-ink-light)]">
-										{result.jlpt.replace('jlpt-', 'JLPT ')}
-									</span>
-								{/if}
-								{#if result.partsOfSpeech}
-									<span class="rounded-full border border-[var(--color-divider)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-[var(--color-ink-light)]">
-										{result.partsOfSpeech}
-									</span>
-								{/if}
-							</div>
+							{#if isHeader}
+								<!-- Compact mobile-friendly row -->
+								<div class="flex items-baseline gap-2 min-w-0">
+									<span class="shrink-0 text-2xl font-black leading-none" style="font-family: var(--font-jp-brush);">{result.word}</span>
+									{#if result.reading && result.reading !== result.word}
+										<span class="shrink-0 text-sm text-[var(--color-ink-light)]" style="font-family: var(--font-jp-brush);">{result.reading}</span>
+									{/if}
+									{#if result.jlpt}
+										<span class="ml-auto shrink-0 rounded-full border border-[var(--color-divider)] px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase text-[var(--color-ink-ghost)]">
+											{result.jlpt.replace('jlpt-', 'N').replace('n', 'N')}
+										</span>
+									{/if}
+								</div>
+								<p class="mt-0.5 truncate text-sm text-[var(--color-ink-mid)]">{result.meaning}</p>
+							{:else}
+								<!-- Full card for non-header (main search) -->
+								<div class="flex items-baseline gap-3">
+									<span class="text-4xl font-black leading-none md:text-5xl" style="font-family: var(--font-jp-brush);">{result.word}</span>
+									{#if result.reading && result.reading !== result.word}
+										<span class="text-lg text-[var(--color-ink-light)]" style="font-family: var(--font-jp-brush);">{result.reading}</span>
+									{/if}
+								</div>
+								<p class="mt-2 text-base text-[var(--color-ink-mid)]">{result.meaning}</p>
+								<div class="mt-2.5 flex flex-wrap gap-1.5">
+									{#if result.isCommon}
+										<span class="rounded-full bg-[var(--color-matcha)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-white">common</span>
+									{/if}
+									{#if result.jlpt}
+										<span class="rounded-full border border-[var(--color-divider)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-[var(--color-ink-light)]">
+											{result.jlpt.replace('jlpt-', 'JLPT ')}
+										</span>
+									{/if}
+									{#if result.partsOfSpeech}
+										<span class="rounded-full border border-[var(--color-divider)] px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase text-[var(--color-ink-light)]">{result.partsOfSpeech}</span>
+									{/if}
+								</div>
+							{/if}
 						</a>
 
 						<!-- Save button -->
 						{#if justSaved === result.word}
-							<span class="animate-spring-in mt-4 mr-4 shrink-0 text-sm font-bold text-[var(--color-matcha)]">✓ Saved</span>
+							<span class="animate-spring-in mr-3 shrink-0 text-xs font-bold text-[var(--color-matcha)]">✓</span>
 						{:else}
 							<button
 								onclick={() => saveWord(result)}
-								class="mt-4 mr-4 shrink-0 cursor-pointer rounded-lg border border-[var(--color-divider)] px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
+								class="{isHeader ? 'mr-2.5 px-2.5 py-1 text-[9px]' : 'mt-4 mr-4 px-3 py-1.5 text-[10px]'} shrink-0 cursor-pointer rounded-lg border border-[var(--color-divider)] font-bold tracking-[0.15em] uppercase text-[var(--color-ink)] transition-all duration-200 hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
 							>
 								+ Save
 							</button>
