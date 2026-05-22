@@ -12,6 +12,12 @@
 	let jishoHref = $derived(
 		`https://jisho.org/search/${encodeURIComponent(data.result?.word ?? data.term)}`
 	);
+	let kanshudoHref = $derived(
+		`https://www.kanshudo.com/search?q=${encodeURIComponent(data.result?.word ?? data.term)}`
+	);
+	let forvoHref = $derived(
+		`https://forvo.com/search/${encodeURIComponent(data.result?.word ?? data.term)}/ja/`
+	);
 
 	async function saveWord() {
 		if (!auth.user || !data.result) return;
@@ -67,6 +73,14 @@
 				<div class="lookup-actions">
 					<a href={jishoHref} target="_blank" rel="noopener noreferrer" class="lookup-action">
 						<span>Jisho</span>
+						<span aria-hidden="true">↗</span>
+					</a>
+					<a href={kanshudoHref} target="_blank" rel="noopener noreferrer" class="lookup-action">
+						<span>Kanshudo</span>
+						<span aria-hidden="true">↗</span>
+					</a>
+					<a href={forvoHref} target="_blank" rel="noopener noreferrer" class="lookup-action">
+						<span>Forvo</span>
 						<span aria-hidden="true">↗</span>
 					</a>
 					{#if auth.user}
