@@ -105,9 +105,10 @@
 
 	let isKana = $derived(data.column.id === 'hiragana' || data.column.id === 'katakana');
 	let isKanji = $derived(data.column.id === 'kanji');
+	let isRadical = $derived(data.column.id === 'radicals');
 	let charCount = $derived(data.item.character.length);
 	let charFontSize = $derived(
-		isKanji
+		isKanji || isRadical
 			? 'clamp(7rem, 24vw, 15rem)'
 			: charCount === 1
 			? 'clamp(9rem, 34vw, 22rem)'
@@ -203,9 +204,9 @@
 <svelte:window onkeydown={handleKeydown} ontouchstart={onTouchStart} ontouchend={onTouchEnd} />
 
 <div
-	class="detail-page relative flex flex-col items-center justify-between bg-[var(--color-paper)] {isKanji ? 'overflow-y-auto' : 'overflow-hidden'}"
+	class="detail-page relative flex flex-col items-center justify-between bg-[var(--color-paper)] {isKanji || isRadical ? 'overflow-y-auto' : 'overflow-hidden'}"
 	onmousemove={handleMouseMove}
-	style="--detail-accent: var(--color-col-{data.column.id}); --detail-progress: {progressPercent}%; min-height: calc(100dvh - var(--nav-height, 56px)); {isKanji ? '' : 'height: calc(100dvh - var(--nav-height, 56px));'}"
+	style="--detail-accent: var(--color-col-{data.column.id}); --detail-progress: {progressPercent}%; min-height: calc(100dvh - var(--nav-height, 56px)); {isKanji || isRadical ? '' : 'height: calc(100dvh - var(--nav-height, 56px));'}"
 >
 	<div class="paper-grain pointer-events-none absolute inset-0"></div>
 
@@ -234,7 +235,7 @@
 		</div>
 	</div>
 
-	<div class="z-10 flex flex-1 flex-col items-center px-4 pt-12 {isKanji ? 'w-full justify-start pb-20 md:pt-16' : 'justify-center'}">
+	<div class="z-10 flex flex-1 flex-col items-center px-4 pt-12 {isKanji || isRadical ? 'w-full justify-start pb-20 md:pt-16' : 'justify-center'}">
 		{#if unlockedAward}
 			<div
 				in:fade={{ duration: 180 }}
@@ -495,6 +496,130 @@
 											</span>
 											<span class="text-sm font-bold text-[var(--color-ink-mid)]">{recipe.meaning}</span>
 										</a>
+									{/each}
+								</div>
+							</section>
+						{/if}
+					</div>
+				{/if}
+
+				{#if isRadical}
+					<div class="radical-reference mt-7 grid w-full max-w-5xl gap-3 md:mt-9 md:grid-cols-[1fr_1.15fr_1fr]">
+						<section class="kanji-panel">
+							<span class="kanji-panel-label">Meaning</span>
+							<p class="mt-3 text-2xl font-black leading-tight text-[var(--color-ink)] md:text-3xl">
+								{data.item.meaning}
+							</p>
+							<p class="mt-3 text-sm leading-6 text-[var(--color-ink-light)]">
+								{data.item.character} is a radical — a building block that gives kanji their visual DNA. Learning it here means you will recognize it inside dozens of kanji.
+							</p>
+						</section>
+
+						<section class="kanji-panel">
+							<span class="kanji-panel-label">Name</span>
+							<div class="mt-4">
+								<p class="text-2xl font-black leading-tight text-[var(--color-ink)]">
+									{data.item.romaji}
+								</p>
+								{#if variants.length > 0}
+									<div class="mt-3">
+										<span class="block text-[9px] font-black tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Variant forms</span>
+										<div class="mt-2 flex flex-wrap gap-2">
+											{#each variants as v}
+												<span class="variant-chip">{v}</span>
+											{/each}
+										</div>
+									</div>
+								{/if}
+								{#if noteTags.length > 0}
+									<div class="mt-3 flex flex-wrap gap-1.5">
+										{#each noteTags as tag}
+											<span class="radical-tag-chip">{tag}</span>
+										{/each}
+									</div>
+								{/if}
+							</div>
+						</section>
+
+						<section class="kanji-panel">
+							<span class="kanji-panel-label">Reference</span>
+							<div class="mt-4 flex flex-col gap-2">
+								<a
+									href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
+									target="_blank"
+									rel="noopener noreferrer"
+									class="kanji-link"
+								>
+									Kanshudo
+								</a>
+								<a
+									href="https://jisho.org/search/{encodeURIComponent(data.item.character)}%20%23radical"
+									target="_blank"
+									rel="noopener noreferrer"
+									class="kanji-link"
+								>
+									Jisho
+								</a>
+							</div>
+						</section>
+
+						{#if data.item.etymology}
+							<section class="kanji-panel md:col-span-3 etymology-panel">
+								<span class="kanji-panel-label">Origin</span>
+								<p class="etymology-text mt-3">
+									{data.item.etymology}
+								</p>
+							</section>
+						{/if}
+
+						{#if data.item.mnemonic}
+							<section class="kanji-panel md:col-span-3 mnemonic-panel">
+								<span class="kanji-panel-label">Memory hook</span>
+								<p class="mnemonic-text mt-3">
+									{data.item.mnemonic}
+								</p>
+							</section>
+						{/if}
+
+						{#if examples.length > 0}
+							<section class="kanji-panel md:col-span-3">
+								<span class="kanji-panel-label">Kanji that use this radical</span>
+								<div class="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+									{#each examples as ex}
+										<a
+											href="/lookup/{encodeURIComponent(ex.word)}"
+											class="radical-example-card"
+											aria-label="Look up {ex.word} — {ex.meaning}"
+										>
+											<span class="radical-example-char">{ex.word}</span>
+											<span class="radical-example-reading">{ex.reading}</span>
+											<span class="radical-example-meaning">{ex.meaning}</span>
+										</a>
+									{/each}
+								</div>
+							</section>
+						{/if}
+
+						{#if recipeCards.length > 0}
+							<section class="kanji-panel md:col-span-3">
+								<span class="kanji-panel-label">In action — kanji recipes</span>
+								<div class="mt-4 grid gap-2 md:grid-cols-2">
+									{#each recipeCards as recipe}
+										<div class="recipe-strip">
+											<span class="flex items-center gap-2">
+												<span class="formula-char">{data.item.character}</span>
+												<span class="formula-mark">+</span>
+												<span class="formula-char text-[var(--color-ink-mid)]">…</span>
+												<span class="formula-mark">=</span>
+												<span class="formula-char is-result">{recipe.kanji}</span>
+											</span>
+											<div class="flex flex-col items-end gap-0.5 text-right">
+												<span class="text-sm font-black text-[var(--color-ink)]">{recipe.meaning}</span>
+												{#if recipe.reading}
+													<span class="kana-study-type text-xs font-bold text-[var(--color-ink-ghost)]">{recipe.reading}</span>
+												{/if}
+											</div>
+										</div>
 									{/each}
 								</div>
 							</section>
@@ -973,7 +1098,8 @@
 		.learned-action-dot,
 		.pair-link,
 		.kanji-link,
-		.recipe-strip {
+		.recipe-strip,
+		.radical-example-card {
 			transition: none;
 		}
 		.learned-action:hover,
@@ -982,8 +1108,108 @@
 		.lesson-arrow:last-child:hover,
 		.pair-link:hover,
 		.kanji-link:hover,
-		.recipe-strip:hover {
+		.recipe-strip:hover,
+		.radical-example-card:hover {
 			transform: none;
 		}
+	}
+
+	/* ── Radical reference layout ─────────────────── */
+	.radical-reference {
+		text-align: left;
+	}
+
+	/* ── Mnemonic panel ───────────────────────────── */
+	.mnemonic-panel {
+		border-color: color-mix(in srgb, var(--detail-accent) 28%, var(--color-divider));
+		background:
+			linear-gradient(135deg, color-mix(in srgb, var(--detail-accent) 8%, transparent), transparent 55%),
+			color-mix(in srgb, var(--color-ink) 2.5%, var(--color-paper));
+	}
+
+	.mnemonic-text {
+		color: var(--color-ink);
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.7;
+		max-width: 68ch;
+	}
+
+	/* ── Variant chips ────────────────────────────── */
+	.variant-chip {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.4rem;
+		border: 1px solid color-mix(in srgb, var(--detail-accent) 35%, var(--color-divider));
+		border-radius: 0.6rem;
+		padding: 0.3rem 0.6rem;
+		background: color-mix(in srgb, var(--detail-accent) 10%, var(--color-paper));
+		font-family: var(--font-jp-brush);
+		font-size: 1.35rem;
+		font-weight: 900;
+		color: var(--detail-accent);
+		line-height: 1;
+	}
+
+	/* ── Radical tag chips ────────────────────────── */
+	.radical-tag-chip {
+		border: 1px solid var(--color-divider);
+		border-radius: 9999px;
+		padding: 0.2rem 0.65rem;
+		background: color-mix(in srgb, var(--color-ink) 4%, var(--color-paper));
+		color: var(--color-ink-ghost);
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	/* ── Radical example cards (tappable kanji chips) */
+	.radical-example-card {
+		display: grid;
+		grid-template-rows: auto auto auto;
+		gap: 0.15rem;
+		border: 1px solid var(--color-divider);
+		border-radius: 0.85rem;
+		padding: 0.85rem 1rem;
+		background: color-mix(in srgb, var(--color-paper) 90%, var(--detail-accent));
+		text-decoration: none;
+		transition:
+			border-color 180ms ease,
+			background 180ms ease,
+			transform 180ms var(--ease-out-expo);
+	}
+
+	.radical-example-card:hover,
+	.radical-example-card:focus-visible {
+		border-color: color-mix(in srgb, var(--detail-accent) 45%, var(--color-divider));
+		background: color-mix(in srgb, var(--detail-accent) 10%, var(--color-paper));
+		outline: none;
+		transform: translateY(-2px);
+	}
+
+	.radical-example-char {
+		font-family: var(--font-jp-brush);
+		font-size: 1.6rem;
+		font-weight: 900;
+		line-height: 1;
+		color: var(--color-ink);
+	}
+
+	.radical-example-reading {
+		font-family: var(--font-jp-brush);
+		font-size: 0.8rem;
+		font-weight: 700;
+		color: var(--color-ink-mid);
+		margin-top: 0.35rem;
+	}
+
+	.radical-example-meaning {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: var(--color-ink-ghost);
+		margin-top: 0.1rem;
 	}
 </style>

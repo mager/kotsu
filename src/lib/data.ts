@@ -411,49 +411,683 @@ const radicalsExtended: CardItem[] = [
 	{ character: '讠', romaji: 'yanbun', meaning: 'speech (simplified side)' }
 ];
 
-const radicalDetails: Record<string, Pick<CardItem, 'mnemonic' | 'variants' | 'tags' | 'recipes'>> = {
-	'人': { mnemonic: 'A standing person. On the left it compresses into 亻.', variants: ['亻'], tags: ['person', 'human'], recipes: [{ kanji: '休', reading: 'きゅう', meaning: 'rest', breakdown: '亻 + 木', clue: 'A person leaning on a tree is resting.' }, { kanji: '体', reading: 'たい', meaning: 'body', breakdown: '亻 + 本', clue: 'A person plus a central trunk gives the body.' }] },
-	'亻': { mnemonic: 'The slim left-side person radical. If you see it, think human action or state.', variants: ['人'], tags: ['person side', 'left-side'], recipes: [{ kanji: '作', reading: 'さく', meaning: 'make', breakdown: '亻 + 乍', clue: 'A making action starts with a person.' }, { kanji: '住', reading: 'じゅう', meaning: 'live / reside', breakdown: '亻 + 主', clue: 'A person plus master/base becomes dwelling.' }] },
-	'水': { mnemonic: 'A central stream with side branches. It almost always points to flow or liquid.', variants: ['氵'], tags: ['water', 'flow'], recipes: [{ kanji: '泉', reading: 'せん', meaning: 'spring', breakdown: '白 + 水', clue: 'White water bursting up becomes a spring.' }, { kanji: '永', reading: 'えい', meaning: 'eternity', breakdown: '丶 + 水-like flow', clue: 'The shape itself feels like water continuing.' }] },
-	'氵': { mnemonic: 'Three water drops on the left nearly always mean liquid, washing, sea, or river.', variants: ['水'], tags: ['water side', 'liquid'], recipes: [{ kanji: '海', reading: 'かい', meaning: 'sea', breakdown: '氵 + 每', clue: 'Water on the left gives the whole kanji an ocean feeling.' }, { kanji: '酒', reading: 'しゅ', meaning: 'sake / alcohol', breakdown: '氵 + 酉', clue: 'Liquid plus fermentation jar gives sake.' }] },
-	'火': { mnemonic: 'Open flame. At the bottom it often relaxes into four hot dots.', variants: ['灬'], tags: ['fire', 'heat'], recipes: [{ kanji: '炎', reading: 'えん', meaning: 'flame', breakdown: '火 + 火', clue: 'Two fires intensify into blaze.' }, { kanji: '灯', reading: 'とう', meaning: 'lamp', breakdown: '火 + 丁', clue: 'Fire with a small support becomes a lamp.' }] },
-	'灬': { mnemonic: 'Fire pushed to the bottom like glowing coals.', variants: ['火'], tags: ['fire bottom', 'heat'], recipes: [{ kanji: '熱', reading: 'ねつ', meaning: 'heat', breakdown: '埶 + 灬', clue: 'Those four dots at the base radiate heat.' }, { kanji: '魚', reading: 'ぎょ', meaning: 'fish', breakdown: 'fish body + 灬', clue: 'The bottom dots are a memorable anchor.' }] },
-	'木': { mnemonic: 'A trunk with branches — one of the cleanest semantic radicals.', tags: ['tree', 'wood'], recipes: [{ kanji: '林', reading: 'りん', meaning: 'woods', breakdown: '木 + 木', clue: 'Two trees make a grove.' }, { kanji: '森', reading: 'もり', meaning: 'forest', breakdown: '木 + 木 + 木', clue: 'Three trees turn the grove into forest.' }] },
-	'金': { mnemonic: 'Metal, gold, money, or hardness. Left form often compresses to 釒.', variants: ['釒'], tags: ['metal', 'money'], recipes: [{ kanji: '銀', reading: 'ぎん', meaning: 'silver', breakdown: '釒 + 艮', clue: 'Precious metals advertise themselves with the metal radical.' }, { kanji: '鉄', reading: 'てつ', meaning: 'iron', breakdown: '釒 + 失', clue: 'The metal side makes the material obvious.' }] },
-	'釒': { mnemonic: 'The left-side metal radical. Think coins, tools, blades, and minerals.', variants: ['金'], tags: ['metal side', 'left-side'], recipes: [{ kanji: '銅', reading: 'どう', meaning: 'copper', breakdown: '釒 + 同', clue: 'Metal side makes this a material kanji.' }, { kanji: '針', reading: 'しん', meaning: 'needle', breakdown: '釒 + 十', clue: 'A needle is a metal object, right in the radical.' }] },
-	'土': { mnemonic: 'Ground with a surface line and a packed base.', tags: ['earth', 'ground'], recipes: [{ kanji: '地', reading: 'ち', meaning: 'ground', breakdown: '土 + 也', clue: 'Earth on the left anchors the meaning.' }, { kanji: '場', reading: 'じょう', meaning: 'place', breakdown: '土 + 昜', clue: 'A place is literally grounded with 土.' }] },
-	'日': { mnemonic: 'The sun-box often signals day, light, time, or visibility.', tags: ['sun', 'time'], recipes: [{ kanji: '明', reading: 'めい', meaning: 'bright', breakdown: '日 + 月', clue: 'Sun plus moon makes brightness.' }, { kanji: '時', reading: 'じ', meaning: 'time', breakdown: '日 + 寺', clue: 'Time is built on the sun.' }] },
-	'月': { mnemonic: 'Usually moon, but on the left side it often means flesh/body.', tags: ['moon', 'body'], recipes: [{ kanji: '明', reading: 'めい', meaning: 'bright', breakdown: '日 + 月', clue: 'Sun and moon together light everything up.' }, { kanji: '服', reading: 'ふく', meaning: 'clothes / obey', breakdown: '月 + 𠬝', clue: 'The body-side moon often points at body-related meanings.' }] },
-	'山': { mnemonic: 'Three peaks. Hard to forget once you see the outline.', tags: ['mountain', 'terrain'], recipes: [{ kanji: '岩', reading: 'がん', meaning: 'boulder', breakdown: '山 + 石', clue: 'A mountain plus stone becomes rock.' }, { kanji: '島', reading: 'しま', meaning: 'island', breakdown: '山 + 鳥', clue: 'An island is mountain imagery rising from water.' }] },
-	'川': { mnemonic: 'Three current lines flowing in parallel.', tags: ['river', 'stream'], recipes: [{ kanji: '州', reading: 'しゅう', meaning: 'state / sandbank', breakdown: '川 + 丶 + 丶', clue: 'Add dots to the river and you get river land.' }, { kanji: '順', reading: 'じゅん', meaning: 'order', breakdown: 'stream-like left side + 頁', clue: 'The left side preserves a feeling of smooth flow.' }] },
-	'口': { mnemonic: 'A box you can read as mouth, opening, or container.', tags: ['box', 'mouth'], recipes: [{ kanji: '古', reading: 'こ', meaning: 'old', breakdown: '十 + 口', clue: 'An old story sits above a mouth.' }, { kanji: '知', reading: 'ち', meaning: 'know', breakdown: '矢 + 口', clue: 'Knowledge lands when the arrow reaches the mouth.' }] },
-	'目': { mnemonic: 'A vertical eye shape with lashes top and bottom.', tags: ['eye', 'look'], recipes: [{ kanji: '見', reading: 'けん', meaning: 'see', breakdown: '目 + 儿', clue: 'An eye on legs goes out to see.' }, { kanji: '相', reading: 'そう', meaning: 'mutual / appearance', breakdown: '木 + 目', clue: 'Tree plus eye suggests looking closely.' }] },
-	'手': { mnemonic: 'Open hand. On the left it compresses to 扌.', variants: ['扌'], tags: ['hand', 'action'], recipes: [{ kanji: '看', reading: 'かん', meaning: 'watch over', breakdown: '手 + 目', clue: 'A hand shading the eye helps you look.' }, { kanji: '手', reading: 'て', meaning: 'hand', breakdown: 'full form', clue: 'Keep this as the master shape for the side variant.' }] },
-	'扌': { mnemonic: 'Hand on the left means touch, throw, push, hold, or make.', variants: ['手'], tags: ['hand side', 'action'], recipes: [{ kanji: '持', reading: 'じ', meaning: 'hold', breakdown: '扌 + 寺', clue: 'The hand radical tells you the kanji is something you do with your hands.' }, { kanji: '投', reading: 'とう', meaning: 'throw', breakdown: '扌 + 殳', clue: 'Throwing starts with the hand radical.' }] },
-	'心': { mnemonic: 'Heart at full width; on the left it usually becomes 忄.', variants: ['忄'], tags: ['heart', 'emotion'], recipes: [{ kanji: '忍', reading: 'にん', meaning: 'endure', breakdown: '刃 + 心', clue: 'A blade over the heart is endurance.' }, { kanji: '思', reading: 'し', meaning: 'think', breakdown: '田 + 心', clue: 'A field of thought rests on the heart.' }] },
-	'忄': { mnemonic: 'Heart squeezed to the left side — almost always a feeling clue.', variants: ['心'], tags: ['heart side', 'emotion'], recipes: [{ kanji: '情', reading: 'じょう', meaning: 'emotion', breakdown: '忄 + 青', clue: 'The emotion radical makes the feeling explicit.' }, { kanji: '忙', reading: 'ぼう', meaning: 'busy', breakdown: '忄 + 亡', clue: 'Busy is the heart losing its center.' }] },
-	'力': { mnemonic: 'A bent shape carrying force.', tags: ['power', 'strength'], recipes: [{ kanji: '男', reading: 'だん', meaning: 'man', breakdown: '田 + 力', clue: 'Field plus strength was the old agrarian picture.' }, { kanji: '助', reading: 'じょ', meaning: 'help', breakdown: '且 + 力', clue: 'Help adds strength.' }] },
-	'田': { mnemonic: 'A neatly divided rice field — also reads like grids and plots.', tags: ['field', 'grid'], recipes: [{ kanji: '男', reading: 'だん', meaning: 'man', breakdown: '田 + 力', clue: 'Field plus strength was the old picture.' }, { kanji: '町', reading: 'ちょう', meaning: 'town block', breakdown: '田 + 丁', clue: 'A town block feels like measured fields.' }] },
-	'女': { mnemonic: 'Woman often carries meanings of relation, softness, or old social roles.', tags: ['woman', 'relation'], recipes: [{ kanji: '好', reading: 'こう', meaning: 'like', breakdown: '女 + 子', clue: 'Woman plus child became the old picture for affection.' }, { kanji: '安', reading: 'あん', meaning: 'peaceful', breakdown: '宀 + 女', clue: 'A woman under a roof suggested calm and safety.' }] },
-	'子': { mnemonic: 'A child with head, arms, and legs tucked in.', tags: ['child', 'seed'], recipes: [{ kanji: '学', reading: 'がく', meaning: 'study', breakdown: '⺍ + 冖 + 子', clue: 'A child under a roof becomes learning.' }, { kanji: '字', reading: 'じ', meaning: 'character', breakdown: '宀 + 子', clue: 'A child under a roof became the idea of literacy.' }] },
-	'糸': { mnemonic: 'Thread in full width; side form usually becomes 糹 in Japanese.', variants: ['糹', '纟'], tags: ['thread', 'fabric'], recipes: [{ kanji: '紙', reading: 'し', meaning: 'paper', breakdown: '糹 + 氏', clue: 'Paper starts with thread or fiber.' }, { kanji: '系', reading: 'けい', meaning: 'system / lineage', breakdown: 'thread-derived form', clue: 'Thread becomes the metaphor for lines and systems.' }] },
-	'言': { mnemonic: 'A tongue of lines stacked above a mouth-like base.', variants: ['訁'], tags: ['speech', 'words'], recipes: [{ kanji: '語', reading: 'ご', meaning: 'language', breakdown: '言 + 吾', clue: 'Speech radical makes the whole kanji about words.' }, { kanji: '話', reading: 'わ', meaning: 'talk', breakdown: '言 + 舌', clue: 'Talking starts with the speech radical.' }] },
-	'訁': { mnemonic: 'Speech squeezed onto the left edge.', variants: ['言'], tags: ['speech side', 'left-side'], recipes: [{ kanji: '計', reading: 'けい', meaning: 'measure / plan', breakdown: '訁 + 十', clue: 'Words on the left often mark speaking, stating, planning.' }, { kanji: '試', reading: 'し', meaning: 'test / try', breakdown: '訁 + 式', clue: 'A test is framed as something stated or tried.' }] },
-	'食': { mnemonic: 'The full food radical. Left forms often compress to 飠.', variants: ['飠'], tags: ['food', 'eat'], recipes: [{ kanji: '飯', reading: 'はん', meaning: 'meal / rice', breakdown: '食 + 反', clue: 'Food radical up front tells you it is edible.' }, { kanji: '館', reading: 'かん', meaning: 'hall / building', breakdown: '食 + 官', clue: 'Historically tied to eating halls and lodgings.' }] },
-	'飠': { mnemonic: 'Food radical in component form, usually hugging the left side.', variants: ['食'], tags: ['food side', 'left-side'], recipes: [{ kanji: '飲', reading: 'いん', meaning: 'drink', breakdown: '飠 + 欠', clue: 'Food-side marks ingestion, even for drinks.' }, { kanji: '餓', reading: 'が', meaning: 'starve', breakdown: '飠 + 我', clue: 'Without food, the semantic clue lands fast.' }] },
-	'車': { mnemonic: 'A wheel-and-axle cart seen from above.', tags: ['vehicle', 'wheel'], recipes: [{ kanji: '転', reading: 'てん', meaning: 'turn', breakdown: '車 + 云', clue: 'Vehicle radical makes motion easy to feel.' }, { kanji: '軽', reading: 'けい', meaning: 'lightweight', breakdown: '車 + 圣', clue: 'Transport and movement kanji often start with 車.' }] },
-	'門': { mnemonic: 'A double door you can open, close, enter, and hear through.', tags: ['gate', 'door'], recipes: [{ kanji: '聞', reading: 'ぶん', meaning: 'hear / ask', breakdown: '門 + 耳', clue: 'An ear at the gate listens.' }, { kanji: '間', reading: 'かん', meaning: 'interval / space', breakdown: '門 + 日', clue: 'The sun seen between gate doors becomes a gap.' }] },
-	'雨': { mnemonic: 'Sky line, window frame, and drops underneath.', tags: ['rain', 'weather'], recipes: [{ kanji: '雪', reading: 'ゆき', meaning: 'snow', breakdown: '雨 + 彗 lower form', clue: 'Rain radical on top almost always signals weather.' }, { kanji: '電', reading: 'でん', meaning: 'electricity', breakdown: '雨 + 申', clue: 'Lightning belongs under the rain canopy.' }] },
-	'宀': { mnemonic: 'A roof radical — shelter, home, storehouse, or protected space.', tags: ['roof', 'shelter'], recipes: [{ kanji: '安', reading: 'あん', meaning: 'peaceful', breakdown: '宀 + 女', clue: 'Roof above gives safety.' }, { kanji: '家', reading: 'か', meaning: 'house', breakdown: '宀 + 豕', clue: 'A roof is the instant clue that this kanji is about housed space.' }] },
-	'艹': { mnemonic: 'Grass crown across the top — plants, herbs, flowers, growth.', tags: ['grass top', 'plant'], recipes: [{ kanji: '花', reading: 'か', meaning: 'flower', breakdown: '艹 + 化', clue: 'Plant crown means something botanical is coming.' }, { kanji: '茶', reading: 'ちゃ', meaning: 'tea', breakdown: '艹 + 人 + 木', clue: 'Tea starts with the grass radical.' }] },
-	'辶': { mnemonic: 'The trailing road radical — think motion with a path behind it.', variants: ['⻌'], tags: ['movement', 'road'], recipes: [{ kanji: '近', reading: 'きん', meaning: 'near', breakdown: '斤 + 辶', clue: 'Add the movement trail and the meaning shifts into location.' }, { kanji: '道', reading: 'どう', meaning: 'road / way', breakdown: '首 + 辶', clue: 'A path radical almost always signals movement or travel.' }] },
-	'⻌': { mnemonic: 'Visual variant of shinnyou. Same motion signal, slightly different print shape.', variants: ['辶'], tags: ['movement variant', 'path'], recipes: [{ kanji: '週', reading: 'しゅう', meaning: 'week', breakdown: '周 + ⻌', clue: 'The walking trail wraps the cycle.' }, { kanji: '追', reading: 'つい', meaning: 'chase', breakdown: '𠂤 + ⻌', clue: 'Chasing is movement plus pursuit.' }] },
-	'石': { mnemonic: 'A cliff with a mouth-like stone block below.', tags: ['stone', 'mineral'], recipes: [{ kanji: '岩', reading: 'がん', meaning: 'boulder', breakdown: '山 + 石', clue: 'Mountain plus stone gives rock.' }, { kanji: '研', reading: 'けん', meaning: 'polish / grind', breakdown: '石 + 开', clue: 'Stone often points to minerals or grinding.' }] },
-	'禾': { mnemonic: 'A grain stalk with a drooping head.', tags: ['grain', 'crop'], recipes: [{ kanji: '秋', reading: 'しゅう', meaning: 'autumn', breakdown: '禾 + 火', clue: 'Harvest grain plus fire gives the season of drying and burning.' }, { kanji: '科', reading: 'か', meaning: 'department / subject', breakdown: '禾 + 斗', clue: 'The grain radical often appears in crop or classification kanji.' }] },
-	'竹': { mnemonic: 'Full bamboo; at the top it often shrinks to ⺮.', variants: ['⺮'], tags: ['bamboo', 'top radical'], recipes: [{ kanji: '答', reading: 'とう', meaning: 'answer', breakdown: '⺮ + 合', clue: 'The bamboo top is the giveaway in the compact form.' }, { kanji: '第', reading: 'だい', meaning: 'ordinal number', breakdown: '⺮ + 弟', clue: 'Twin leaves at the top usually mean bamboo.' }] },
-	'耳': { mnemonic: 'The ear shape is literal enough to memorize visually.', tags: ['ear', 'hearing'], recipes: [{ kanji: '聞', reading: 'ぶん', meaning: 'hear / ask', breakdown: '門 + 耳', clue: 'An ear at the gate is listening.' }, { kanji: '職', reading: 'しょく', meaning: 'job', breakdown: '耳 + 戠', clue: 'The ear component is the visual anchor on the left.' }] },
-	'足': { mnemonic: 'Foot extends to legs, steps, dancing, and sufficiency.', tags: ['foot', 'movement'], recipes: [{ kanji: '路', reading: 'ろ', meaning: 'road', breakdown: '足 + 各', clue: 'Roads are made for feet.' }, { kanji: '踊', reading: 'よう', meaning: 'dance', breakdown: '足 + 甬', clue: 'If it dances, expect the foot radical.' }] },
-	'阝': { mnemonic: 'Two radicals in disguise: left-side usually means hill, right-side usually means city.', variants: ['⻖', '⻏'], tags: ['hill or city', 'side-sensitive'], recipes: [{ kanji: '院', reading: 'いん', meaning: 'institution', breakdown: '阝(left hill) + 完', clue: 'On the left, read terrain or built place.' }, { kanji: '都', reading: 'と', meaning: 'capital city', breakdown: '者 + 阝(right city)', clue: 'On the right, it usually signals town or city.' }] }
+const radicalDetails: Record<string, Pick<CardItem, 'mnemonic' | 'variants' | 'tags' | 'recipes' | 'etymology' | 'examples'>> = {
+	'人': {
+		mnemonic: 'Two legs in profile — a person walking. When pressed to the left side it becomes the slimmer 亻 stroke.',
+		etymology: 'A pictograph of a standing human being in profile, one of the most ancient oracle-bone graphs. The two-stroke form abstracts the torso and legs of someone upright. Almost every kanji involving people, roles, or human actions carries this shape or its side variant 亻.',
+		variants: ['亻'],
+		tags: ['person', 'human'],
+		examples: [{ word: '人', reading: 'ひと', meaning: 'person' }, { word: '人気', reading: 'にんき', meaning: 'popularity' }, { word: '外国人', reading: 'がいこくじん', meaning: 'foreigner' }],
+		recipes: [{ kanji: '休', reading: 'きゅう', meaning: 'rest', breakdown: '亻 + 木', clue: 'A person leaning on a tree is resting.' }, { kanji: '体', reading: 'たい', meaning: 'body', breakdown: '亻 + 本', clue: 'A person plus a central trunk gives the body.' }]
+	},
+	'亻': {
+		mnemonic: 'The slim left-side person radical — a leaning stroke and a vertical. If you see it, something human is happening.',
+		etymology: 'A compressed form of 人 designed to fit the left side of a character without crowding the right component. The two-stroke shape retains the original standing-person silhouette. It marks nearly all kanji about human actions, states, and social roles.',
+		variants: ['人'],
+		tags: ['person side', 'left-side'],
+		examples: [{ word: '作る', reading: 'つくる', meaning: 'to make' }, { word: '住む', reading: 'すむ', meaning: 'to live / reside' }, { word: '働く', reading: 'はたらく', meaning: 'to work' }],
+		recipes: [{ kanji: '作', reading: 'さく', meaning: 'make', breakdown: '亻 + 乍', clue: 'A making action starts with a person.' }, { kanji: '住', reading: 'じゅう', meaning: 'live / reside', breakdown: '亻 + 主', clue: 'A person plus master/base becomes dwelling.' }]
+	},
+	'水': {
+		mnemonic: 'A central current with two branching streams — the full river cross-section. It almost always points to flow or liquid.',
+		etymology: 'A pictograph of flowing water seen from above: a central channel with rippling side branches. One of the most productive radicals in Chinese and Japanese script. When placed on the left side of a character it compresses into the three-dot form 氵.',
+		variants: ['氵'],
+		tags: ['water', 'flow'],
+		examples: [{ word: '水', reading: 'みず', meaning: 'water' }, { word: '水曜日', reading: 'すいようび', meaning: 'Wednesday' }, { word: '洪水', reading: 'こうずい', meaning: 'flood' }],
+		recipes: [{ kanji: '泉', reading: 'せん', meaning: 'spring', breakdown: '白 + 水', clue: 'White water bursting up becomes a spring.' }, { kanji: '永', reading: 'えい', meaning: 'eternity', breakdown: '丶 + water-like flow', clue: 'The shape itself feels like water continuing forever.' }]
+	},
+	'氵': {
+		mnemonic: 'Three drops of water stacked down the left side. If you see them, expect liquid, washing, sea, or river.',
+		etymology: 'The compressed left-side form of 水. Three vertical dots represent splashing or dripping water and were standardized during the clerical script era to save horizontal space. It signals the same semantic category as the full 水 but almost always in that left-column position.',
+		variants: ['水'],
+		tags: ['water side', 'liquid'],
+		examples: [{ word: '海', reading: 'うみ', meaning: 'sea' }, { word: '酒', reading: 'さけ', meaning: 'sake / alcohol' }, { word: '温泉', reading: 'おんせん', meaning: 'hot spring' }],
+		recipes: [{ kanji: '海', reading: 'かい', meaning: 'sea', breakdown: '氵 + 每', clue: 'Water on the left gives the whole kanji an ocean feeling.' }, { kanji: '酒', reading: 'しゅ', meaning: 'sake / alcohol', breakdown: '氵 + 酉', clue: 'Liquid plus fermentation jar gives sake.' }]
+	},
+	'火': {
+		mnemonic: 'An open flame: one central stroke rising with two sparks flying off each side. At the bottom it relaxes into four hot dots 灬.',
+		etymology: 'A pictograph of a flame — the central vertical stroke is the main fire, and the two diagonal strokes are sparks or tongues of flame. One of the six primal element radicals in Classical Chinese. In compound kanji it sometimes shifts to the four-dot bottom form 灬 when stacked below another component.',
+		variants: ['灬'],
+		tags: ['fire', 'heat'],
+		examples: [{ word: '火', reading: 'ひ', meaning: 'fire' }, { word: '火曜日', reading: 'かようび', meaning: 'Tuesday' }, { word: '花火', reading: 'はなび', meaning: 'fireworks' }],
+		recipes: [{ kanji: '炎', reading: 'えん', meaning: 'flame', breakdown: '火 + 火', clue: 'Two fires intensify into blaze.' }, { kanji: '灯', reading: 'とう', meaning: 'lamp', breakdown: '火 + 丁', clue: 'Fire with a small support becomes a lamp.' }]
+	},
+	'灬': {
+		mnemonic: 'Four hot dots at the base of a kanji — fire pushed underground like glowing coals under a pot.',
+		etymology: 'The bottom-position variant of 火 (fire). When fire appears beneath another element, the upright flame shape cannot fit, so it flattens into four dots — historically representing the tips of four flames. Common under cooking and heating kanji.',
+		variants: ['火'],
+		tags: ['fire bottom', 'heat'],
+		examples: [{ word: '熱い', reading: 'あつい', meaning: 'hot' }, { word: '照る', reading: 'てる', meaning: 'to shine' }, { word: '煮る', reading: 'にる', meaning: 'to boil / cook' }],
+		recipes: [{ kanji: '熱', reading: 'ねつ', meaning: 'heat', breakdown: '埶 + 灬', clue: 'Those four dots at the base radiate heat.' }, { kanji: '黒', reading: 'くろ', meaning: 'black', breakdown: '里 + 灬', clue: 'Soot from fire creates the idea of black.' }]
+	},
+	'木': {
+		mnemonic: 'A tree trunk with branches reaching up and roots spreading down. One of the cleanest pictographic radicals.',
+		etymology: 'A direct pictograph of a tree: the vertical stroke is the trunk, the horizontal stroke is the canopy or a major branch, and the two diagonal strokes represent roots. The character has remained visually faithful to its origin for over three thousand years.',
+		tags: ['tree', 'wood'],
+		examples: [{ word: '木', reading: 'き', meaning: 'tree / wood' }, { word: '木曜日', reading: 'もくようび', meaning: 'Thursday' }, { word: '木材', reading: 'もくざい', meaning: 'lumber / timber' }],
+		recipes: [{ kanji: '林', reading: 'りん', meaning: 'woods', breakdown: '木 + 木', clue: 'Two trees make a grove.' }, { kanji: '森', reading: 'もり', meaning: 'forest', breakdown: '木 + 木 + 木', clue: 'Three trees turn the grove into forest.' }]
+	},
+	'金': {
+		mnemonic: 'Metal, gold, money, or hardness. Picture nuggets of gold buried under a mound with a roof overhead — stored treasure.',
+		etymology: 'Originally depicted a mound of earth with gold nuggets buried beneath and a cover above — the image of precious metal hidden underground. Over time the form stabilized into the current shape. It covers all metals and hard materials, not just gold. The left-side compressed form is 釒.',
+		variants: ['釒'],
+		tags: ['metal', 'money'],
+		examples: [{ word: '金', reading: 'かね', meaning: 'money / gold' }, { word: '金曜日', reading: 'きんようび', meaning: 'Friday' }, { word: '金属', reading: 'きんぞく', meaning: 'metal' }],
+		recipes: [{ kanji: '銀', reading: 'ぎん', meaning: 'silver', breakdown: '釒 + 艮', clue: 'Precious metals advertise themselves with the metal radical.' }, { kanji: '鉄', reading: 'てつ', meaning: 'iron', breakdown: '釒 + 失', clue: 'The metal side makes the material obvious.' }]
+	},
+	'釒': {
+		mnemonic: 'The left-side metal radical, squeezed to three strokes. Think coins, tools, blades, and minerals whenever you see it.',
+		etymology: 'The compressed component form of 金. During the regular script era, the full 金 was too wide for the left column of a compound character, so scribes condensed it to a two-part vertical shape. It carries exactly the same semantic range — all metals and metallic objects.',
+		variants: ['金'],
+		tags: ['metal side', 'left-side'],
+		examples: [{ word: '銅', reading: 'どう', meaning: 'copper' }, { word: '針', reading: 'はり', meaning: 'needle' }, { word: '鏡', reading: 'かがみ', meaning: 'mirror' }],
+		recipes: [{ kanji: '銅', reading: 'どう', meaning: 'copper', breakdown: '釒 + 同', clue: 'Metal side makes this a material kanji.' }, { kanji: '針', reading: 'しん', meaning: 'needle', breakdown: '釒 + 十', clue: 'A needle is a metal object, right in the radical.' }]
+	},
+	'土': {
+		mnemonic: 'A mound of earth with a flat surface on top and a solid base below. Ground you can stand on.',
+		etymology: 'A pictograph of a clod of earth or a grave mound — the horizontal top stroke is the ground surface, and the vertical stroke with base represents the compacted earth below. Widely used to indicate soil, earthen construction, and land.',
+		tags: ['earth', 'ground'],
+		examples: [{ word: '土', reading: 'つち', meaning: 'earth / soil' }, { word: '土曜日', reading: 'どようび', meaning: 'Saturday' }, { word: '土地', reading: 'とち', meaning: 'land / plot' }],
+		recipes: [{ kanji: '地', reading: 'ち', meaning: 'ground', breakdown: '土 + 也', clue: 'Earth on the left anchors the meaning.' }, { kanji: '場', reading: 'じょう', meaning: 'place', breakdown: '土 + 昜', clue: 'A place is literally grounded with 土.' }]
+	},
+	'日': {
+		mnemonic: 'The sun drawn as a box with a central line — that horizontal stroke is the shimmer or the disc of the sun.',
+		etymology: 'A pictograph of the sun: originally a circle with a central dot, the dot evolved into a horizontal bar and the circle squared off in clerical script. One of the most productive radicals, appearing in kanji about time, light, days, and visibility.',
+		tags: ['sun', 'time'],
+		examples: [{ word: '日', reading: 'ひ', meaning: 'sun / day' }, { word: '日曜日', reading: 'にちようび', meaning: 'Sunday' }, { word: '毎日', reading: 'まいにち', meaning: 'every day' }],
+		recipes: [{ kanji: '明', reading: 'めい', meaning: 'bright', breakdown: '日 + 月', clue: 'Sun plus moon makes brightness.' }, { kanji: '時', reading: 'じ', meaning: 'time', breakdown: '日 + 寺', clue: 'Time is built on the sun.' }]
+	},
+	'月': {
+		mnemonic: 'A crescent moon with two horizontal strokes inside — the curved shape of the waxing moon. On the left side of kanji it often means flesh or body instead.',
+		etymology: 'A pictograph of the crescent moon. The two internal strokes were originally a single dot representing the moon\'s highlights. In compound kanji, 月 appears both in its astronomical meaning (moon, month) and in a body/flesh meaning — the latter is historically a different character 肉 (meat/flesh) that merged in form with 月 during script simplification.',
+		tags: ['moon', 'body'],
+		examples: [{ word: '月', reading: 'つき', meaning: 'moon / month' }, { word: '月曜日', reading: 'げつようび', meaning: 'Monday' }, { word: '毎月', reading: 'まいつき', meaning: 'every month' }],
+		recipes: [{ kanji: '明', reading: 'めい', meaning: 'bright', breakdown: '日 + 月', clue: 'Sun and moon together light everything up.' }, { kanji: '朝', reading: 'ちょう', meaning: 'morning', breakdown: '倝 + 月', clue: 'Moon still visible as the day begins.' }]
+	},
+	'山': {
+		mnemonic: 'Three peaks rising from a baseline — the silhouette of a mountain range. Impossible to forget once you see it.',
+		etymology: 'A direct pictograph of three mountain peaks: the tall central peak flanked by two lower ones. Ancient oracle-bone versions show a rougher outline that was later formalized into the three vertical strokes. One of the most universally recognizable pictographic radicals.',
+		tags: ['mountain', 'terrain'],
+		examples: [{ word: '山', reading: 'やま', meaning: 'mountain' }, { word: '富士山', reading: 'ふじさん', meaning: 'Mt. Fuji' }, { word: '火山', reading: 'かざん', meaning: 'volcano' }],
+		recipes: [{ kanji: '岩', reading: 'がん', meaning: 'boulder', breakdown: '山 + 石', clue: 'A mountain plus stone becomes rock.' }, { kanji: '島', reading: 'しま', meaning: 'island', breakdown: '山 + 鳥', clue: 'An island is a mountain rising from the water.' }]
+	},
+	'川': {
+		mnemonic: 'Three lines flowing in parallel — the two banks and the current between them.',
+		etymology: 'A pictograph of a river shown as three parallel current lines. Oracle-bone script shows wavy strokes representing water channels. The kanji 川 is used for rivers in names (Sumida-gawa, etc.) and serves as the radical for river-related characters.',
+		tags: ['river', 'stream'],
+		examples: [{ word: '川', reading: 'かわ', meaning: 'river' }, { word: '川岸', reading: 'かわぎし', meaning: 'riverbank' }, { word: '小川', reading: 'おがわ', meaning: 'stream / brook' }],
+		recipes: [{ kanji: '州', reading: 'しゅう', meaning: 'state / sandbank', breakdown: '川 + dots', clue: 'Add sand-dots to the river and you get a sandbar or province.' }, { kanji: '巡', reading: 'じゅん', meaning: 'patrol / tour', breakdown: 'river + movement', clue: 'Patrolling follows a flowing course.' }]
+	},
+	'口': {
+		mnemonic: 'A simple open square — a mouth, an opening, or any boxed container. The most versatile small-shape in kanji.',
+		etymology: 'A pictograph of an open mouth or opening: the square represents lips parted and the empty interior is the oral cavity. One of the highest-frequency radicals, 口 appears not only in speech and eating kanji but also in any character built around a box shape.',
+		tags: ['mouth', 'opening'],
+		examples: [{ word: '口', reading: 'くち', meaning: 'mouth' }, { word: '入口', reading: 'いりぐち', meaning: 'entrance' }, { word: '出口', reading: 'でぐち', meaning: 'exit' }],
+		recipes: [{ kanji: '古', reading: 'こ', meaning: 'old', breakdown: '十 + 口', clue: 'An old story piled above a mouth.' }, { kanji: '知', reading: 'ち', meaning: 'know', breakdown: '矢 + 口', clue: 'Knowledge lands when the arrow reaches the mouth.' }]
+	},
+	'目': {
+		mnemonic: 'A vertical eye with two lash-strokes inside. Tilt the box 90° and you have a human eye in profile.',
+		etymology: 'A pictograph of a human eye — originally drawn horizontally as an almond shape with the pupil inside, then rotated 90° during the standardization of Chinese script. The two horizontal strokes inside represent the iris and pupil. It signals sight, observation, and anything eye-related.',
+		tags: ['eye', 'look'],
+		examples: [{ word: '目', reading: 'め', meaning: 'eye' }, { word: '目的', reading: 'もくてき', meaning: 'purpose / goal' }, { word: '注目', reading: 'ちゅうもく', meaning: 'attention / notice' }],
+		recipes: [{ kanji: '見', reading: 'けん', meaning: 'see', breakdown: '目 + 儿', clue: 'An eye on legs goes out to see.' }, { kanji: '相', reading: 'そう', meaning: 'mutual / appearance', breakdown: '木 + 目', clue: 'Gazing at a tree — looking closely at appearances.' }]
+	},
+	'手': {
+		mnemonic: 'Open hand with five fingers spread, condensed into three strokes. On the left side it becomes the compact 扌.',
+		etymology: 'A pictograph of an open hand: the three horizontal strokes represent the fingers, and the downward stroke is the thumb or wrist. In oracle-bone and bronze inscriptions it shows a more recognizable five-fingered hand. It marks kanji involving touch, making, throwing, and all manual actions.',
+		variants: ['扌'],
+		tags: ['hand', 'action'],
+		examples: [{ word: '手', reading: 'て', meaning: 'hand' }, { word: '手紙', reading: 'てがみ', meaning: 'letter' }, { word: '上手', reading: 'じょうず', meaning: 'skilled / good at' }],
+		recipes: [{ kanji: '看', reading: 'かん', meaning: 'watch over', breakdown: '手 + 目', clue: 'A hand shading the eye helps you look out.' }, { kanji: '拳', reading: 'けん', meaning: 'fist', breakdown: '手 components', clue: 'The hand concept underpins the whole kanji.' }]
+	},
+	'扌': {
+		mnemonic: 'A hand on the left — one horizontal and one vertical stroke with a hooking curve. Touch, throw, push, hold, or make.',
+		etymology: 'The compressed left-side form of 手 (hand). The three-stroke shape fits the left column without crowding. It identifies kanji about manual actions — gripping, throwing, striking, crafting — and is one of the most common left-side radicals in the entire script.',
+		variants: ['手'],
+		tags: ['hand side', 'left-side'],
+		examples: [{ word: '持つ', reading: 'もつ', meaning: 'to hold' }, { word: '投げる', reading: 'なげる', meaning: 'to throw' }, { word: '押す', reading: 'おす', meaning: 'to push' }],
+		recipes: [{ kanji: '持', reading: 'じ', meaning: 'hold', breakdown: '扌 + 寺', clue: 'The hand radical tells you the kanji is something you do with your hands.' }, { kanji: '投', reading: 'とう', meaning: 'throw', breakdown: '扌 + 殳', clue: 'Throwing starts with the hand radical.' }]
+	},
+	'心': {
+		mnemonic: 'The heart at full width — three flowing strokes that suggest a beating pulse. On the left it compresses to the two-stroke 忄.',
+		etymology: 'A pictograph of the human heart: originally more anatomical, showing the heart with two atria and a pointed bottom. Over time the shape smoothed into three curved strokes. In East Asian medicine, the heart was considered the seat of thought and emotion both — hence 心 covers both cardiac and psychological meanings.',
+		variants: ['忄'],
+		tags: ['heart', 'mind', 'emotion'],
+		examples: [{ word: '心', reading: 'こころ', meaning: 'heart / mind' }, { word: '心配', reading: 'しんぱい', meaning: 'worry' }, { word: '安心', reading: 'あんしん', meaning: 'peace of mind' }],
+		recipes: [{ kanji: '忍', reading: 'にん', meaning: 'endure', breakdown: '刃 + 心', clue: 'A blade over the heart is the picture of endurance.' }, { kanji: '思', reading: 'し', meaning: 'think', breakdown: '田 + 心', clue: 'A field of thought growing from the heart.' }]
+	},
+	'忄': {
+		mnemonic: 'Heart pressed to the left side — almost always a feeling or mental-state clue sitting right at the edge of the character.',
+		etymology: 'The compressed left-side form of 心 (heart/mind). The two-stroke shape loses some of the pulse-like quality but retains the semantic category completely. It marks virtually every kanji about emotional states, feelings, and mental conditions.',
+		variants: ['心'],
+		tags: ['heart side', 'emotion'],
+		examples: [{ word: '情', reading: 'じょう', meaning: 'emotion / feeling' }, { word: '忙しい', reading: 'いそがしい', meaning: 'busy' }, { word: '悩む', reading: 'なやむ', meaning: 'to worry / be troubled' }],
+		recipes: [{ kanji: '情', reading: 'じょう', meaning: 'emotion', breakdown: '忄 + 青', clue: 'The emotion radical makes the feeling explicit.' }, { kanji: '忙', reading: 'ぼう', meaning: 'busy', breakdown: '忄 + 亡', clue: 'Busy is the heart losing its center.' }]
+	},
+	'力': {
+		mnemonic: 'A bent arm muscle — the curve of a flexed bicep carrying tension and force.',
+		etymology: 'A pictograph of a muscular arm bent at the elbow, representing physical strength. Oracle-bone versions show a more recognizable flexed arm. In compound kanji it marks strength, effort, ability, and power — both literal (physical exertion) and abstract (influence, capability).',
+		tags: ['power', 'strength'],
+		examples: [{ word: '力', reading: 'ちから', meaning: 'power / strength' }, { word: '努力', reading: 'どりょく', meaning: 'effort' }, { word: '体力', reading: 'たいりょく', meaning: 'physical strength' }],
+		recipes: [{ kanji: '男', reading: 'だん', meaning: 'man', breakdown: '田 + 力', clue: 'Field plus strength was the old agrarian picture of man.' }, { kanji: '助', reading: 'じょ', meaning: 'help', breakdown: '且 + 力', clue: 'Adding strength to someone helps them.' }]
+	},
+	'田': {
+		mnemonic: 'A rice paddy divided by paths into four plots — the grid of traditional East Asian agriculture.',
+		etymology: 'A top-down pictograph of a rice paddy field divided into four sections by earthen paths (the cross inside the square). Agriculture was the foundation of ancient Chinese civilization and this character appears in countless place names, surnames, and compound kanji relating to land, areas, and grids.',
+		tags: ['field', 'grid'],
+		examples: [{ word: '田', reading: 'た', meaning: 'rice field' }, { word: '田舎', reading: 'いなか', meaning: 'countryside' }, { word: '水田', reading: 'すいでん', meaning: 'paddy field' }],
+		recipes: [{ kanji: '男', reading: 'だん', meaning: 'man', breakdown: '田 + 力', clue: 'A man works the field with strength.' }, { kanji: '町', reading: 'ちょう', meaning: 'town block', breakdown: '田 + 丁', clue: 'Measured plots of land become a town block.' }]
+	},
+	'女': {
+		mnemonic: 'A figure kneeling with arms crossed — the original depicted a woman with hands folded in a seated posture.',
+		etymology: 'A pictograph of a kneeling or seated woman with arms crossed in a posture of respect or calm, common in ancient bronze inscriptions. The abstract strokes preserve the crossed-arms quality. It marks kanji about women, family roles, and traditionally female associations.',
+		tags: ['woman', 'relation'],
+		examples: [{ word: '女', reading: 'おんな', meaning: 'woman' }, { word: '女性', reading: 'じょせい', meaning: 'female / woman' }, { word: '彼女', reading: 'かのじょ', meaning: 'she / girlfriend' }],
+		recipes: [{ kanji: '好', reading: 'こう', meaning: 'like', breakdown: '女 + 子', clue: 'Woman plus child became the old picture for affection.' }, { kanji: '安', reading: 'あん', meaning: 'peaceful', breakdown: '宀 + 女', clue: 'A woman under a roof suggested calm and safety.' }]
+	},
+	'子': {
+		mnemonic: 'A baby with a round head, outstretched arms, and legs bundled together — the universal newborn silhouette.',
+		etymology: 'A pictograph of an infant: the round top is the head, the horizontal stroke represents arms reaching out, and the curved or vertical bottom represents legs wrapped tightly (as newborns are swaddled). It covers children, offspring, and seeds — both biological and metaphorical.',
+		tags: ['child', 'seed'],
+		examples: [{ word: '子', reading: 'こ', meaning: 'child' }, { word: '子供', reading: 'こども', meaning: 'children' }, { word: '様子', reading: 'ようす', meaning: 'situation / appearance' }],
+		recipes: [{ kanji: '学', reading: 'がく', meaning: 'study', breakdown: '⺍ + 冖 + 子', clue: 'A child under a roof becomes learning.' }, { kanji: '字', reading: 'じ', meaning: 'written character', breakdown: '宀 + 子', clue: 'A child under a roof became the idea of literacy.' }]
+	},
+	'糸': {
+		mnemonic: 'A skein of silk thread: two intertwined strands at the top tapering to a twist at the base. Anything woven or fibrous.',
+		etymology: 'A pictograph of a skein of raw silk thread, showing the twisted bundle at the top and the loose tail below. Silk was a major commodity in ancient China, and this radical covers thread, fabric, textile processes, and by extension anything wound, connected, or continuous. The side form in Japanese is 糹.',
+		variants: ['糹'],
+		tags: ['thread', 'fabric'],
+		examples: [{ word: '糸', reading: 'いと', meaning: 'thread' }, { word: '絵', reading: 'え', meaning: 'picture / painting' }, { word: '続く', reading: 'つづく', meaning: 'to continue' }],
+		recipes: [{ kanji: '紙', reading: 'し', meaning: 'paper', breakdown: '糹 + 氏', clue: 'Paper starts with thread or fiber.' }, { kanji: '絵', reading: 'え', meaning: 'picture', breakdown: '糹 + 会', clue: 'A picture is woven from colors and lines.' }]
+	},
+	'言': {
+		mnemonic: 'A tongue-like line above a mouth: speech rising from below. Every kanji about words, saying, and language starts here.',
+		etymology: 'Composed of 口 (mouth) at the base with multiple stroke-lines above representing sound waves or the tongue in motion — the ancient way of picturing speech emerging from a mouth. One of the most productive semantic radicals for linguistic and communicative concepts. Left-side form is 訁.',
+		variants: ['訁'],
+		tags: ['speech', 'words'],
+		examples: [{ word: '言葉', reading: 'ことば', meaning: 'words / language' }, { word: '言う', reading: 'いう', meaning: 'to say' }, { word: '方言', reading: 'ほうげん', meaning: 'dialect' }],
+		recipes: [{ kanji: '語', reading: 'ご', meaning: 'language', breakdown: '言 + 吾', clue: 'Speech radical makes the whole kanji about words.' }, { kanji: '話', reading: 'わ', meaning: 'talk', breakdown: '言 + 舌', clue: 'Tongue plus speech radical equals talking.' }]
+	},
+	'訁': {
+		mnemonic: 'Speech pressed to the left edge — a quick two-stroke shorthand. Wherever it appears, the kanji is about something spoken, written, or communicated.',
+		etymology: 'The compressed left-side component form of 言 (speech/words). Designed to fit the left column of compound characters during the regular script standardization. It carries the same full semantic range as 言 — language, speaking, records, and communication.',
+		variants: ['言'],
+		tags: ['speech side', 'left-side'],
+		examples: [{ word: '語る', reading: 'かたる', meaning: 'to tell / narrate' }, { word: '計画', reading: 'けいかく', meaning: 'plan' }, { word: '試験', reading: 'しけん', meaning: 'exam / test' }],
+		recipes: [{ kanji: '計', reading: 'けい', meaning: 'measure / plan', breakdown: '訁 + 十', clue: 'Speech on the left often marks stating or planning.' }, { kanji: '試', reading: 'し', meaning: 'test / try', breakdown: '訁 + 式', clue: 'A test is something stated and then attempted.' }]
+	},
+	'食': {
+		mnemonic: 'A covered food vessel with a person leaning in to eat — the ancient image of a meal.',
+		etymology: 'Originally depicted a person (𠆢) bending over a covered vessel of food (the lower components). The image captures the act of eating. It covers all kanji about consuming, cooking, and food. When placed on the left side of a character it compresses to 飠.',
+		variants: ['飠'],
+		tags: ['food', 'eat'],
+		examples: [{ word: '食べる', reading: 'たべる', meaning: 'to eat' }, { word: '食事', reading: 'しょくじ', meaning: 'meal' }, { word: '食欲', reading: 'しょくよく', meaning: 'appetite' }],
+		recipes: [{ kanji: '飯', reading: 'はん', meaning: 'meal / cooked rice', breakdown: '食 + 反', clue: 'Food radical up front tells you it is edible.' }, { kanji: '館', reading: 'かん', meaning: 'hall / inn', breakdown: '食 + 官', clue: 'Historically tied to eating halls and lodgings.' }]
+	},
+	'飠': {
+		mnemonic: 'Food radical compressed to the left side — a stylized vessel with a lid. It always points to eating, feeding, or nourishment.',
+		etymology: 'The left-side component form of 食 (eat/food), compressed to allow a right-side phonetic or semantic element. The shape retains the lid-and-vessel structure of the original. It marks all kanji in the food-and-eating semantic family.',
+		variants: ['食'],
+		tags: ['food side', 'left-side'],
+		examples: [{ word: '飲む', reading: 'のむ', meaning: 'to drink' }, { word: '飢える', reading: 'うえる', meaning: 'to starve' }, { word: '飼う', reading: 'かう', meaning: 'to raise (animals)' }],
+		recipes: [{ kanji: '飲', reading: 'いん', meaning: 'drink', breakdown: '飠 + 欠', clue: 'Food-side marks ingestion — even drinking.' }, { kanji: '餓', reading: 'が', meaning: 'starve', breakdown: '飠 + 我', clue: 'No food plus "me" — the radical lands hard.' }]
+	},
+	'車': {
+		mnemonic: 'A cart or chariot seen from above: the axle running top to bottom, the wheel rim forming the outer frame.',
+		etymology: 'A top-down pictograph of a wheeled cart — the central vertical stroke is the axle, the horizontal strokes are the wheel hubs and spokes, and the enclosing rectangle is the wheel rim. Chariots and carts were among the most important technologies in ancient China, so this radical appears widely in transport, turning, and military kanji.',
+		tags: ['vehicle', 'wheel'],
+		examples: [{ word: '車', reading: 'くるま', meaning: 'car / vehicle' }, { word: '電車', reading: 'でんしゃ', meaning: 'train' }, { word: '自転車', reading: 'じてんしゃ', meaning: 'bicycle' }],
+		recipes: [{ kanji: '転', reading: 'てん', meaning: 'turn / roll', breakdown: '車 + 云', clue: 'A vehicle turning — the motion is built in.' }, { kanji: '軽', reading: 'けい', meaning: 'lightweight', breakdown: '車 + 圣', clue: 'A light vehicle carries a small load.' }]
+	},
+	'門': {
+		mnemonic: 'Two upright posts with a crossbar and double doors hanging from them — a gate you can walk through or bar shut.',
+		etymology: 'A pictograph of a two-panelled gate: two vertical pillars, a horizontal lintel at the top, and two symmetrical door panels. It marks kanji about gates, thresholds, entrances, and institutions. Importantly, anything that passes through or is enclosed by a gate is in this semantic family — hearing through a door, a gap between panels.',
+		tags: ['gate', 'door'],
+		examples: [{ word: '門', reading: 'もん', meaning: 'gate' }, { word: '専門', reading: 'せんもん', meaning: 'specialty / expertise' }, { word: '正門', reading: 'せいもん', meaning: 'front gate' }],
+		recipes: [{ kanji: '聞', reading: 'ぶん', meaning: 'hear / ask', breakdown: '門 + 耳', clue: 'An ear pressed to the gate is listening.' }, { kanji: '間', reading: 'かん', meaning: 'interval / space', breakdown: '門 + 日', clue: 'Sunlight through gate panels — a gap in time or space.' }]
+	},
+	'雨': {
+		mnemonic: 'A sky-line at the top, a window frame below it, and four drops of rain falling inside. The whole scene is rain coming through.',
+		etymology: 'A pictograph of rain falling from the sky: the top horizontal stroke is the cloud or sky, the frame below encloses the scene, and the four inner dots (originally more numerous) are individual raindrops. It serves as the "weather canopy" for most meteorological kanji — snow, electricity, frost, and clouds all build on this base.',
+		tags: ['rain', 'weather'],
+		examples: [{ word: '雨', reading: 'あめ', meaning: 'rain' }, { word: '大雨', reading: 'おおあめ', meaning: 'heavy rain' }, { word: '雨具', reading: 'あまぐ', meaning: 'rain gear' }],
+		recipes: [{ kanji: '雪', reading: 'ゆき', meaning: 'snow', breakdown: '雨 + 彗 (lower)', clue: 'Frozen rain swept down.' }, { kanji: '電', reading: 'でん', meaning: 'electricity', breakdown: '雨 + 申', clue: 'Lightning in the rain cloud.' }]
+	},
+	'宀': {
+		mnemonic: 'A peaked roof with walls — shelter from above. Any kanji wearing this hat is about a covered space.',
+		etymology: 'A pictograph of a roof in cross-section: the peak at the top and two descending eave strokes. It marks kanji where the meaning involves covered or enclosed spaces — dwellings, storage, official halls, and anything protected from the elements. One of the most productive "enclosure from above" components.',
+		tags: ['roof', 'shelter'],
+		examples: [{ word: '家', reading: 'いえ', meaning: 'house / home' }, { word: '安全', reading: 'あんぜん', meaning: 'safety' }, { word: '宿', reading: 'やど', meaning: 'lodging / inn' }],
+		recipes: [{ kanji: '安', reading: 'あん', meaning: 'peaceful', breakdown: '宀 + 女', clue: 'A woman sheltered under a roof means peace.' }, { kanji: '家', reading: 'か', meaning: 'house', breakdown: '宀 + 豕', clue: 'A roof over a pig — the farm household.' }]
+	},
+	'艹': {
+		mnemonic: 'Two grass shoots growing from a shared root — the crown of plants atop a character. If you see it, something botanical follows.',
+		etymology: 'Originally 草 (grass) in abbreviated form — two or three upward shoots above a horizontal root line. During script standardization this was reduced to the two-stroke crown form 艹. It marks all kanji about plants, herbs, flowers, grasses, and vegetation.',
+		tags: ['grass top', 'plant'],
+		examples: [{ word: '花', reading: 'はな', meaning: 'flower' }, { word: '茶', reading: 'ちゃ', meaning: 'tea' }, { word: '草', reading: 'くさ', meaning: 'grass / weed' }],
+		recipes: [{ kanji: '花', reading: 'か', meaning: 'flower', breakdown: '艹 + 化', clue: 'Plant crown marks botanical transformation.' }, { kanji: '茶', reading: 'ちゃ', meaning: 'tea', breakdown: '艹 + 人 + 木', clue: 'Tea is the plant that defined a civilization.' }]
+	},
+	'辶': {
+		mnemonic: 'A road with a trail behind it — one step forward and the path receding. Motion, travel, approach.',
+		etymology: 'Derived from 辵 (walk + stop alternating = going along a road) compressed into a corner-wrapping shape. The bottom stroke is the road and the hooked curve above it represents the alternating motion of walking. It marks kanji about motion, routes, spatial relationships (near, far, pass), and roads.',
+		variants: ['⻌'],
+		tags: ['movement', 'road'],
+		examples: [{ word: '近い', reading: 'ちかい', meaning: 'near / close' }, { word: '道', reading: 'みち', meaning: 'road / path' }, { word: '返す', reading: 'かえす', meaning: 'to return something' }],
+		recipes: [{ kanji: '近', reading: 'きん', meaning: 'near', breakdown: '斤 + 辶', clue: 'The movement trail shifts the meaning into location.' }, { kanji: '道', reading: 'どう', meaning: 'road / way', breakdown: '首 + 辶', clue: 'A head leading along a path.' }]
+	},
+	'⻌': {
+		mnemonic: 'Visual variant of shinnyou. Same road-and-motion signal, slightly flatter print shape depending on font.',
+		etymology: 'An alternate rendering of 辶 (shinnyou) that appears in some typefaces and handwriting styles. The difference is purely calligraphic — one extra horizontal stroke at the base of the hook. Both forms carry identical meaning and are used interchangeably across printed Japanese.',
+		variants: ['辶'],
+		tags: ['movement variant', 'path'],
+		examples: [{ word: '週', reading: 'しゅう', meaning: 'week' }, { word: '追う', reading: 'おう', meaning: 'to chase' }, { word: '遠い', reading: 'とおい', meaning: 'far / distant' }],
+		recipes: [{ kanji: '週', reading: 'しゅう', meaning: 'week', breakdown: '周 + ⻌', clue: 'The walking trail wraps around the cycle.' }, { kanji: '追', reading: 'つい', meaning: 'chase', breakdown: '𠂤 + ⻌', clue: 'Movement with urgency — pursuit.' }]
+	},
+	'石': {
+		mnemonic: 'A cliff overhang with a block of stone sitting below it — the image of a boulder fallen from a rockface.',
+		etymology: 'Composed of 厂 (cliff / overhang) above and 口 (a block shape) below, representing a stone that has broken away from a cliff face. It marks kanji about stone, minerals, hardness, and weight — including geology, masonry, and tools.',
+		tags: ['stone', 'mineral'],
+		examples: [{ word: '石', reading: 'いし', meaning: 'stone / rock' }, { word: '宝石', reading: 'ほうせき', meaning: 'jewel / gem' }, { word: '石油', reading: 'せきゆ', meaning: 'petroleum / oil' }],
+		recipes: [{ kanji: '岩', reading: 'がん', meaning: 'boulder', breakdown: '山 + 石', clue: 'Mountain plus stone gives rock.' }, { kanji: '研', reading: 'けん', meaning: 'polish / research', breakdown: '石 + 开', clue: 'Grinding stone leads to polish and refinement.' }]
+	},
+	'禾': {
+		mnemonic: 'A grain stalk with a heavy head drooping to one side — the visual weight of a ripe harvest.',
+		etymology: 'A pictograph of a grain plant, most likely millet or rice: the vertical stroke is the stalk, the horizontal cross-stroke is a leaf, and the angled top stroke is the drooping seed-head bent down by its own weight. It marks kanji about grain crops, harvest, agriculture, and tax (since grain was used as currency).',
+		tags: ['grain', 'crop'],
+		examples: [{ word: '秋', reading: 'あき', meaning: 'autumn' }, { word: '科学', reading: 'かがく', meaning: 'science' }, { word: '利益', reading: 'りえき', meaning: 'profit / benefit' }],
+		recipes: [{ kanji: '秋', reading: 'しゅう', meaning: 'autumn', breakdown: '禾 + 火', clue: 'Grain plus fire — the season of harvest bonfires.' }, { kanji: '科', reading: 'か', meaning: 'department / subject', breakdown: '禾 + 斗', clue: 'Measuring grain becomes classifying knowledge.' }]
+	},
+	'竹': {
+		mnemonic: 'Two bamboo stalks with leaves drooping down — the characteristic droop of fresh bamboo. At the top of kanji it shrinks to the compact crown ⺮.',
+		etymology: 'A pictograph of two bamboo culms side by side, each showing a single leaf drooping outward. Bamboo was among the most important materials in East Asian culture — writing slips, pipes, tools, musical instruments — and this radical marks all bamboo-material objects. The abbreviated top form ⺮ is used in nearly all compounds.',
+		variants: ['⺮'],
+		tags: ['bamboo', 'top radical'],
+		examples: [{ word: '竹', reading: 'たけ', meaning: 'bamboo' }, { word: '笛', reading: 'ふえ', meaning: 'flute / whistle' }, { word: '筆', reading: 'ふで', meaning: 'brush / pen' }],
+		recipes: [{ kanji: '答', reading: 'とう', meaning: 'answer', breakdown: '⺮ + 合', clue: 'A bamboo slip joining things — a written answer.' }, { kanji: '第', reading: 'だい', meaning: 'ordinal number', breakdown: '⺮ + 弟', clue: 'Bamboo-strip rank lists — ordinal counting.' }]
+	},
+	'耳': {
+		mnemonic: 'The ear in cross-section: a rectangular outer form with parallel interior strokes like the layers of the inner ear.',
+		etymology: 'A pictograph of a human ear seen from the side: the outer vertical strokes are the ear frame, and the three horizontal strokes inside represent the cartilage folds of the outer ear. Remarkably faithful to anatomy for a 3,000-year-old pictograph. It marks kanji about hearing, listening, and by extension obedience (to a ruler\'s words).',
+		tags: ['ear', 'hearing'],
+		examples: [{ word: '耳', reading: 'みみ', meaning: 'ear' }, { word: '耳鼻科', reading: 'じびか', meaning: 'ENT department' }, { word: '聞こえる', reading: 'きこえる', meaning: 'can be heard' }],
+		recipes: [{ kanji: '聞', reading: 'ぶん', meaning: 'hear / ask', breakdown: '門 + 耳', clue: 'An ear at the gate is listening for sound.' }, { kanji: '職', reading: 'しょく', meaning: 'job / occupation', breakdown: '耳 + 戠', clue: 'The ear component anchors the sound-based left side.' }]
+	},
+	'足': {
+		mnemonic: 'A knee joint above a foot — the full lower leg from knee down, with the foot at the base.',
+		etymology: 'A pictograph of a leg from the knee down: the upper part represents the knee or shin, and the lower part is the foot with toes. It covers movement, steps, walking, dancing, and also the meaning "sufficient" — possibly because having feet means you can go and obtain what you need.',
+		tags: ['foot', 'leg', 'movement'],
+		examples: [{ word: '足', reading: 'あし', meaning: 'foot / leg' }, { word: '足りる', reading: 'たりる', meaning: 'to be sufficient' }, { word: '遠足', reading: 'えんそく', meaning: 'excursion / field trip' }],
+		recipes: [{ kanji: '路', reading: 'ろ', meaning: 'road / route', breakdown: '足 + 各', clue: 'Roads are made for feet to travel.' }, { kanji: '踊', reading: 'おど', meaning: 'dance', breakdown: '足 + 甬', clue: 'Feet in motion — the foot radical signals dancing.' }]
+	},
+	'阝': {
+		mnemonic: 'Two radicals in disguise as one shape: on the left it means hill/mound (阜); on the right it means city/village (邑). Position reveals identity.',
+		etymology: 'Two historically distinct radicals that merged into the same written form 阝 in modern script. On the left side it derives from 阜 (earthen mound, staircase, high ground) and marks terrain-related kanji. On the right side it derives from 邑 (walled settlement, city, district) and marks administrative and urban kanji. This is one of the most important position-sensitive radicals to learn.',
+		variants: ['⻖', '⻏'],
+		tags: ['hill or city', 'position-sensitive'],
+		examples: [{ word: '院', reading: 'いん', meaning: 'institution / hospital' }, { word: '都', reading: 'みやこ', meaning: 'capital city' }, { word: '部', reading: 'ぶ', meaning: 'section / department' }],
+		recipes: [{ kanji: '院', reading: 'いん', meaning: 'institution', breakdown: '阝(left) + 完', clue: 'On the left it signals terrain or built establishment.' }, { kanji: '都', reading: 'と', meaning: 'capital city', breakdown: '者 + 阝(right)', clue: 'On the right it always signals city or settlement.' }]
+	},
+
+	// ── Extended radicals ─────────────────────────────────────────
+	'刀': {
+		mnemonic: 'A curved blade with a back edge — the silhouette of a single-edged sword or cleaver.',
+		etymology: 'A pictograph of a curved-blade knife or sword in profile: the curved stroke is the cutting edge and the short angled stroke at the top is the point or spine. One of the most ancient pictographic radicals. On the right side of kanji it compresses into the two-stroke 刂.',
+		variants: ['刂'],
+		tags: ['blade', 'cut'],
+		examples: [{ word: '刀', reading: 'かたな', meaning: 'sword / knife' }, { word: '刀剣', reading: 'とうけん', meaning: 'swords and blades' }, { word: '小刀', reading: 'こがたな', meaning: 'penknife' }],
+		recipes: [{ kanji: '分', reading: 'ぶん', meaning: 'divide / part', breakdown: '八 + 刀', clue: 'A knife separating things.' }, { kanji: '切', reading: 'せつ', meaning: 'cut', breakdown: '七 + 刀', clue: 'A knife action is explicitly a cut.' }]
+	},
+	'刂': {
+		mnemonic: 'Two strokes on the right side — a blade stripped to its essentials. Wherever you see this, cutting or dividing is happening.',
+		etymology: 'The right-side compressed form of 刀 (sword/knife). The two-stroke shape retains the spine-and-edge quality of the original. It appears as the right component in many action kanji — cutting, carving, scraping, peeling — and is one of the clearest semantic indicators in the script.',
+		variants: ['刀'],
+		tags: ['knife side', 'right-side'],
+		examples: [{ word: '別れる', reading: 'わかれる', meaning: 'to part / separate' }, { word: '利く', reading: 'きく', meaning: 'to work / be effective' }, { word: '刻む', reading: 'きざむ', meaning: 'to carve / mince' }],
+		recipes: [{ kanji: '別', reading: 'べつ', meaning: 'separate / different', breakdown: '另 + 刂', clue: 'A knife creating division — separate.' }, { kanji: '利', reading: 'り', meaning: 'profit / sharp', breakdown: '禾 + 刂', clue: 'A blade on grain — harvesting profit.' }]
+	},
+	'又': {
+		mnemonic: 'A right hand with two fingers extended — the oldest pictograph of a hand grasping or doing something again.',
+		etymology: 'A pictograph of a right hand, specifically showing the thumb and index finger. It originally meant "right hand" and evolved to mean "again / moreover" — the idea of doing something once more with the same hand. In compound kanji it often appears as a gripping or supportive component.',
+		tags: ['hand', 'again'],
+		examples: [{ word: '友', reading: 'とも', meaning: 'friend' }, { word: '受ける', reading: 'うける', meaning: 'to receive' }, { word: '取る', reading: 'とる', meaning: 'to take' }],
+		recipes: [{ kanji: '友', reading: 'ゆう', meaning: 'friend', breakdown: '又 + 丿', clue: 'Two hands reaching toward each other.' }, { kanji: '反', reading: 'はん', meaning: 'oppose / reverse', breakdown: '厂 + 又', clue: 'A hand pushing against a cliff — reversal.' }]
+	},
+	'大': {
+		mnemonic: 'A person with arms and legs spread wide — as big as a human can make themselves.',
+		etymology: 'A pictograph of a person (人) with both arms extended horizontally — the largest a human silhouette can be. It is the natural size-up of 人 (standing person) and 小 (small). The concept of bigness derives directly from this expanded human posture.',
+		tags: ['big', 'person spread'],
+		examples: [{ word: '大きい', reading: 'おおきい', meaning: 'big / large' }, { word: '大学', reading: 'だいがく', meaning: 'university' }, { word: '大切', reading: 'たいせつ', meaning: 'important / precious' }],
+		recipes: [{ kanji: '太', reading: 'たい', meaning: 'fat / thick', breakdown: '大 + 丶', clue: 'A big person with one extra weight stroke — thick.' }, { kanji: '天', reading: 'てん', meaning: 'sky / heaven', breakdown: '一 + 大', clue: 'Above the outstretched person is the sky.' }]
+	},
+	'工': {
+		mnemonic: 'A ruler or carpenter\'s square — the top and bottom bars are surfaces being measured, the vertical is the standard.',
+		etymology: 'Originally depicted a carpenter\'s adze or square rule — the horizontal strokes are the two surfaces it connects and the vertical stroke is the measuring edge. It marks kanji about craft, construction, labor, and skilled work. In ancient China, 工 was the official character for artisans and tradespeople.',
+		tags: ['craft', 'work'],
+		examples: [{ word: '工場', reading: 'こうじょう', meaning: 'factory' }, { word: '工事', reading: 'こうじ', meaning: 'construction work' }, { word: '大工', reading: 'だいく', meaning: 'carpenter' }],
+		recipes: [{ kanji: '左', reading: 'さ', meaning: 'left', breakdown: '工 + 又(left)', clue: 'The left hand holding the work tool.' }, { kanji: '空', reading: 'くう', meaning: 'sky / empty', breakdown: '穴 + 工', clue: 'Hollow work dug out — an empty space.' }]
+	},
+	'弓': {
+		mnemonic: 'An archer\'s bow in profile — the curved body with a notch for the bowstring.',
+		etymology: 'A pictograph of an archer\'s bow seen from the side: the curved stroke is the bow stave and the small hook or curve is the notch where the string is attached. It marks kanji about archery, bending, drawing back, and tension.',
+		tags: ['bow', 'archery', 'curve'],
+		examples: [{ word: '弓', reading: 'ゆみ', meaning: 'bow (archery)' }, { word: '弓道', reading: 'きゅうどう', meaning: 'Japanese archery' }, { word: '引く', reading: 'ひく', meaning: 'to pull / draw' }],
+		recipes: [{ kanji: '引', reading: 'いん', meaning: 'pull / draw', breakdown: '弓 + 丨', clue: 'A bow with the arrow in place — drawing back.' }, { kanji: '弱', reading: 'じゃく', meaning: 'weak', breakdown: '弓 + 弓 + strokes', clue: 'Two bows gone limp — weakness.' }]
+	},
+	'彡': {
+		mnemonic: 'Three parallel diagonal strokes — streaming hair, feathers, or fine lines. A mark of texture and shine.',
+		etymology: 'Derived from an image of flowing hair, fur, or fine parallel lines. The three strokes represent texture through repetition. It marks kanji about hair, fur, ornamentation, decoration, and any surface quality — including coloring and striping.',
+		tags: ['hair', 'texture', 'stripes'],
+		examples: [{ word: '彩る', reading: 'いろどる', meaning: 'to color / adorn' }, { word: '形', reading: 'かたち', meaning: 'shape / form' }, { word: '影', reading: 'かげ', meaning: 'shadow / silhouette' }],
+		recipes: [{ kanji: '形', reading: 'けい', meaning: 'shape', breakdown: '开 + 彡', clue: 'An outline filled with texture strokes.' }, { kanji: '彩', reading: 'さい', meaning: 'color / brilliance', breakdown: '采 + 彡', clue: 'Plucked strands of color — vivid decoration.' }]
+	},
+	'彳': {
+		mnemonic: 'The left half of 行 (go/row) — two footstep-like strokes that signal walking or moving along a route.',
+		etymology: 'A component derived by splitting 行 (crossroads / go) down the middle. The three strokes represent alternating footsteps — left, right, left — moving forward. It marks kanji about roads, movement, behavior, and routes, often combined with a right-side element.',
+		tags: ['step', 'road', 'left-side'],
+		examples: [{ word: '待つ', reading: 'まつ', meaning: 'to wait' }, { word: '得る', reading: 'える', meaning: 'to obtain' }, { word: '後ろ', reading: 'うしろ', meaning: 'behind / back' }],
+		recipes: [{ kanji: '待', reading: 'たい', meaning: 'wait', breakdown: '彳 + 寺', clue: 'Someone stopped on a road — waiting.' }, { kanji: '行', reading: 'こう', meaning: 'go / conduct', breakdown: '彳 + 亍', clue: 'Both sides of the crossroads — going forward.' }]
+	},
+	'攵': {
+		mnemonic: 'A hand holding a stick raised to strike — the old pictograph of someone administering a blow or correction.',
+		etymology: 'A simplified form of 攴 (strike lightly / tap), which itself showed a hand holding a rod. The four-stroke 攵 is the clerical and modern version. It marks kanji about hitting, striking, causing to happen, and administrative action — the idea of bringing force or order through a decisive blow.',
+		tags: ['strike', 'action'],
+		examples: [{ word: '教える', reading: 'おしえる', meaning: 'to teach' }, { word: '改める', reading: 'あらためる', meaning: 'to reform' }, { word: '放つ', reading: 'はなつ', meaning: 'to release' }],
+		recipes: [{ kanji: '教', reading: 'きょう', meaning: 'teach', breakdown: '孝 + 攵', clue: 'The strike component marks active instruction.' }, { kanji: '政', reading: 'せい', meaning: 'government', breakdown: '正 + 攵', clue: 'Governing is correcting through decisive action.' }]
+	},
+	'白': {
+		mnemonic: 'The sun just risen from behind something — or a skull stripped bare. Purity, clarity, and blankness.',
+		etymology: 'The etymology is debated: one reading is a pictograph of the rising sun just cresting the horizon (brightness = whiteness). Another sees it as a bleached skull. Either way, the meaning settled firmly on white, pure, blank, and by extension clear or plain. It marks kanji about whiteness, clarity, and stating plainly.',
+		tags: ['white', 'clear'],
+		examples: [{ word: '白い', reading: 'しろい', meaning: 'white' }, { word: '白紙', reading: 'はくし', meaning: 'blank paper' }, { word: '告白', reading: 'こくはく', meaning: 'confession' }],
+		recipes: [{ kanji: '泊', reading: 'はく', meaning: 'stay overnight', breakdown: '氵 + 白', clue: 'Water and whiteness — a pale, still resting place.' }, { kanji: '拍', reading: 'はく', meaning: 'beat / clap', breakdown: '扌 + 白', clue: 'A hand striking cleanly — a beat.' }]
+	},
+	'皮': {
+		mnemonic: 'A hand peeling the hide from an animal — the original image of stripping away the outer layer.',
+		etymology: 'A pictograph showing a hand peeling or flaying an animal skin from a carcass. The upper component is a hand-with-tool and the lower represents the skin being pulled. It covers skin, hide, leather, peeling, and surface layers.',
+		tags: ['skin', 'hide', 'surface'],
+		examples: [{ word: '皮膚', reading: 'ひふ', meaning: 'skin' }, { word: '皮肉', reading: 'ひにく', meaning: 'irony / sarcasm' }, { word: '毛皮', reading: 'けがわ', meaning: 'fur / pelt' }],
+		recipes: [{ kanji: '彼', reading: 'かれ', meaning: 'he / that one', breakdown: '彳 + 皮', clue: 'Moving past — that one over there.' }, { kanji: '波', reading: 'は', meaning: 'wave', breakdown: '氵 + 皮', clue: 'Water surface rippling — the skin of the water.' }]
+	},
+	'見': {
+		mnemonic: 'An eye mounted on legs going out to look — the act of actively seeing, not just having eyes.',
+		etymology: 'Composed of 目 (eye) above and 儿 (human legs) below — a person with prominent eyes walking around to see. It marks kanji about seeing, looking, visiting, and showing, emphasizing active observation rather than mere optical function.',
+		tags: ['see', 'look', 'visit'],
+		examples: [{ word: '見る', reading: 'みる', meaning: 'to see / look' }, { word: '見物', reading: 'けんぶつ', meaning: 'sightseeing' }, { word: '意見', reading: 'いけん', meaning: 'opinion' }],
+		recipes: [{ kanji: '視', reading: 'し', meaning: 'look at / regard', breakdown: '示 + 見', clue: 'Showing and seeing — formal observation.' }, { kanji: '覚える', reading: 'おぼえる', meaning: 'remember / learn', breakdown: '学 upper + 見', clue: 'To see and have it stick — learning through sight.' }]
+	},
+	'貝': {
+		mnemonic: 'A cowrie shell in profile: the round body above, two legs dangling below. Shells were ancient currency.',
+		etymology: 'A pictograph of a cowrie shell — the oval body and two tiny "legs" are the shell\'s natural lip-opening. Cowrie shells were the first currency in ancient China, so 貝 became the radical for all money, trade, commerce, and economic transactions. Without this radical, kanji for selling, buying, and riches would look completely different.',
+		tags: ['shell', 'money', 'trade'],
+		examples: [{ word: '貝', reading: 'かい', meaning: 'shellfish' }, { word: '財布', reading: 'さいふ', meaning: 'wallet' }, { word: '賛成', reading: 'さんせい', meaning: 'agreement / approval' }],
+		recipes: [{ kanji: '買', reading: 'かい', meaning: 'buy', breakdown: '網 + 貝', clue: 'A net catching shells — acquiring with money.' }, { kanji: '貸', reading: 'たい', meaning: 'lend', breakdown: '代 + 貝', clue: 'Money changing hands — lending.' }]
+	},
+	'走': {
+		mnemonic: 'A person with arms swinging and feet moving fast — the whole-body image of running.',
+		etymology: 'Composed of 夭 (a person bending forward with energy) above and 止 (foot/stop) below — but here 止 signals movement rather than stopping. The combination captures a person lunging forward in motion. It marks kanji about running, rushing, and fleeing.',
+		tags: ['run', 'rush'],
+		examples: [{ word: '走る', reading: 'はしる', meaning: 'to run' }, { word: '競走', reading: 'きょうそう', meaning: 'race' }, { word: '走行', reading: 'そうこう', meaning: 'traveling / running (of vehicles)' }],
+		recipes: [{ kanji: '起', reading: 'き', meaning: 'rise / get up', breakdown: '走 + 己', clue: 'Movement starting from the self — rising into action.' }, { kanji: '越', reading: 'えつ', meaning: 'exceed / cross over', breakdown: '走 + 戉', clue: 'Running past a boundary — exceeding.' }]
+	},
+	'身': {
+		mnemonic: 'A pregnant woman in profile — the swelling abdomen makes the body concept visceral and unmistakable.',
+		etymology: 'A pictograph of a person with a prominent belly — the ancient depiction of a pregnant body. Over time the meaning shifted from "pregnant" to "body" in general, and then to "oneself / one\'s own person." It marks kanji about the body, identity, and personal experience.',
+		tags: ['body', 'self'],
+		examples: [{ word: '身体', reading: 'からだ', meaning: 'body' }, { word: '自身', reading: 'じしん', meaning: 'oneself' }, { word: '身分', reading: 'みぶん', meaning: 'social status / identity' }],
+		recipes: [{ kanji: '射', reading: 'しゃ', meaning: 'shoot / fire', breakdown: '身 + 寸', clue: 'The body aligned to release — shooting.' }, { kanji: '躬', reading: 'きゅう', meaning: 'personally / in person', breakdown: '身 + 弓', clue: 'Body plus bow — the archer in person.' }]
+	},
+	'里': {
+		mnemonic: 'A field sitting on top of soil — land measured, settled, and named. Village and the mile-like unit of distance.',
+		etymology: 'Composed of 田 (field) over 土 (earth/soil) — cultivated land on settled ground. It marks both the concept of a rural village (people living on their fields) and the Chinese unit of distance 里 (about 500 meters), derived from the idea of measuring land by how far one walks between settlements.',
+		tags: ['village', 'measure', 'distance'],
+		examples: [{ word: '里', reading: 'さと', meaning: 'village / hometown' }, { word: '万里', reading: 'ばんり', meaning: 'ten thousand ri / vast distance' }, { word: '郷里', reading: 'きょうり', meaning: 'hometown' }],
+		recipes: [{ kanji: '重', reading: 'じゅう', meaning: 'heavy / pile up', breakdown: '千 + 里', clue: 'A thousand ri of layered earth — heavy.' }, { kanji: '量', reading: 'りょう', meaning: 'quantity', breakdown: '旦 + 里', clue: 'Measuring out by land units — quantity.' }]
+	},
+	'頁': {
+		mnemonic: 'A big head on top of a human body — the oversized face of an important person, which became the word for page.',
+		etymology: 'Originally a pictograph of a large, prominent human head atop a body — symbolizing the most important part of a person. By extension it covered "head" in both literal and figurative senses, and later "page" (the head of a document). It marks kanji about the head, face, and matters related to the front or top of things.',
+		tags: ['head', 'page'],
+		examples: [{ word: '頭', reading: 'あたま', meaning: 'head' }, { word: '顔', reading: 'かお', meaning: 'face' }, { word: '顕著', reading: 'けんちょ', meaning: 'remarkable / prominent' }],
+		recipes: [{ kanji: '頭', reading: 'とう', meaning: 'head', breakdown: '豆 + 頁', clue: 'The head radical makes the meaning unmissable.' }, { kanji: '顔', reading: 'がん', meaning: 'face', breakdown: '彦 + 頁', clue: 'The page/head radical anchors the facial meaning.' }]
+	},
+	'風': {
+		mnemonic: 'A sail catching air, or a phoenix soaring — wind is invisible but its effects are everywhere in this character.',
+		etymology: 'Originally combined the phonetic 凡 (sail-like shape) with 虫 (insect/creature) — the ancient belief was that wind was caused by insects or creatures moving through the air. The current form preserves 凡 inside an enclosing frame. It marks kanji about wind, style, and manner.',
+		tags: ['wind', 'style'],
+		examples: [{ word: '風', reading: 'かぜ', meaning: 'wind' }, { word: '台風', reading: 'たいふう', meaning: 'typhoon' }, { word: '風景', reading: 'ふうけい', meaning: 'scenery / landscape' }],
+		recipes: [{ kanji: '風', reading: 'ふう', meaning: 'wind / style', breakdown: '凡 + 虫 (historical)', clue: 'The whole character is the radical here.' }, { kanji: '楓', reading: 'かえで', meaning: 'maple tree', breakdown: '木 + 風', clue: 'Trees that tremble and spin in the wind.' }]
+	},
+	'鳥': {
+		mnemonic: 'A bird with a beak, feathers, and a tail — a recognizable bird silhouette that hasn\'t changed in three millennia.',
+		etymology: 'A pictograph of a bird in profile: the head and beak at the top, body feathers in the middle strokes, and the characteristic tail at the base (the four dots 灬 represent tail feathers). It marks all kanji about specific bird species and bird-related concepts. A related simpler form 隹 covers smaller birds.',
+		tags: ['bird'],
+		examples: [{ word: '鳥', reading: 'とり', meaning: 'bird' }, { word: '小鳥', reading: 'ことり', meaning: 'small bird' }, { word: '鳥居', reading: 'とりい', meaning: 'torii gate' }],
+		recipes: [{ kanji: '島', reading: 'とう', meaning: 'island', breakdown: '鳥 + 山', clue: 'A bird-shaped mountain rising from water — island.' }, { kanji: '鳴く', reading: 'なく', meaning: 'to sing / cry (of animals)', breakdown: '口 + 鳥', clue: 'A bird opening its mouth — calling out.' }]
+	},
+	'魚': {
+		mnemonic: 'A fish with a head, body scales, and tail fin — the fish silhouette stripped to its essentials.',
+		etymology: 'A pictograph of a fish seen in profile: the top strokes form the head and mouth, the middle strokes represent the scales and body, and the four bottom dots (灬) are the tail fin. Ancient oracle-bone versions show a more detailed fish. It marks all kanji about specific fish species and seafood.',
+		tags: ['fish', 'seafood'],
+		examples: [{ word: '魚', reading: 'さかな', meaning: 'fish' }, { word: '金魚', reading: 'きんぎょ', meaning: 'goldfish' }, { word: '魚介類', reading: 'ぎょかいるい', meaning: 'seafood' }],
+		recipes: [{ kanji: '鮮', reading: 'せん', meaning: 'fresh / vivid', breakdown: '魚 + 羊', clue: 'Fresh fish and lamb — the freshest foods.' }, { kanji: '漁', reading: 'ぎょ', meaning: 'fishing', breakdown: '氵 + 魚', clue: 'Water and fish — fishing.' }]
+	},
+	'虫': {
+		mnemonic: 'A coiled snake or worm — the original meaning was "snake," and it expanded to cover all crawling creatures.',
+		etymology: 'Originally a pictograph of a coiled snake, head raised. In ancient classification it covered all crawling and wriggling life — snakes, worms, insects, and even some reptiles. Over time "snake" was specified with other characters and 虫 shifted toward insects and small creatures, but the coiled-snake origin is why it looks the way it does.',
+		tags: ['insect', 'creature'],
+		examples: [{ word: '虫', reading: 'むし', meaning: 'insect / bug' }, { word: '昆虫', reading: 'こんちゅう', meaning: 'insect' }, { word: '害虫', reading: 'がいちゅう', meaning: 'pest' }],
+		recipes: [{ kanji: '蛇', reading: 'じゃ', meaning: 'snake', breakdown: '虫 + 它', clue: 'Creature radical returns to the original snake meaning.' }, { kanji: '蜂', reading: 'はち', meaning: 'bee / wasp', breakdown: '虫 + 夆', clue: 'The insect radical identifies the creature.' }]
+	},
+	'肉': {
+		mnemonic: 'A piece of meat with visible muscle layers — raw flesh with the grain running through it. In compound kanji it looks just like 月.',
+		etymology: 'A pictograph of a cut of meat showing internal fiber lines. The original form had a framing rectangle with two horizontal strokes inside representing muscle layers. In compound kanji the shape merges completely with 月 (moon) — so the same visual component means either "moon" (standalone) or "flesh/body" (in compounds on the left side). Context is key.',
+		tags: ['meat', 'flesh', 'body'],
+		examples: [{ word: '肉', reading: 'にく', meaning: 'meat / flesh' }, { word: '筋肉', reading: 'きんにく', meaning: 'muscle' }, { word: '肉体', reading: 'にくたい', meaning: 'physical body' }],
+		recipes: [{ kanji: '胸', reading: 'むね', meaning: 'chest', breakdown: '月(肉) + 匈', clue: 'Flesh radical marks body parts.' }, { kanji: '脳', reading: 'のう', meaning: 'brain', breakdown: '月(肉) + 囟', clue: 'The flesh/body radical identifies this as an organ.' }]
+	},
+	'衣': {
+		mnemonic: 'A robe spread open — the collar at the top, sleeves fanning out, and the hemline sweeping below.',
+		etymology: 'A pictograph of a garment laid flat and open: the top strokes show the collar and shoulder line, and the lower strokes show the hanging fabric. It covers clothing, robes, and textiles. In compound kanji the left-side compressed form 衤 is used.',
+		variants: ['衤'],
+		tags: ['clothing', 'fabric'],
+		examples: [{ word: '衣服', reading: 'いふく', meaning: 'clothes / garments' }, { word: '衣食住', reading: 'いしょくじゅう', meaning: 'food, clothing, and shelter' }, { word: '薄衣', reading: 'うすごろも', meaning: 'thin garment' }],
+		recipes: [{ kanji: '裁', reading: 'さい', meaning: 'cut cloth / judge', breakdown: '衣 + 𠂉', clue: 'Cutting the cloth — the clothing radical inside.' }, { kanji: '装', reading: 'そう', meaning: 'dress / equip', breakdown: '壮 + 衣', clue: 'Donning equipment over clothing.' }]
+	},
+	'衤': {
+		mnemonic: 'Clothing compressed to the left side — a collar and one hanging sleeve. Anywhere you see it, the kanji is about fabric, dress, or covering.',
+		etymology: 'The left-side component form of 衣 (clothing/robe), reduced to fit beside a right-side element. The shape preserves the collar-and-sleeve profile of the original. It marks all kanji about specific garments, wearing, and textiles.',
+		variants: ['衣'],
+		tags: ['clothing side', 'left-side'],
+		examples: [{ word: '初めて', reading: 'はじめて', meaning: 'for the first time' }, { word: '被る', reading: 'かぶる', meaning: 'to wear on the head' }, { word: '裸', reading: 'はだか', meaning: 'naked' }],
+		recipes: [{ kanji: '初', reading: 'しょ', meaning: 'first / beginning', breakdown: '衤 + 刀', clue: 'Cutting the first piece of cloth — beginning.' }, { kanji: '裕', reading: 'ゆう', meaning: 'abundance', breakdown: '衤 + 谷', clue: 'Clothing plus a valley — comfortable abundance.' }]
+	},
+	'示': {
+		mnemonic: 'An altar table with ritual offerings — the ancient picture of displaying something to the spirits.',
+		etymology: 'A pictograph of a sacrificial altar: the horizontal stroke at the top is the altar table surface, and the three drops hanging below are offerings dripping down (blood, wine, or grain). It marks kanji about spirits, gods, ritual, and omens. The left-side form is 礻.',
+		variants: ['礻'],
+		tags: ['spirit', 'ritual', 'show'],
+		examples: [{ word: '神', reading: 'かみ', meaning: 'god / spirit' }, { word: '礼', reading: 'れい', meaning: 'gratitude / ceremony' }, { word: '祭り', reading: 'まつり', meaning: 'festival' }],
+		recipes: [{ kanji: '神', reading: 'しん', meaning: 'god / divine', breakdown: '礻 + 申', clue: 'The spirit radical makes the divine explicit.' }, { kanji: '祭', reading: 'さい', meaning: 'festival / ritual', breakdown: '月(flesh) + 又 + 示', clue: 'Offering meat at the altar — a ritual.' }]
+	},
+	'礻': {
+		mnemonic: 'The altar radical on the left side — one horizontal bar and two hanging drops. Religious, sacred, or ceremonial meaning follows.',
+		etymology: 'The left-side component form of 示 (altar/spirit). The reduction to four strokes preserves the hanging-drops quality of the original altar shape. It appears in kanji about gods, shrines, prayers, omens, blessings, and ceremonies.',
+		variants: ['示'],
+		tags: ['spirit side', 'shrine', 'left-side'],
+		examples: [{ word: '神社', reading: 'じんじゃ', meaning: 'Shinto shrine' }, { word: '礼儀', reading: 'れいぎ', meaning: 'etiquette / manners' }, { word: '祈る', reading: 'いのる', meaning: 'to pray' }],
+		recipes: [{ kanji: '福', reading: 'ふく', meaning: 'fortune / happiness', breakdown: '礻 + 畐', clue: 'A full vessel at the altar — divine fortune.' }, { kanji: '祈', reading: 'き', meaning: 'pray', breakdown: '礻 + 斤', clue: 'At the altar, cutting away doubt — prayer.' }]
+	},
+	'米': {
+		mnemonic: 'Grains of rice scattering in all eight directions from a central point — the star-burst of a polished grain.',
+		etymology: 'A pictograph of rice grains dispersed around a central stalk — the star-burst pattern represents the husked grain or the spreading of seeds. It marks kanji about rice (the staple grain of Japan and China), measurement (rice was currency), and fine granular substances.',
+		tags: ['rice', 'grain'],
+		examples: [{ word: '米', reading: 'こめ', meaning: 'rice (uncooked)' }, { word: '玄米', reading: 'げんまい', meaning: 'brown rice' }, { word: '米国', reading: 'べいこく', meaning: 'United States of America' }],
+		recipes: [{ kanji: '粉', reading: 'こな', meaning: 'powder / flour', breakdown: '米 + 分', clue: 'Rice divided into fine particles — flour.' }, { kanji: '精', reading: 'せい', meaning: 'polish / spirit', breakdown: '米 + 青', clue: 'Rice polished to its blue-white core — refined.' }]
+	},
+	'麦': {
+		mnemonic: 'A wheat or barley plant with grain at the top and roots at the bottom — the cereal staple of northern China.',
+		etymology: 'A pictograph of a wheat or barley plant: the upper strokes represent the grain head and stalk, and the lower strokes (derived from 夂, foot going downward) represent roots or the grain being ground underfoot at harvest. It marks kanji about wheat, barley, and bread-grain crops.',
+		tags: ['wheat', 'barley', 'grain'],
+		examples: [{ word: '麦', reading: 'むぎ', meaning: 'wheat / barley' }, { word: '小麦', reading: 'こむぎ', meaning: 'wheat' }, { word: '麦茶', reading: 'むぎちゃ', meaning: 'barley tea' }],
+		recipes: [{ kanji: '麺', reading: 'めん', meaning: 'noodle', breakdown: '麦 + 面', clue: 'Grain-flour formed into noodles.' }, { kanji: '麹', reading: 'こうじ', meaning: 'koji mold (fermentation)', breakdown: '麦 + 匊', clue: 'Grain that has been cultured and fermented.' }]
+	},
+	'牛': {
+		mnemonic: 'A bull\'s head with two horns spreading to the sides and a vertical muzzle — seen straight on.',
+		etymology: 'A pictograph of a cow or ox head viewed from the front: two spreading horns at the top, a horizontal stroke for the head, and a vertical downstroke for the muzzle. Cattle were fundamental to ancient agriculture (plowing) and ritual sacrifice. The radical marks all bovine animals and their products.',
+		tags: ['cow', 'ox', 'livestock'],
+		examples: [{ word: '牛', reading: 'うし', meaning: 'cow / ox' }, { word: '牛乳', reading: 'ぎゅうにゅう', meaning: 'milk' }, { word: '牛肉', reading: 'ぎゅうにく', meaning: 'beef' }],
+		recipes: [{ kanji: '物', reading: 'もの', meaning: 'thing / object', breakdown: '牛 + 勿', clue: 'The cow radical signals something tangible.' }, { kanji: '特', reading: 'とく', meaning: 'special', breakdown: '牛 + 寺', clue: 'A bull at a temple — something exceptional.' }]
+	},
+	'馬': {
+		mnemonic: 'A horse in profile: head and mane at the top, four legs (the four dots) running below.',
+		etymology: 'A pictograph of a horse in motion — the top strokes form the head, mane, and neck, the body is suggested by the torso strokes, and the four dots at the base represent the four legs (a common pictographic shorthand). Horses were central to military and transport in ancient East Asia, and this radical marks all equine kanji.',
+		tags: ['horse', 'transport'],
+		examples: [{ word: '馬', reading: 'うま', meaning: 'horse' }, { word: '競馬', reading: 'けいば', meaning: 'horse racing' }, { word: '馬力', reading: 'ばりき', meaning: 'horsepower' }],
+		recipes: [{ kanji: '騎', reading: 'き', meaning: 'ride a horse', breakdown: '馬 + 奇', clue: 'The horse radical marks the act of riding.' }, { kanji: '駅', reading: 'えき', meaning: 'train station', breakdown: '馬 + 尺', clue: 'Historically a horse relay station — now a train stop.' }]
+	},
+	'羊': {
+		mnemonic: 'A sheep face-on: two curved horns spreading up and outward from a central head — unmistakably pastoral.',
+		etymology: 'A pictograph of a sheep or ram\'s head viewed from the front: the two curving strokes are the horns, and the lower strokes form the snout. Sheep were important for wool, meat, and sacrifice. In Chinese culture, the sheep/ram was associated with auspiciousness and beauty — 美 (beautiful) combines 羊 with 大.',
+		tags: ['sheep', 'livestock'],
+		examples: [{ word: '羊', reading: 'ひつじ', meaning: 'sheep' }, { word: '羊毛', reading: 'ようもう', meaning: 'wool' }, { word: '美しい', reading: 'うつくしい', meaning: 'beautiful' }],
+		recipes: [{ kanji: '美', reading: 'び', meaning: 'beautiful', breakdown: '羊 + 大', clue: 'A big sheep — the ancient picture of something splendid.' }, { kanji: '善', reading: 'ぜん', meaning: 'good / virtue', breakdown: '羊 + 誩', clue: 'Sheep as a symbol of auspiciousness yields goodness.' }]
+	},
+	'犬': {
+		mnemonic: 'A dog standing with a dot marking its wagging tail — the simplest distinction from 大 (big/person) is that one dot.',
+		etymology: 'A pictograph of a dog: the base shape is identical to 大 (a person standing with arms out) but a single dot is added to represent the upright tail. This one-dot difference encodes the entire distinction. In compound kanji the dog radical usually appears on the left as 犭.',
+		variants: ['犭'],
+		tags: ['dog', 'animal'],
+		examples: [{ word: '犬', reading: 'いぬ', meaning: 'dog' }, { word: '愛犬', reading: 'あいけん', meaning: 'beloved dog' }, { word: '子犬', reading: 'こいぬ', meaning: 'puppy' }],
+		recipes: [{ kanji: '狗', reading: 'く', meaning: 'dog (literary)', breakdown: '犭 + 句', clue: 'The animal-side radical makes the creature meaning clear.' }, { kanji: '犯', reading: 'はん', meaning: 'crime / offend', breakdown: '犭 + 巳', clue: 'An animal instinct acting against rules.' }]
+	},
+	'犭': {
+		mnemonic: 'The animal side radical — three strokes suggesting a creature crouching to leap. Any wild animal or beast lives here.',
+		etymology: 'The left-side compressed form of 犬 (dog) that expanded to represent wild animals in general. When 犬 was used as a component in compound characters, the side form was freed to mark a broader animal category — predators, game animals, and beasts of all kinds.',
+		variants: ['犬'],
+		tags: ['animal side', 'left-side'],
+		examples: [{ word: '猫', reading: 'ねこ', meaning: 'cat' }, { word: '狐', reading: 'きつね', meaning: 'fox' }, { word: '狼', reading: 'おおかみ', meaning: 'wolf' }],
+		recipes: [{ kanji: '猫', reading: 'びょう', meaning: 'cat', breakdown: '犭 + 苗', clue: 'The animal radical marks the four-legged creature.' }, { kanji: '狩', reading: 'しゅ', meaning: 'hunting', breakdown: '犭 + 守', clue: 'Animals being guarded and pursued — hunting.' }]
+	},
+	'方': {
+		mnemonic: 'A plow seen from above, or two boats lashed side by side — the idea of direction, side, and comparing two things.',
+		etymology: 'The original meaning is debated: one analysis sees a pictograph of a plow with its handle pointing in a direction; another interprets two boats moored side-by-side, implying comparison and direction. Either way, 方 settled into meanings of direction, side, manner, and method — and it marks a large family of directional and manner kanji.',
+		tags: ['direction', 'method', 'side'],
+		examples: [{ word: '方向', reading: 'ほうこう', meaning: 'direction' }, { word: '方法', reading: 'ほうほう', meaning: 'method / way' }, { word: '地方', reading: 'ちほう', meaning: 'region / locality' }],
+		recipes: [{ kanji: '放', reading: 'ほう', meaning: 'release', breakdown: '方 + 攵', clue: 'Directing a strike — letting something loose.' }, { kanji: '旅', reading: 'りょ', meaning: 'travel', breakdown: '方 + 㫃 + 人', clue: 'People moving in a direction — travel.' }]
+	},
+	'父': {
+		mnemonic: 'Two hands — one on top of the other — holding a stone tool or a rod of authority. The father\'s hands at work.',
+		etymology: 'A pictograph of two hands gripping a stone tool or a rod: the upper strokes are hands and the lower diagonal strokes are the handle or implement. The original meaning was "to work with one\'s hands," and by extension "the male head of the household who labors." It came to mean father as the working authority figure.',
+		tags: ['father', 'authority'],
+		examples: [{ word: '父', reading: 'ちち', meaning: 'father' }, { word: '父親', reading: 'ちちおや', meaning: 'father (formal)' }, { word: '祖父', reading: 'そふ', meaning: 'grandfather' }],
+		recipes: [{ kanji: '爸', reading: 'ちち', meaning: 'dad (informal)', breakdown: '父 + 巴', clue: 'Father with a softening sound component.' }, { kanji: '爺', reading: 'じじい', meaning: 'old man / grandfather', breakdown: '父 + 耶', clue: 'Father grown old.' }]
+	},
+	'止': {
+		mnemonic: 'A footprint or foot with toes pointing upward — to stop is to plant your foot and stand still.',
+		etymology: 'A pictograph of a footprint or foot: the vertical stroke is the leg, and the two or three horizontal strokes are the toes spread out. Originally meaning "foot" or "footstep," the meaning shifted to "stop" — one interpretation being the foot planted in place to halt movement. It also appears as a semantic element in 走 (run) and 歩 (walk).',
+		tags: ['stop', 'foot', 'step'],
+		examples: [{ word: '止まる', reading: 'とまる', meaning: 'to stop' }, { word: '禁止', reading: 'きんし', meaning: 'prohibition' }, { word: '中止', reading: 'ちゅうし', meaning: 'suspension / cancellation' }],
+		recipes: [{ kanji: '歩', reading: 'ほ', meaning: 'walk / step', breakdown: '止 + 少', clue: 'A foot taking small steps — walking.' }, { kanji: '正', reading: 'せい', meaning: 'correct / proper', breakdown: '一 + 止', clue: 'A foot stopping at the right line — correctness.' }]
+	},
+	'夕': {
+		mnemonic: 'The moon at evening — a crescent barely visible in the fading light, only half of the full 月.',
+		etymology: 'A pictograph of the crescent moon seen in the evening sky — deliberately drawn as only half of 月 (moon) to represent the dim, partial visibility of the moon at dusk. It marks kanji about evening, dusk, night, and twilight — and also appears in names and compounds related to the late-day atmosphere.',
+		tags: ['evening', 'dusk', 'night'],
+		examples: [{ word: '夕方', reading: 'ゆうがた', meaning: 'evening' }, { word: '夕食', reading: 'ゆうしょく', meaning: 'dinner / evening meal' }, { word: '夕日', reading: 'ゆうひ', meaning: 'evening sun / sunset' }],
+		recipes: [{ kanji: '外', reading: 'がい', meaning: 'outside', breakdown: '夕 + 卜', clue: 'Evening with divination — something outside the norm.' }, { kanji: '多', reading: 'た', meaning: 'many', breakdown: '夕 + 夕', clue: 'Two evenings piling up — more and more.' }]
+	},
+	'广': {
+		mnemonic: 'A cliff with a roof extending outward — a lean-to shelter built against a rock face, open on the lower side.',
+		etymology: 'A pictograph of a cliff overhang (厂) extended to include a roof and enclosed walls — the image of a building constructed against a hillside or cliff. It marks kanji about structures built into or alongside terrain: halls, houses, kitchens, and workshops attached to a wall.',
+		tags: ['cliff', 'lean-to', 'building'],
+		examples: [{ word: '広い', reading: 'ひろい', meaning: 'wide / spacious' }, { word: '店', reading: 'みせ', meaning: 'shop / store' }, { word: '府', reading: 'ふ', meaning: 'urban prefecture' }],
+		recipes: [{ kanji: '広', reading: 'こう', meaning: 'wide', breakdown: '广 + 厶', clue: 'The open lean-to structure suggests spaciousness.' }, { kanji: '庭', reading: 'てい', meaning: 'garden / yard', breakdown: '广 + 廷', clue: 'The covered structure opens into an outdoor court.' }]
+	},
+	'厂': {
+		mnemonic: 'A bare cliff overhang — no walls, just rock jutting out. Rawness, exposure, and stone.',
+		etymology: 'A pictograph of a cliff face or rock overhang seen in profile: the horizontal stroke at the top is the overhanging rock and the descending stroke is the cliff face below. It marks kanji about cliffs, steep surfaces, exposed environments, and flat-roofed structures. The covered version with walls is 广.',
+		tags: ['cliff', 'overhang', 'raw'],
+		examples: [{ word: '原', reading: 'はら', meaning: 'plain / field' }, { word: '厚い', reading: 'あつい', meaning: 'thick / deep' }, { word: '压力', reading: 'あつりょく', meaning: 'pressure' }],
+		recipes: [{ kanji: '厚', reading: 'こう', meaning: 'thick / kind', breakdown: '厂 + 𩺊', clue: 'A cliff piled deep — thickness.' }, { kanji: '原', reading: 'げん', meaning: 'origin / field', breakdown: '厂 + 泉', clue: 'A spring at the base of a cliff — the source.' }]
+	},
+	'尸': {
+		mnemonic: 'A person lying flat or draped over a surface — either a body at rest, or someone hunched over a ledge.',
+		etymology: 'Originally a pictograph of a lying-down human form, specifically a corpse laid out for burial. Over time the meaning expanded to cover any flat, horizontal human shape — hence its use in kanji about roofs, rooms, flat surfaces, and occupancy. The "flat over something" sense is more productive than the death meaning.',
+		tags: ['flat roof', 'body', 'reclined'],
+		examples: [{ word: '尻', reading: 'しり', meaning: 'buttocks / bottom' }, { word: '層', reading: 'そう', meaning: 'layer / stratum' }, { word: '居る', reading: 'いる', meaning: 'to be / exist (animate)' }],
+		recipes: [{ kanji: '居', reading: 'きょ', meaning: 'reside / be present', breakdown: '尸 + 古', clue: 'A body resting in place — dwelling.' }, { kanji: '屋', reading: 'おく', meaning: 'house / shop', breakdown: '尸 + 至', clue: 'A flat roof overhead — a place where someone is.' }]
+	},
+	'冫': {
+		mnemonic: 'Two ice crystals — tiny shards of frozen water. Cold, frozen, or chilled.',
+		etymology: 'A pictograph of ice crystals forming on a surface — the two-stroke shape represents the angular crystalline structure of ice or frost. It marks kanji about cold, freezing, chilling, and winter phenomena. Different from 氵 (three water dots for liquid water), this is specifically solidified or extremely cold water.',
+		tags: ['ice', 'cold'],
+		examples: [{ word: '冷たい', reading: 'つめたい', meaning: 'cold (to the touch)' }, { word: '凍る', reading: 'こおる', meaning: 'to freeze' }, { word: '準備', reading: 'じゅんび', meaning: 'preparation' }],
+		recipes: [{ kanji: '冷', reading: 'れい', meaning: 'cold / cool', breakdown: '冫 + 令', clue: 'Ice crystals plus a cooling command — cold.' }, { kanji: '凍', reading: 'とう', meaning: 'freeze', breakdown: '冫 + 東', clue: 'Ice on the east — winter freezing.' }]
+	},
+	'冖': {
+		mnemonic: 'A cover or lid seen from the side — a flat cap placed over something to conceal or protect it.',
+		etymology: 'A pictograph of a covering cloth or lid placed over an object — the horizontal stroke is the top and the two descending edges are the sides of the cover. It marks kanji where the semantic content involves covering, concealing, or capping something. Compare with 宀 (full peaked roof with walls) — 冖 is just the flat cover layer.',
+		tags: ['cover', 'lid'],
+		examples: [{ word: '冠', reading: 'かんむり', meaning: 'crown / top' }, { word: '冥', reading: 'めい', meaning: 'dark / netherworld' }, { word: '写す', reading: 'うつす', meaning: 'to copy / photograph' }],
+		recipes: [{ kanji: '写', reading: 'しゃ', meaning: 'copy / photograph', breakdown: '冖 + 与', clue: 'A cover that reproduces what is below.' }, { kanji: '冠', reading: 'かん', meaning: 'crown', breakdown: '冖 + 元 + 寸', clue: 'A cover placed on the head — a crown.' }]
+	},
+	'几': {
+		mnemonic: 'A low table or stool — two legs and a flat top. Something you rest things on or lean against.',
+		etymology: 'A pictograph of a low table or armrest stool common in ancient East Asian settings: the horizontal stroke is the surface and the two diagonal strokes are the legs. It marks kanji involving tables, small furniture, and resting surfaces. Also appears in 凡 (ordinary) as a structural component.',
+		tags: ['table', 'stool', 'furniture'],
+		examples: [{ word: '机', reading: 'つくえ', meaning: 'desk' }, { word: '凡庸', reading: 'ぼんよう', meaning: 'mediocrity / ordinariness' }, { word: '処理', reading: 'しょり', meaning: 'processing / handling' }],
+		recipes: [{ kanji: '机', reading: 'き', meaning: 'desk', breakdown: '木 + 几', clue: 'Wood made into a table — a desk.' }, { kanji: '凡', reading: 'ぼん', meaning: 'ordinary', breakdown: '几 + 丶', clue: 'A plain table with nothing special on it.' }]
+	},
+	'凵': {
+		mnemonic: 'An open container or vessel viewed from the front — three sides and an open top waiting to receive something.',
+		etymology: 'A pictograph of a container open at the top: two sides and a bottom, with the opening facing upward. It appears in kanji about containers, openings, mouths, and receiving. It is sometimes called the "open box" component and marks the receptive or hollow quality in characters.',
+		tags: ['container', 'opening', 'hollow'],
+		examples: [{ word: '出る', reading: 'でる', meaning: 'to go out / exit' }, { word: '函', reading: 'はこ', meaning: 'box / container' }, { word: '凶', reading: 'きょう', meaning: 'misfortune / bad luck' }],
+		recipes: [{ kanji: '出', reading: 'しゅつ', meaning: 'exit / come out', breakdown: '山 + 凵', clue: 'Something emerging upward from a container.' }, { kanji: '凶', reading: 'きょう', meaning: 'misfortune', breakdown: '凵 + 乂', clue: 'A cross mark inside an open vessel — something bad inside.' }]
+	},
+	'八': {
+		mnemonic: 'Two strokes spreading apart — the image of dividing, separating, or spreading in two directions.',
+		etymology: 'Originally a pictograph of two things being divided or spread apart — the spreading strokes represent separation or divergence. The number eight was assigned to this phonetically in ancient Chinese, but the shape retained its underlying "divide / spread" meaning as a structural component in many kanji.',
+		tags: ['eight', 'divide', 'spread'],
+		examples: [{ word: '八', reading: 'はち', meaning: 'eight' }, { word: '八月', reading: 'はちがつ', meaning: 'August' }, { word: '八方', reading: 'はっぽう', meaning: 'all directions' }],
+		recipes: [{ kanji: '分', reading: 'ぶん', meaning: 'divide / part', breakdown: '八 + 刀', clue: 'Two strokes spreading plus a knife — division.' }, { kanji: '公', reading: 'こう', meaning: 'public', breakdown: '八 + 厶', clue: 'Spreading away from the private — going public.' }]
+	},
+	'儿': {
+		mnemonic: 'Two legs walking — the bottom part of a standing person stripped to the bare minimum.',
+		etymology: 'A reduction of 人 (person) to just the two leg strokes, used specifically when the human element appears at the bottom of a compound character. It is not a separate concept from 人 but a positional variant — the "legs" of a character rather than the full body.',
+		tags: ['legs', 'person-bottom'],
+		examples: [{ word: '見る', reading: 'みる', meaning: 'to see' }, { word: '元気', reading: 'げんき', meaning: 'healthy / energetic' }, { word: '先生', reading: 'せんせい', meaning: 'teacher' }],
+		recipes: [{ kanji: '見', reading: 'けん', meaning: 'see', breakdown: '目 + 儿', clue: 'An eye on legs — actively going out to see.' }, { kanji: '元', reading: 'げん', meaning: 'origin / root', breakdown: '一 + 儿', clue: 'Legs with a foundation above — the root of something.' }]
+	},
+	'入': {
+		mnemonic: 'Two strokes converging inward — like a funnel drawing something inside. Entering, going in.',
+		etymology: 'A pictograph of two paths or lines converging into a single point — the visual of something going inward, entering a space. It is the directional opposite of 八 (spreading apart) and 人 (person standing). It marks kanji about entering, putting in, and going inside.',
+		tags: ['enter', 'go in'],
+		examples: [{ word: '入る', reading: 'はいる', meaning: 'to enter' }, { word: '入口', reading: 'いりぐち', meaning: 'entrance' }, { word: '輸入', reading: 'ゆにゅう', meaning: 'import' }],
+		recipes: [{ kanji: '内', reading: 'ない', meaning: 'inside', breakdown: '冂 + 入', clue: 'Something entering an enclosure — the inside.' }, { kanji: '込む', reading: 'こむ', meaning: 'to be crowded / put into', breakdown: '辶 + 入', clue: 'Moving inside — crowding in.' }]
+	},
+	'匸': {
+		mnemonic: 'A box open on the right side — something hiding or being concealed within a partial enclosure.',
+		etymology: 'A pictograph of a three-sided enclosure open on the right — the image of hiding or storing something partially out of sight. It marks kanji where concealment, hiding, or enclosure within a partial frame is part of the meaning. Rare as a standalone but structurally important.',
+		tags: ['hiding', 'enclosure', 'conceal'],
+		examples: [{ word: '匹', reading: 'ひき', meaning: 'counter for small animals' }, { word: '医', reading: 'い', meaning: 'medicine / doctor' }, { word: '匿名', reading: 'とくめい', meaning: 'anonymity' }],
+		recipes: [{ kanji: '医', reading: 'い', meaning: 'medicine', breakdown: '匸 + 矢', clue: 'An arrow hidden away — a doctor\'s needle.' }, { kanji: '匿', reading: 'とく', meaning: 'conceal / hide', breakdown: '匸 + 若', clue: 'Something young tucked away — concealed.' }]
+	},
+	'囗': {
+		mnemonic: 'A four-sided enclosure — a walled space, a territory, a boundary. Bigger and more deliberate than 口 (mouth).',
+		etymology: 'A pictograph of a walled enclosure or bounded territory: the four strokes form a complete closed rectangle. It marks kanji about countries, enclosed areas, circles, and boundaries. The visual difference from 口 (mouth) is its larger size and the semantic emphasis on enclosure rather than opening.',
+		tags: ['enclosure', 'territory', 'boundary'],
+		examples: [{ word: '国', reading: 'くに', meaning: 'country / nation' }, { word: '囲む', reading: 'かこむ', meaning: 'to surround' }, { word: '固い', reading: 'かたい', meaning: 'hard / firm' }],
+		recipes: [{ kanji: '国', reading: 'こく', meaning: 'country', breakdown: '囗 + 玉', clue: 'A jewel inside a walled territory — a nation.' }, { kanji: '囲', reading: 'い', meaning: 'surround', breakdown: '囗 + 韦', clue: 'The enclosure radical makes the surrounding explicit.' }]
+	},
+	'讠': {
+		mnemonic: 'The simplified speech radical used in modern Chinese-influenced forms — two strokes that signal words, speech, and communication.',
+		etymology: 'The simplified (shinjitai-adjacent) two-stroke form of 言 (speech/words) found in some modern-print kanji and Chinese simplified script. In Japanese it appears in a handful of characters that were simplified. It carries the same semantic content as 訁 — language, speaking, recording.',
+		variants: ['言', '訁'],
+		tags: ['speech simplified', 'left-side'],
+		examples: [{ word: '訂正', reading: 'ていせい', meaning: 'correction / revision' }, { word: '記録', reading: 'きろく', meaning: 'record / documentation' }, { word: '認める', reading: 'みとめる', meaning: 'to recognize / approve' }],
+		recipes: [{ kanji: '订', reading: 'てい', meaning: 'revise / staple', breakdown: '讠 + 丁', clue: 'Speech corrected with a nail stroke — revision.' }, { kanji: '认', reading: 'にん', meaning: 'recognize', breakdown: '讠 + 忍', clue: 'Speech confirming what the heart endures — recognition.' }]
+	}
 };
 
 function withRadicalDetails(items: CardItem[]): CardItem[] {
