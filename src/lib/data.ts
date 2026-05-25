@@ -6,6 +6,12 @@ export interface RadicalRecipe {
 	clue: string;
 }
 
+export interface KanjiExample {
+	word: string;
+	reading: string;
+	meaning: string;
+}
+
 export interface CardItem {
 	character: string;
 	romaji: string;
@@ -16,6 +22,11 @@ export interface CardItem {
 	variants?: string[];
 	tags?: string[];
 	recipes?: RadicalRecipe[];
+	// Kanji enrichment fields
+	etymology?: string; // 1-3 sentence origin story
+	components?: string[]; // structural parts, e.g. ["日 (sun)", "月 (moon)"]
+	examples?: KanjiExample[]; // common compound words
+	strokeCount?: number;
 }
 
 export interface ColumnSection {
@@ -450,6 +461,893 @@ function withRadicalDetails(items: CardItem[]): CardItem[] {
 }
 
 // ─────────────────────────────────────────────
+// N5 KANJI ENRICHMENT — etymology, components, examples, strokeCount
+// ─────────────────────────────────────────────
+
+const kanjiN5Enrichment: Record<string, Pick<CardItem, 'etymology' | 'components' | 'examples' | 'strokeCount'>> = {
+	'一': {
+		strokeCount: 1,
+		etymology: 'Originally a single horizontal tally stroke in ancient oracle bone script, the simplest possible picture of the number one. The shape has not changed in over three thousand years.',
+		components: ['一 (one horizontal line)'],
+		examples: [
+			{ word: '一つ', reading: 'ひとつ', meaning: 'one (thing)' },
+			{ word: '一番', reading: 'いちばん', meaning: 'number one / most' },
+			{ word: '一日', reading: 'いちにち', meaning: 'one day' },
+			{ word: '一人', reading: 'ひとり', meaning: 'one person / alone' }
+		]
+	},
+	'二': {
+		strokeCount: 2,
+		etymology: 'Two horizontal tally strokes stacked, directly derived from the earliest Chinese counting numerals. What you see is exactly what ancient scribes carved into oracle bones.',
+		components: ['二 (two horizontal lines)'],
+		examples: [
+			{ word: '二つ', reading: 'ふたつ', meaning: 'two (things)' },
+			{ word: '二人', reading: 'ふたり', meaning: 'two people' },
+			{ word: '二月', reading: 'にがつ', meaning: 'February' },
+			{ word: '二十', reading: 'にじゅう', meaning: 'twenty' }
+		]
+	},
+	'三': {
+		strokeCount: 3,
+		etymology: 'Three horizontal tally strokes, the direct pictographic ancestor of the number. Ancient Chinese used finger tallies and these strokes represent three upright fingers laid flat into writing. The same counting logic — one stroke per unit — appears in many world writing systems.',
+		components: ['三 (three horizontal lines)'],
+		examples: [
+			{ word: '三つ', reading: 'みっつ', meaning: 'three (things)' },
+			{ word: '三角', reading: 'さんかく', meaning: 'triangle' },
+			{ word: '三月', reading: 'さんがつ', meaning: 'March' },
+			{ word: '三人', reading: 'さんにん', meaning: 'three people' }
+		]
+	},
+	'四': {
+		strokeCount: 5,
+		etymology: 'Originally depicted a nose breathing out (four breaths = four). The current form evolved through seal script into a box with two internal lines, gradually drifting away from the pictograph. The native Japanese word よん (yon) is preferred in many contexts because し (shi) sounds like 死 (death).',
+		components: ['囗 (enclosure)', '儿 (legs / inner division)'],
+		examples: [
+			{ word: '四つ', reading: 'よっつ', meaning: 'four (things)' },
+			{ word: '四月', reading: 'しがつ', meaning: 'April' },
+			{ word: '四角', reading: 'しかく', meaning: 'square / rectangle' },
+			{ word: '四人', reading: 'よにん', meaning: 'four people' }
+		]
+	},
+	'五': {
+		strokeCount: 4,
+		etymology: 'The ancient form showed an X shape sandwiched between two horizontal lines, symbolizing the intersection between heaven and earth — the midpoint in the series one through ten. Five was philosophically significant in Chinese cosmology as the center of the five directions.',
+		components: ['一 (upper line)', '乂 (cross)', '一 (lower line)'],
+		examples: [
+			{ word: '五つ', reading: 'いつつ', meaning: 'five (things)' },
+			{ word: '五月', reading: 'ごがつ', meaning: 'May' },
+			{ word: '五十', reading: 'ごじゅう', meaning: 'fifty' },
+			{ word: '五感', reading: 'ごかん', meaning: 'five senses' }
+		]
+	},
+	'六': {
+		strokeCount: 4,
+		etymology: 'Originally depicted a hut or tent shape, and was borrowed phonetically for the number six in early Chinese. The meaning "six" is purely phonetic — the shelter shape was hijacked because it sounded like the word for six in archaic Chinese.',
+		components: ['亠 (lid radical)', '八 (eight / spreading)'],
+		examples: [
+			{ word: '六つ', reading: 'むっつ', meaning: 'six (things)' },
+			{ word: '六月', reading: 'ろくがつ', meaning: 'June' },
+			{ word: '六十', reading: 'ろくじゅう', meaning: 'sixty' },
+			{ word: '六本木', reading: 'ろっぽんぎ', meaning: 'Roppongi (place name)' }
+		]
+	},
+	'七': {
+		strokeCount: 2,
+		etymology: 'Originally a pictograph of something cut — a horizontal line crossed by a downward stroke suggesting division or slicing. The word for seven was borrowed onto this shape because the sounds matched in archaic Chinese. The character later simplified to its current angular form.',
+		components: ['七 (undivided — single semantic unit)'],
+		examples: [
+			{ word: '七つ', reading: 'ななつ', meaning: 'seven (things)' },
+			{ word: '七月', reading: 'しちがつ', meaning: 'July' },
+			{ word: '七夕', reading: 'たなばた', meaning: 'Star Festival (July 7)' },
+			{ word: '七十', reading: 'ななじゅう', meaning: 'seventy' }
+		]
+	},
+	'八': {
+		strokeCount: 2,
+		etymology: 'Two diverging strokes pointing away from each other — originally meaning "to divide" or "separate." The number eight was phonetically assigned to this shape. The spreading form later became the radical 八 suggesting division or spreading apart.',
+		components: ['八 (two diverging strokes)'],
+		examples: [
+			{ word: '八つ', reading: 'やっつ', meaning: 'eight (things)' },
+			{ word: '八月', reading: 'はちがつ', meaning: 'August' },
+			{ word: '八百屋', reading: 'やおや', meaning: 'greengrocer' },
+			{ word: '八十', reading: 'はちじゅう', meaning: 'eighty' }
+		]
+	},
+	'九': {
+		strokeCount: 2,
+		etymology: 'Originally a pictograph of a bent arm at the elbow — the arm stretching as far as it can go, suggesting the idea of "reaching the limit" or "fullness." Since nine is the largest single digit, the near-limit imagery fit naturally. The hook at the bottom preserves the bent-arm shape.',
+		components: ['九 (bent stroke — single semantic unit)'],
+		examples: [
+			{ word: '九つ', reading: 'ここのつ', meaning: 'nine (things)' },
+			{ word: '九月', reading: 'くがつ', meaning: 'September' },
+			{ word: '九十', reading: 'きゅうじゅう', meaning: 'ninety' },
+			{ word: '九州', reading: 'きゅうしゅう', meaning: 'Kyushu (island)' }
+		]
+	},
+	'十': {
+		strokeCount: 2,
+		etymology: 'A vertical stroke crossed by a horizontal one — a cross or plus sign marking completeness. In ancient China, ten was considered a complete cycle, and the cross shape suggests all four directions covered. The shape is one of the most ancient and stable number symbols.',
+		components: ['十 (cross — vertical meets horizontal)'],
+		examples: [
+			{ word: '十', reading: 'じゅう', meaning: 'ten' },
+			{ word: '十月', reading: 'じゅうがつ', meaning: 'October' },
+			{ word: '十分', reading: 'じゅうぶん', meaning: 'sufficient / ten minutes' },
+			{ word: '二十歳', reading: 'はたち', meaning: 'twenty years old' }
+		]
+	},
+	'百': {
+		strokeCount: 6,
+		etymology: 'Combines 一 (one) over 白 (white). The white element 白 was originally a pictograph of an acorn or thumb, and was phonetically borrowed here. Together with 一, it suggests "one step beyond," indicating the next counting unit after ten.',
+		components: ['一 (one)', '白 (white / phonetic element)'],
+		examples: [
+			{ word: '百円', reading: 'ひゃくえん', meaning: '100 yen' },
+			{ word: '百貨店', reading: 'ひゃっかてん', meaning: 'department store' },
+			{ word: '三百', reading: 'さんびゃく', meaning: 'three hundred' },
+			{ word: '百科事典', reading: 'ひゃっかじてん', meaning: 'encyclopedia' }
+		]
+	},
+	'千': {
+		strokeCount: 3,
+		etymology: 'Combines 十 (ten) with a slash or person stroke 亻 at the top. The person element acts as an amplifier — "a person\'s count of ten" multiplied up to one thousand. Some analyses read the top stroke as a number multiplier marker used in early Chinese counting systems.',
+		components: ['亻 (person / amplifier stroke)', '十 (ten)'],
+		examples: [
+			{ word: '千円', reading: 'せんえん', meaning: '1,000 yen' },
+			{ word: '三千', reading: 'さんぜん', meaning: 'three thousand' },
+			{ word: '千葉', reading: 'ちば', meaning: 'Chiba (place name)' },
+			{ word: '一千万', reading: 'いっせんまん', meaning: 'ten million' }
+		]
+	},
+	'万': {
+		strokeCount: 3,
+		etymology: 'Originally a pictograph of a scorpion in oracle bone script — the creature was used phonetically because the word for scorpion sounded like the word for ten thousand in archaic Chinese. The current simplified form bears no resemblance to the scorpion, but the phonetic origin is well-documented.',
+		components: ['万 (simplified from scorpion pictograph — single unit)'],
+		examples: [
+			{ word: '一万円', reading: 'いちまんえん', meaning: '10,000 yen' },
+			{ word: '万能', reading: 'ばんのう', meaning: 'all-purpose / almighty' },
+			{ word: '万歳', reading: 'ばんざい', meaning: 'hooray / banzai' },
+			{ word: '万国', reading: 'ばんこく', meaning: 'all nations / world' }
+		]
+	},
+	'円': {
+		strokeCount: 4,
+		etymology: 'The traditional form 圓 depicted a round enclosed space with a person inside, conveying circularity. The modern simplified 円 retains the enclosure 門-like frame with a single inner mark. The "yen" currency took its name from this character\'s meaning of "round/circle," as early coins were round.',
+		components: ['冂 (open enclosure)', '一 (inner stroke)'],
+		examples: [
+			{ word: '百円', reading: 'ひゃくえん', meaning: '100 yen' },
+			{ word: '円形', reading: 'えんけい', meaning: 'circular shape' },
+			{ word: '半円', reading: 'はんえん', meaning: 'semicircle' },
+			{ word: '円周', reading: 'えんしゅう', meaning: 'circumference' }
+		]
+	},
+	'年': {
+		strokeCount: 6,
+		etymology: 'Originally depicted a person 人 carrying a bundle of harvested grain 禾, symbolizing the annual harvest cycle. The harvest was the defining event of the year in agricultural society. Over time the figure and grain merged into the current abstract form, but the agricultural heartbeat remains.',
+		components: ['禾 (grain stalk — compressed)', '千 (person carrying)'],
+		examples: [
+			{ word: '今年', reading: 'ことし', meaning: 'this year' },
+			{ word: '来年', reading: 'らいねん', meaning: 'next year' },
+			{ word: '毎年', reading: 'まいとし', meaning: 'every year' },
+			{ word: '年齢', reading: 'ねんれい', meaning: 'age' }
+		]
+	},
+	'月': {
+		strokeCount: 4,
+		etymology: 'A direct pictograph of the crescent moon — the curved outer arc and inner lines originally represented the crescent shape with its lit and shadowed halves. On the left side of kanji, this same shape often means "flesh/body" (肉), creating an interesting dual identity.',
+		components: ['月 (moon crescent pictograph)'],
+		examples: [
+			{ word: '今月', reading: 'こんげつ', meaning: 'this month' },
+			{ word: '来月', reading: 'らいげつ', meaning: 'next month' },
+			{ word: '三ヶ月', reading: 'さんかげつ', meaning: 'three months' },
+			{ word: '月曜日', reading: 'げつようび', meaning: 'Monday' }
+		]
+	},
+	'日': {
+		strokeCount: 4,
+		etymology: 'A pictograph of the sun — originally a circle with a central dot indicating it is full of light, not empty like the moon crescent. The square shape evolved because ancient scribes could not easily draw perfect circles with a brush or bone stylus. The internal horizontal stroke is the remnant of the original center dot.',
+		components: ['日 (sun pictograph — box with center line)'],
+		examples: [
+			{ word: '今日', reading: 'きょう', meaning: 'today' },
+			{ word: '日本語', reading: 'にほんご', meaning: 'Japanese language' },
+			{ word: '毎日', reading: 'まいにち', meaning: 'every day' },
+			{ word: '日曜日', reading: 'にちようび', meaning: 'Sunday' }
+		]
+	},
+	'時': {
+		strokeCount: 10,
+		etymology: 'Combines 日 (sun) and 寺 (temple). The temple element 寺 originally depicted a hand holding a foot, suggesting measured steps — it became associated with government administration and precise record-keeping. Together with the sun, it evokes the sun\'s measured march across the sky: time.',
+		components: ['日 (sun)', '寺 (temple / measured steps — phonetic)'],
+		examples: [
+			{ word: '時間', reading: 'じかん', meaning: 'time / duration' },
+			{ word: '何時', reading: 'なんじ', meaning: 'what time' },
+			{ word: '時々', reading: 'ときどき', meaning: 'sometimes' },
+			{ word: '時計', reading: 'とけい', meaning: 'clock / watch' }
+		]
+	},
+	'分': {
+		strokeCount: 4,
+		etymology: 'Combines 刀 (knife) and 八 (divide/split). The knife cutting something apart perfectly captures the meaning: dividing, separating, understanding (分かる wakaru), and the minute as a division of an hour. The core concept across all meanings is "to divide into parts."',
+		components: ['八 (divide / split apart)', '刀 (knife)'],
+		examples: [
+			{ word: '三十分', reading: 'さんじっぷん', meaning: 'thirty minutes' },
+			{ word: '自分', reading: 'じぶん', meaning: 'oneself' },
+			{ word: '十分', reading: 'じゅうぶん', meaning: 'enough / sufficient' },
+			{ word: '気分', reading: 'きぶん', meaning: 'feeling / mood' }
+		]
+	},
+	'半': {
+		strokeCount: 5,
+		etymology: 'Depicts a cow or ox 牛 being split down the middle by a knife, leaving two halves. The vertical stroke through the center is the dividing line, and the shape below suggests the split animal. This visceral image of bisection made it the natural choice for "half."',
+		components: ['丷 (eight / split marker)', '牛 (cow — lower half)'],
+		examples: [
+			{ word: '半分', reading: 'はんぶん', meaning: 'half' },
+			{ word: '一時半', reading: 'いちじはん', meaning: 'one-thirty' },
+			{ word: '半年', reading: 'はんとし', meaning: 'half a year' },
+			{ word: '半分', reading: 'はんぶん', meaning: 'half portion' }
+		]
+	},
+	'今': {
+		strokeCount: 4,
+		etymology: 'Originally showed a person bending down with something held in the mouth or hands — the "current moment" captured as a living action happening right now. The roof-like top 亼 gathers meaning downward into the present point 今, giving the sense of convergence at this instant.',
+		components: ['亼 (converging roof)', '一 (base — the present moment)'],
+		examples: [
+			{ word: '今日', reading: 'きょう', meaning: 'today' },
+			{ word: '今年', reading: 'ことし', meaning: 'this year' },
+			{ word: '今すぐ', reading: 'いますぐ', meaning: 'right now' },
+			{ word: '今月', reading: 'こんげつ', meaning: 'this month' }
+		]
+	},
+	'毎': {
+		strokeCount: 6,
+		etymology: 'Built on 母 (mother) with an extra stroke — the mother who nurtures each and every day without fail. The maternal regularity behind daily care was abstracted into the meaning "every / each time." The top component 𠂉 is a hairpin ornament worn by a woman, placing this firmly in the domain of household regularity.',
+		components: ['𠂉 (hairpin ornament)', '母 (mother — lower form)'],
+		examples: [
+			{ word: '毎日', reading: 'まいにち', meaning: 'every day' },
+			{ word: '毎週', reading: 'まいしゅう', meaning: 'every week' },
+			{ word: '毎年', reading: 'まいとし', meaning: 'every year' },
+			{ word: '毎朝', reading: 'まいあさ', meaning: 'every morning' }
+		]
+	},
+	'何': {
+		strokeCount: 7,
+		etymology: 'Originally showed a person 亻 carrying a load on a shoulder pole, which was "whatever" burden they might be carrying. The right element 可 (possible / approval) was added phonetically. The character evolved into the general interrogative "what" — the carrier can haul any unspecified thing.',
+		components: ['亻 (person)', '可 (possible — phonetic)'],
+		examples: [
+			{ word: '何時', reading: 'なんじ', meaning: 'what time' },
+			{ word: '何人', reading: 'なんにん', meaning: 'how many people' },
+			{ word: '何月', reading: 'なんがつ', meaning: 'what month' },
+			{ word: '何か', reading: 'なにか', meaning: 'something' }
+		]
+	},
+	'人': {
+		strokeCount: 2,
+		etymology: 'One of the most ancient pictographs in Chinese writing — a profile of a person standing upright, with two legs visible. The stroke to the left is the body, and the stroke to the right is the supporting leg. When placed on the left side of a kanji, it compresses into 亻.',
+		components: ['人 (standing person profile — two strokes)'],
+		examples: [
+			{ word: '日本人', reading: 'にほんじん', meaning: 'Japanese person' },
+			{ word: '一人', reading: 'ひとり', meaning: 'one person / alone' },
+			{ word: '二人', reading: 'ふたり', meaning: 'two people' },
+			{ word: '人気', reading: 'にんき', meaning: 'popularity' }
+		]
+	},
+	'男': {
+		strokeCount: 7,
+		etymology: 'A semantic compound: 田 (rice field) plus 力 (strength / power). Together they paint a picture of the person who exerts strength in the fields — traditionally the male role in agrarian society. The logic is clear and unambiguous in the original cultural context.',
+		components: ['田 (rice field)', '力 (strength / power)'],
+		examples: [
+			{ word: '男の人', reading: 'おとこのひと', meaning: 'man' },
+			{ word: '男子', reading: 'だんし', meaning: 'boy / male' },
+			{ word: '長男', reading: 'ちょうなん', meaning: 'eldest son' },
+			{ word: '男性', reading: 'だんせい', meaning: 'male gender' }
+		]
+	},
+	'女': {
+		strokeCount: 3,
+		etymology: 'Originally a pictograph of a person kneeling with arms crossed — a posture of courtesy or deference in ancient China. The three strokes capture the kneeling silhouette. Over centuries the form straightened and abstracted, but the original kneeling posture is visible in the diagonal crossing stroke.',
+		components: ['女 (kneeling figure — three strokes)'],
+		examples: [
+			{ word: '女の人', reading: 'おんなのひと', meaning: 'woman' },
+			{ word: '女子', reading: 'じょし', meaning: 'girl / female' },
+			{ word: '女性', reading: 'じょせい', meaning: 'female gender' },
+			{ word: '彼女', reading: 'かのじょ', meaning: 'she / girlfriend' }
+		]
+	},
+	'子': {
+		strokeCount: 3,
+		etymology: 'A pictograph of an infant with a large head, arms outstretched, and legs still swaddled — unable to walk yet. The large top stroke is the head, the horizontal cross is the arms, and the curved bottom is the swaddled lower body. One of the most vivid pictographs in the kanji system.',
+		components: ['子 (infant with arms spread — three strokes)'],
+		examples: [
+			{ word: '子供', reading: 'こども', meaning: 'child / children' },
+			{ word: '男の子', reading: 'おとこのこ', meaning: 'boy' },
+			{ word: '女の子', reading: 'おんなのこ', meaning: 'girl' },
+			{ word: '子猫', reading: 'こねこ', meaning: 'kitten' }
+		]
+	},
+	'父': {
+		strokeCount: 4,
+		etymology: 'Originally depicted a hand gripping a stone axe or rod — the implement of authority, labor, and discipline. The raised hand holding the tool symbolized the paternal role as authority figure and provider. The crossed strokes at the top represent the hand and implement fused together.',
+		components: ['爻 (crossed authority strokes)', '父 (hand holding implement)'],
+		examples: [
+			{ word: 'お父さん', reading: 'おとうさん', meaning: 'father (polite)' },
+			{ word: '父親', reading: 'ちちおや', meaning: 'father' },
+			{ word: '父母', reading: 'ふぼ', meaning: 'parents' },
+			{ word: '祖父', reading: 'そふ', meaning: 'grandfather' }
+		]
+	},
+	'母': {
+		strokeCount: 5,
+		etymology: 'A transformation of 女 (woman) with two dots added inside the chest area, representing nursing breasts — the visual marker of a nursing mother. This is one of the most direct and anatomically specific pictographic additions in Chinese character history. The dots are the key diagnostic feature.',
+		components: ['女 (woman)', '丶丶 (two dots — nursing)'],
+		examples: [
+			{ word: 'お母さん', reading: 'おかあさん', meaning: 'mother (polite)' },
+			{ word: '母親', reading: 'ははおや', meaning: 'mother' },
+			{ word: '父母', reading: 'ふぼ', meaning: 'parents' },
+			{ word: '祖母', reading: 'そぼ', meaning: 'grandmother' }
+		]
+	},
+	'友': {
+		strokeCount: 4,
+		etymology: 'Originally two right hands 又 placed together — clasping or cooperating. The oracle bone form shows two hands extending toward each other in a gesture of mutual aid or shared direction. The friendship implied is one of shared purpose and mutual help, not just affection.',
+		components: ['又 (right hand)', '又 (right hand — two hands together)'],
+		examples: [
+			{ word: '友達', reading: 'ともだち', meaning: 'friend(s)' },
+			{ word: '友人', reading: 'ゆうじん', meaning: 'friend (formal)' },
+			{ word: '親友', reading: 'しんゆう', meaning: 'close friend' },
+			{ word: '友好', reading: 'ゆうこう', meaning: 'friendship / amity' }
+		]
+	},
+	'私': {
+		strokeCount: 7,
+		etymology: 'Combines 禾 (grain / rice plant) with 厶 (private enclosure). The image is a person privately fencing off their own section of the grain field — claiming personal ownership. The "private" meaning came first; the first-person pronoun use followed naturally since "mine" implies "I."',
+		components: ['禾 (grain stalk)', '厶 (private enclosure)'],
+		examples: [
+			{ word: '私', reading: 'わたし', meaning: 'I / me' },
+			{ word: '私立', reading: 'しりつ', meaning: 'private (institution)' },
+			{ word: '私服', reading: 'しふく', meaning: 'plain clothes / civilian clothes' },
+			{ word: '私用', reading: 'しよう', meaning: 'private use' }
+		]
+	},
+	'大': {
+		strokeCount: 3,
+		etymology: 'A person 人 with arms stretched wide to the sides — the gesture of indicating great size ("this big!"). One of the most visceral and intuitive pictographs: a standing person demonstrating largeness with outstretched arms. The horizontal stroke is the arms; the lower two strokes are the legs.',
+		components: ['大 (person with arms spread wide)'],
+		examples: [
+			{ word: '大きい', reading: 'おおきい', meaning: 'big / large' },
+			{ word: '大学', reading: 'だいがく', meaning: 'university' },
+			{ word: '大人', reading: 'おとな', meaning: 'adult' },
+			{ word: '大切', reading: 'たいせつ', meaning: 'important / precious' }
+		]
+	},
+	'小': {
+		strokeCount: 3,
+		etymology: 'Three strokes: a central vertical line with a dot on each side being pushed apart, or alternatively, a larger thing 大 with its arms drawn in. The visual contrast with 大 (big, arms out) is intentional — the compressed, inward form suggests smallness. Some analyses see it as grains of sand scattering.',
+		components: ['小 (vertical stroke with flanking dots)'],
+		examples: [
+			{ word: '小さい', reading: 'ちいさい', meaning: 'small / little' },
+			{ word: '小学校', reading: 'しょうがっこう', meaning: 'elementary school' },
+			{ word: '小説', reading: 'しょうせつ', meaning: 'novel' },
+			{ word: '小包', reading: 'こづつみ', meaning: 'package / parcel' }
+		]
+	},
+	'中': {
+		strokeCount: 4,
+		etymology: 'Originally depicted a vertical pole or flagstaff passing through the center of a target or drum — the center point that everything else is measured from. The box represents the target or bounded space; the vertical line pierces exactly through the middle. A brilliantly simple geometric idea.',
+		components: ['口 (box / bounded space)', '｜ (vertical center line)'],
+		examples: [
+			{ word: '中学校', reading: 'ちゅうがっこう', meaning: 'middle school' },
+			{ word: '中国', reading: 'ちゅうごく', meaning: 'China' },
+			{ word: '途中', reading: 'とちゅう', meaning: 'on the way / midway' },
+			{ word: '中心', reading: 'ちゅうしん', meaning: 'center / core' }
+		]
+	},
+	'上': {
+		strokeCount: 3,
+		etymology: 'A pointing stroke above a baseline — the visual indication of "above." Ancient forms show a dot or tick above a horizontal line, directly pointing upward. The character is almost entirely diagrammatic, one of the clearest spatial indicators in the writing system.',
+		components: ['一 (baseline)', '上 (upward indicator above baseline)'],
+		examples: [
+			{ word: '上手', reading: 'じょうず', meaning: 'skilled / good at' },
+			{ word: '上着', reading: 'うわぎ', meaning: 'jacket / outerwear' },
+			{ word: '以上', reading: 'いじょう', meaning: 'more than / above' },
+			{ word: '上がる', reading: 'あがる', meaning: 'to rise / go up' }
+		]
+	},
+	'下': {
+		strokeCount: 3,
+		etymology: 'A pointing stroke below a baseline — the mirror image of 上 (up), placing the indicator underneath the reference line. The visual logic is completely parallel: 上 points up, 下 points down. Both characters are among the oldest and most stable in the written language.',
+		components: ['一 (baseline)', '下 (downward indicator below baseline)'],
+		examples: [
+			{ word: '下手', reading: 'へた', meaning: 'unskilled / poor at' },
+			{ word: '地下', reading: 'ちか', meaning: 'underground' },
+			{ word: '以下', reading: 'いか', meaning: 'less than / below' },
+			{ word: '下がる', reading: 'さがる', meaning: 'to lower / go down' }
+		]
+	},
+	'左': {
+		strokeCount: 5,
+		etymology: 'Combines 左 (hand — left stroke) with 工 (work / craft). The left hand was associated with assisting the craftsman, holding the work while the right hand wielded the tool. The left-hand helper role in craft work became the etymological anchor of this character.',
+		components: ['𠂇 (left hand)', '工 (work / craft)'],
+		examples: [
+			{ word: '左側', reading: 'ひだりがわ', meaning: 'left side' },
+			{ word: '左折', reading: 'させつ', meaning: 'turn left' },
+			{ word: '左右', reading: 'さゆう', meaning: 'left and right' },
+			{ word: '左手', reading: 'ひだりて', meaning: 'left hand' }
+		]
+	},
+	'右': {
+		strokeCount: 5,
+		etymology: 'Combines a right-hand stroke with 口 (mouth). The right hand was the one used for eating and speaking — the dominant, active hand. The association of the dominant hand with the mouth (for eating and speaking) gave 右 its identifying combination.',
+		components: ['𠂇 (right hand stroke)', '口 (mouth)'],
+		examples: [
+			{ word: '右側', reading: 'みぎがわ', meaning: 'right side' },
+			{ word: '右折', reading: 'うせつ', meaning: 'turn right' },
+			{ word: '左右', reading: 'さゆう', meaning: 'left and right' },
+			{ word: '右手', reading: 'みぎて', meaning: 'right hand' }
+		]
+	},
+	'前': {
+		strokeCount: 9,
+		etymology: 'Originally combined a boat moving forward with a knife — the knife cutting through water at the prow. Later simplified, but the idea of forward movement, cutting ahead, was preserved. 前 consistently means "in front" in both spatial and temporal senses.',
+		components: ['𦣻 (halted foot)', '月 (moon / boat shape)', '刀 (knife — cutting forward)'],
+		examples: [
+			{ word: '前に', reading: 'まえに', meaning: 'in front / before' },
+			{ word: '名前', reading: 'なまえ', meaning: 'name' },
+			{ word: '午前', reading: 'ごぜん', meaning: 'AM / morning' },
+			{ word: '以前', reading: 'いぜん', meaning: 'before / previously' }
+		]
+	},
+	'後': {
+		strokeCount: 9,
+		etymology: 'Combines the movement radical 彳 (footsteps), 幺 (thread / small), and 夂 (foot going backward). Together these elements paint a picture of slow, hindered, backward movement — someone dragging their feet, falling behind. The temporal meaning "after" follows naturally from "behind in movement."',
+		components: ['彳 (walking steps)', '幺 (thread / tied)', '夂 (backward foot)'],
+		examples: [
+			{ word: '後で', reading: 'あとで', meaning: 'later / afterward' },
+			{ word: '午後', reading: 'ごご', meaning: 'PM / afternoon' },
+			{ word: '最後', reading: 'さいご', meaning: 'last / final' },
+			{ word: '後ろ', reading: 'うしろ', meaning: 'behind / back' }
+		]
+	},
+	'外': {
+		strokeCount: 5,
+		etymology: 'Combines 夕 (evening / crescent moon) and 卜 (divination crack). Ancient diviners read oracle bones at dusk — outside the house, under the night sky. The practice of divination outdoors in the evening gave 外 its "outside" meaning. What begins as ritual context becomes pure spatial reference.',
+		components: ['夕 (evening / crescent)', '卜 (divination crack)'],
+		examples: [
+			{ word: '外国', reading: 'がいこく', meaning: 'foreign country' },
+			{ word: '外出', reading: 'がいしゅつ', meaning: 'going out' },
+			{ word: '案外', reading: 'あんがい', meaning: 'unexpectedly' },
+			{ word: '外食', reading: 'がいしょく', meaning: 'eating out' }
+		]
+	},
+	'火': {
+		strokeCount: 4,
+		etymology: 'A direct pictograph of a flame — the central trunk of fire with two tongues of flame spreading outward at the sides. The bottom strokes represent the fuel or base; the rising top stroke is the flame itself. At the bottom of kanji it compresses into four dots 灬, representing burning coals.',
+		components: ['火 (flame pictograph — four strokes)'],
+		examples: [
+			{ word: '火曜日', reading: 'かようび', meaning: 'Tuesday' },
+			{ word: '花火', reading: 'はなび', meaning: 'fireworks' },
+			{ word: '火事', reading: 'かじ', meaning: 'fire (disaster)' },
+			{ word: '火山', reading: 'かざん', meaning: 'volcano' }
+		]
+	},
+	'水': {
+		strokeCount: 4,
+		etymology: 'A pictograph of a river flowing — the central vertical stroke is the main current, and the two side strokes are tributary branches. When placed on the left side of a kanji, it compresses into three drops 氵. This character is the source for the entire water/liquid radical family.',
+		components: ['水 (river with branches — pictograph)'],
+		examples: [
+			{ word: '水曜日', reading: 'すいようび', meaning: 'Wednesday' },
+			{ word: '水道', reading: 'すいどう', meaning: 'waterworks / tap water' },
+			{ word: '飲み水', reading: 'のみず', meaning: 'drinking water' },
+			{ word: '水泳', reading: 'すいえい', meaning: 'swimming' }
+		]
+	},
+	'木': {
+		strokeCount: 4,
+		etymology: 'A pictograph of a tree — vertical trunk, horizontal branches spreading left and right, and roots descending below. The shape is still unmistakably tree-like. When the roots are emphasized with an extra stroke at the bottom, it becomes 本 (root / origin); when the top is cut, it becomes 末 (tip / end).',
+		components: ['木 (tree — trunk, branches, roots)'],
+		examples: [
+			{ word: '木曜日', reading: 'もくようび', meaning: 'Thursday' },
+			{ word: '木材', reading: 'もくざい', meaning: 'lumber / timber' },
+			{ word: '大木', reading: 'たいぼく', meaning: 'large tree' },
+			{ word: '木の葉', reading: 'このは', meaning: 'leaf' }
+		]
+	},
+	'金': {
+		strokeCount: 8,
+		etymology: 'Combines 土 (earth/ground) over a representation of nuggets buried underground, with a roof 𠆢 suggesting stored wealth. Gold was found by digging — the character captures the image of precious metal emerging from the earth. It serves as the metal radical family, covering gold, silver, iron, and all hard materials.',
+		components: ['𠆢 (roof / stored)', '王 (king / jade tablets)', '丷 (scattered nuggets)'],
+		examples: [
+			{ word: '金曜日', reading: 'きんようび', meaning: 'Friday' },
+			{ word: 'お金', reading: 'おかね', meaning: 'money' },
+			{ word: '金色', reading: 'きんいろ', meaning: 'gold color' },
+			{ word: '黄金', reading: 'おうごん', meaning: 'gold' }
+		]
+	},
+	'土': {
+		strokeCount: 3,
+		etymology: 'A cross shape with a long base — the upper horizontal stroke represents the ground surface, the vertical stroke is a plant or post rising from it, and the lower horizontal stroke is the ground itself. The image is a seedling emerging from fertile earth. One of the most ancient semantic components.',
+		components: ['一 (surface ground line)', '十 (post or sprout crossing the surface)'],
+		examples: [
+			{ word: '土曜日', reading: 'どようび', meaning: 'Saturday' },
+			{ word: '土地', reading: 'とち', meaning: 'land / soil' },
+			{ word: '土台', reading: 'どだい', meaning: 'foundation / base' },
+			{ word: '粘土', reading: 'ねんど', meaning: 'clay' }
+		]
+	},
+	'山': {
+		strokeCount: 3,
+		etymology: 'One of the most iconic pictographs — three peaks of a mountain range, with the central peak highest. The image is so clear that mountain symbols across many ancient writing systems share the same three-peak form. The character has barely changed from its oracle bone original three thousand years ago.',
+		components: ['山 (three mountain peaks — pictograph)'],
+		examples: [
+			{ word: '富士山', reading: 'ふじさん', meaning: 'Mt. Fuji' },
+			{ word: '山登り', reading: 'やまのぼり', meaning: 'mountain climbing' },
+			{ word: '火山', reading: 'かざん', meaning: 'volcano' },
+			{ word: '山道', reading: 'やまみち', meaning: 'mountain path' }
+		]
+	},
+	'川': {
+		strokeCount: 3,
+		etymology: 'Three parallel vertical lines with a slight curve, representing the parallel channels of a river or stream. The outer lines are the banks, the center is the main current — or alternatively, three tributaries flowing in parallel. One of the clearest pictographs in the kanji system.',
+		components: ['川 (three flowing channels — pictograph)'],
+		examples: [
+			{ word: '川', reading: 'かわ', meaning: 'river' },
+			{ word: '小川', reading: 'おがわ', meaning: 'stream / brook' },
+			{ word: '川沿い', reading: 'かわぞい', meaning: 'along the river' },
+			{ word: '神奈川', reading: 'かながわ', meaning: 'Kanagawa (prefecture)' }
+		]
+	},
+	'空': {
+		strokeCount: 8,
+		etymology: 'Combines 穴 (hole / cave) and 工 (craft / work). The idea is a cave hollowed out by craftsman\'s work — a hollow space. From the hollowness of a cave, the meaning expanded to the sky (a vast hollow above) and then to emptiness in general. 空 covers both sky and void.',
+		components: ['穴 (hole / cave)', '工 (work / craft — hollowing)'],
+		examples: [
+			{ word: '空港', reading: 'くうこう', meaning: 'airport' },
+			{ word: '青空', reading: 'あおぞら', meaning: 'blue sky' },
+			{ word: '空気', reading: 'くうき', meaning: 'air / atmosphere' },
+			{ word: '空白', reading: 'くうはく', meaning: 'blank / empty space' }
+		]
+	},
+	'花': {
+		strokeCount: 7,
+		etymology: 'Combines 艹 (grass/plant crown) and 化 (transform / change). Flowers are the transformation of a plant — the moment it blossoms and changes form. The 化 element also carries the sound (ka), making this a phonosemantic compound: plant radical for category, 化 for both meaning and sound.',
+		components: ['艹 (grass / plant radical)', '化 (transform — semantic + phonetic)'],
+		examples: [
+			{ word: '花火', reading: 'はなび', meaning: 'fireworks' },
+			{ word: '花束', reading: 'はなたば', meaning: 'bouquet' },
+			{ word: '桜の花', reading: 'さくらのはな', meaning: 'cherry blossom' },
+			{ word: '花見', reading: 'はなみ', meaning: 'flower viewing' }
+		]
+	},
+	'雨': {
+		strokeCount: 8,
+		etymology: 'A pictograph of a sky with rain falling from a cloud — the top horizontal stroke is the sky, the box below is the cloud, and the four dots inside are raindrops falling through the air. The structure is remarkably faithful to its original oracle bone form, which also showed dots suspended inside a cloud shape.',
+		components: ['一 (sky)', '冂 (cloud frame)', '丶丶丶丶 (four raindrops)'],
+		examples: [
+			{ word: '雨の日', reading: 'あめのひ', meaning: 'rainy day' },
+			{ word: '大雨', reading: 'おおあめ', meaning: 'heavy rain' },
+			{ word: '雨季', reading: 'うき', meaning: 'rainy season' },
+			{ word: '小雨', reading: 'こさめ', meaning: 'light rain / drizzle' }
+		]
+	},
+	'電': {
+		strokeCount: 13,
+		etymology: 'Combines 雨 (rain) and 申 (stretch / lightning shape). The 申 element originally depicted lightning — a zigzag bolt stretching across the sky during a thunderstorm. Rain plus lightning equals electricity, which was first understood as a weather phenomenon before being harnessed as technology.',
+		components: ['雨 (rain)', '申 (lightning bolt / stretch)'],
+		examples: [
+			{ word: '電車', reading: 'でんしゃ', meaning: 'train' },
+			{ word: '電話', reading: 'でんわ', meaning: 'telephone' },
+			{ word: '電気', reading: 'でんき', meaning: 'electricity' },
+			{ word: '電子', reading: 'でんし', meaning: 'electron / electronic' }
+		]
+	},
+	'車': {
+		strokeCount: 7,
+		etymology: 'A pictograph of a wheeled cart seen directly from above — the horizontal lines are the axle and crossbeams, and the vertical center line is the axle pole. The ancient oracle bone form even showed the two wheels on each end of the axle. The bird\'s-eye view of a cart is unmistakable.',
+		components: ['車 (cart from above — axle, beams, wheels)'],
+		examples: [
+			{ word: '電車', reading: 'でんしゃ', meaning: 'train' },
+			{ word: '自動車', reading: 'じどうしゃ', meaning: 'automobile' },
+			{ word: '駐車場', reading: 'ちゅうしゃじょう', meaning: 'parking lot' },
+			{ word: '車道', reading: 'しゃどう', meaning: 'roadway / lane' }
+		]
+	},
+	'駅': {
+		strokeCount: 14,
+		etymology: 'Combines 馬 (horse) and 尺 (measure / unit of length). Historically, post stations were placed at measured intervals along roads so that dispatched riders could swap out tired horses. The measuring unit 尺 captures the standardized spacing between horse-relay stations — a system that predates railroads by centuries.',
+		components: ['馬 (horse)', '尺 (measure / unit of length)'],
+		examples: [
+			{ word: '駅前', reading: 'えきまえ', meaning: 'in front of the station' },
+			{ word: '駅員', reading: 'えきいん', meaning: 'station staff' },
+			{ word: '終点駅', reading: 'しゅうてんえき', meaning: 'terminal station' },
+			{ word: '地下鉄駅', reading: 'ちかてつえき', meaning: 'subway station' }
+		]
+	},
+	'食': {
+		strokeCount: 9,
+		etymology: 'Combines 𠆢 (a gathering or covering roof) with a vessel of food below and a person leaning in to eat. The full image is a person bending over a covered food vessel — the act of eating. As a radical it covers all eating, drinking, and food-related concepts.',
+		components: ['𠆢 (cover / roof)', '良 (food vessel with contents)'],
+		examples: [
+			{ word: '食事', reading: 'しょくじ', meaning: 'meal' },
+			{ word: '食べ物', reading: 'たべもの', meaning: 'food' },
+			{ word: '外食', reading: 'がいしょく', meaning: 'eating out' },
+			{ word: '食堂', reading: 'しょくどう', meaning: 'cafeteria / dining hall' }
+		]
+	},
+	'飲': {
+		strokeCount: 12,
+		etymology: 'Combines 食 (food/eating) and 欠 (yawning mouth / open wide). The 欠 element shows a person with their mouth wide open — exactly what you do when drinking. Together: food radical (ingestion category) plus open mouth (the action) equals drinking.',
+		components: ['食 (food / eat radical)', '欠 (open mouth / yawn)'],
+		examples: [
+			{ word: '飲み物', reading: 'のみもの', meaning: 'beverage / drink' },
+			{ word: '飲み水', reading: 'のみず', meaning: 'drinking water' },
+			{ word: '飲食店', reading: 'いんしょくてん', meaning: 'restaurant / eatery' },
+			{ word: '暴飲', reading: 'ぼういん', meaning: 'excessive drinking' }
+		]
+	},
+	'見': {
+		strokeCount: 7,
+		etymology: 'A pictograph of an eye 目 mounted on human legs 儿 — an eye that goes out to look, that walks around and observes. The combination captures the active, directed nature of seeing: not passive reception but purposeful looking. The legs beneath the eye are the character\'s most memorable feature.',
+		components: ['目 (eye)', '儿 (legs / person walking)'],
+		examples: [
+			{ word: '見る', reading: 'みる', meaning: 'to see / watch' },
+			{ word: '意見', reading: 'いけん', meaning: 'opinion' },
+			{ word: '見学', reading: 'けんがく', meaning: 'field trip / observation' },
+			{ word: '発見', reading: 'はっけん', meaning: 'discovery' }
+		]
+	},
+	'聞': {
+		strokeCount: 14,
+		etymology: 'Places 耳 (ear) inside 門 (gate) — an ear pressed up against the gate, listening carefully to what is happening outside. The image is vivid: straining to catch sound through a barrier. This ear-at-the-gate construction makes 聞 both "to hear" and "to ask" (listening for an answer).',
+		components: ['門 (gate)', '耳 (ear — inside the gate)'],
+		examples: [
+			{ word: '聞く', reading: 'きく', meaning: 'to hear / ask' },
+			{ word: '新聞', reading: 'しんぶん', meaning: 'newspaper' },
+			{ word: '見聞', reading: 'けんぶん', meaning: 'knowledge / experience' },
+			{ word: '聞き取り', reading: 'ききとり', meaning: 'listening comprehension' }
+		]
+	},
+	'言': {
+		strokeCount: 7,
+		etymology: 'Combines 口 (mouth) with what originally showed a musical note or a flute — sound coming from a mouth in a structured, melodic way. The early form suggested not just any noise but deliberate, patterned speech. As the character for "say/speak," it became the root for the entire speech radical family.',
+		components: ['口 (mouth)', '三 (structured sound waves / lines above mouth)'],
+		examples: [
+			{ word: '言葉', reading: 'ことば', meaning: 'word / language' },
+			{ word: '言う', reading: 'いう', meaning: 'to say' },
+			{ word: '発言', reading: 'はつげん', meaning: 'statement / remark' },
+			{ word: '方言', reading: 'ほうげん', meaning: 'dialect' }
+		]
+	},
+	'話': {
+		strokeCount: 13,
+		etymology: 'Combines 言 (speech radical 訁) and 舌 (tongue). A story is tongue-talk — the tongue is the articulator of speech, and placing it beside the speech radical creates a character about the full physical act of talking, not just the words. The tongue element also carries the sound wa.',
+		components: ['訁 (speech radical)', '舌 (tongue — semantic + phonetic)'],
+		examples: [
+			{ word: '話す', reading: 'はなす', meaning: 'to talk / speak' },
+			{ word: '電話', reading: 'でんわ', meaning: 'telephone' },
+			{ word: '会話', reading: 'かいわ', meaning: 'conversation' },
+			{ word: '話題', reading: 'わだい', meaning: 'topic / subject' }
+		]
+	},
+	'読': {
+		strokeCount: 14,
+		etymology: 'Combines 言 (speech radical 訁) and 売 (sell). The 売 element is phonetic (both share the doku sound family), but the semantic logic also holds: reading was historically equated with reading aloud — speech applied to written text. Literacy was oral performance before it was silent.',
+		components: ['訁 (speech radical)', '売 (sell — phonetic element)'],
+		examples: [
+			{ word: '読む', reading: 'よむ', meaning: 'to read' },
+			{ word: '読書', reading: 'どくしょ', meaning: 'reading (books)' },
+			{ word: '読み方', reading: 'よみかた', meaning: 'how to read / reading' },
+			{ word: '音読み', reading: 'おんよみ', meaning: 'on reading' }
+		]
+	},
+	'書': {
+		strokeCount: 10,
+		etymology: 'Combines 聿 (brush — a hand holding a writing implement) and 曰 (say / speech tablet). The image is a brush pressed to a writing surface producing speech-marks — text. The 聿 element is one of the earliest depictions of a writing brush in Chinese script, and it anchors 書 firmly in the act of physical writing.',
+		components: ['聿 (writing brush / hand + stick)', '曰 (tablet / speech surface)'],
+		examples: [
+			{ word: '書く', reading: 'かく', meaning: 'to write' },
+			{ word: '教科書', reading: 'きょうかしょ', meaning: 'textbook' },
+			{ word: '辞書', reading: 'じしょ', meaning: 'dictionary' },
+			{ word: '書道', reading: 'しょどう', meaning: 'calligraphy' }
+		]
+	},
+	'来': {
+		strokeCount: 7,
+		etymology: 'Originally a pictograph of a wheat plant — the ripening crop that "comes" each harvest season was used phonetically for the word "come" because they sounded alike in ancient Chinese. The grain roots are visible in the lower spreading strokes, though the agricultural origin is now invisible to most users.',
+		components: ['来 (wheat plant — repurposed pictograph)'],
+		examples: [
+			{ word: '来る', reading: 'くる', meaning: 'to come' },
+			{ word: '来年', reading: 'らいねん', meaning: 'next year' },
+			{ word: '来週', reading: 'らいしゅう', meaning: 'next week' },
+			{ word: '将来', reading: 'しょうらい', meaning: 'future' }
+		]
+	},
+	'行': {
+		strokeCount: 6,
+		etymology: 'Originally depicted a crossroads — two paths meeting at a junction. The character literally shows the shape of an intersection viewed from above: two sets of strokes branching in opposite directions from a center point. From crossroads came "going" and "traveling," and eventually any kind of action or conduct.',
+		components: ['行 (crossroads — left and right paths)'],
+		examples: [
+			{ word: '行く', reading: 'いく', meaning: 'to go' },
+			{ word: '旅行', reading: 'りょこう', meaning: 'travel / trip' },
+			{ word: '行動', reading: 'こうどう', meaning: 'action / behavior' },
+			{ word: '銀行', reading: 'ぎんこう', meaning: 'bank' }
+		]
+	},
+	'帰': {
+		strokeCount: 10,
+		etymology: 'Combines 刀 (knife), 帚 (broom), and 止 (foot / stop). The original image was a person sweeping up before departure or after return — the broom being the act of tidying the home. The knife element suggested cutting away from a place. Together they capture the concept of returning to one\'s own space.',
+		components: ['刀 (knife)', '帚 (broom)', '止 (foot / stopping point)'],
+		examples: [
+			{ word: '帰る', reading: 'かえる', meaning: 'to return home' },
+			{ word: '帰国', reading: 'きこく', meaning: 'return to one\'s home country' },
+			{ word: '日帰り', reading: 'ひがえり', meaning: 'day trip' },
+			{ word: '帰宅', reading: 'きたく', meaning: 'returning home' }
+		]
+	},
+	'入': {
+		strokeCount: 2,
+		etymology: 'A V-shape or inverted wedge — the natural shape of something entering a space, like a nail driving in or a person ducking through a low opening. The two strokes converge at the bottom, suggesting penetration into an enclosure. Compare with 人 (person) which has asymmetric legs; 入 is more symmetrically V-shaped.',
+		components: ['入 (entering wedge — two converging strokes)'],
+		examples: [
+			{ word: '入る', reading: 'はいる', meaning: 'to enter' },
+			{ word: '入口', reading: 'いりぐち', meaning: 'entrance' },
+			{ word: '入学', reading: 'にゅうがく', meaning: 'school enrollment' },
+			{ word: '記入', reading: 'きにゅう', meaning: 'fill in / write in' }
+		]
+	},
+	'出': {
+		strokeCount: 5,
+		etymology: 'Originally showed a foot emerging from a pit or enclosure — a plant sprouting up through the ground, or a person stepping up and out of a sunken dwelling. The two mountain-like strokes at the top suggest something rising above a baseline. The lower enclosure was the ground or vessel being exited.',
+		components: ['山 (rising / sprouting shape × 2)', '凵 (open container — exited)'],
+		examples: [
+			{ word: '出る', reading: 'でる', meaning: 'to exit / go out' },
+			{ word: '出口', reading: 'でぐち', meaning: 'exit' },
+			{ word: '出発', reading: 'しゅっぱつ', meaning: 'departure' },
+			{ word: '輸出', reading: 'ゆしゅつ', meaning: 'export' }
+		]
+	},
+	'国': {
+		strokeCount: 8,
+		etymology: 'The traditional form 國 showed an enclosure 囗 containing 或 (territory with a weapon defending it). The modern simplified form retains 囗 (border/boundary) containing 玉 (jade/treasure). A country is a bordered space protecting something precious — the territory and its people are the national treasure.',
+		components: ['囗 (outer border / enclosure)', '玉 (jade / precious — the protected interior)'],
+		examples: [
+			{ word: '日本国', reading: 'にほんこく', meaning: 'Japan (formal)' },
+			{ word: '外国', reading: 'がいこく', meaning: 'foreign country' },
+			{ word: '全国', reading: 'ぜんこく', meaning: 'whole country' },
+			{ word: '国語', reading: 'こくご', meaning: 'national language / Japanese' }
+		]
+	},
+	'語': {
+		strokeCount: 14,
+		etymology: 'Combines 言 (speech radical 訁) and 吾 (I / self). Self-speech — the words that come from within oneself — gives the sense of a language as the particular voice or tongue of a group. 吾 also serves phonetically (go sound). A language is literally "the speech of one\'s own group."',
+		components: ['訁 (speech radical)', '吾 (self / I — semantic + phonetic)'],
+		examples: [
+			{ word: '日本語', reading: 'にほんご', meaning: 'Japanese language' },
+			{ word: '英語', reading: 'えいご', meaning: 'English language' },
+			{ word: '語学', reading: 'ごがく', meaning: 'language study' },
+			{ word: '単語', reading: 'たんご', meaning: 'vocabulary word' }
+		]
+	},
+	'学': {
+		strokeCount: 8,
+		etymology: 'The traditional form 學 showed two hands above exchanging knowledge — the radical 爻 (double X, meaning "cross/teach") above a child 子 inside a building. Children learning under crossed teaching hands inside a school. The simplified 学 retains the child 子 at the bottom, anchoring it in learning.',
+		components: ['𠆢 (roof / building)', '冖 (cover / shelter)', '子 (child)'],
+		examples: [
+			{ word: '大学', reading: 'だいがく', meaning: 'university' },
+			{ word: '学校', reading: 'がっこう', meaning: 'school' },
+			{ word: '学生', reading: 'がくせい', meaning: 'student' },
+			{ word: '語学', reading: 'ごがく', meaning: 'language study' }
+		]
+	},
+	'校': {
+		strokeCount: 10,
+		etymology: 'Combines 木 (tree/wood) and 交 (intersect / mix). The original image was a wooden frame or lattice used for penning animals — interlocking wooden stakes. This corrective enclosure became associated with institutions of discipline and instruction: schools, military camps, and checkpoints all use 校.',
+		components: ['木 (wood / tree)', '交 (intersect / cross — structural lattice)'],
+		examples: [
+			{ word: '学校', reading: 'がっこう', meaning: 'school' },
+			{ word: '小学校', reading: 'しょうがっこう', meaning: 'elementary school' },
+			{ word: '高校', reading: 'こうこう', meaning: 'high school' },
+			{ word: '校長', reading: 'こうちょう', meaning: 'school principal' }
+		]
+	},
+	'先': {
+		strokeCount: 6,
+		etymology: 'Combines 土 (earth/ground) over 儿 (person with legs). The original image showed a foot or person going ahead — crossing the ground first, arriving before others. The "ahead" in space became "ahead" in time (previous, former), and eventually "the one who went before you" became the word for teacher (先生 sensei).',
+		components: ['土 (earth — going before)', '儿 (person / legs going forward)'],
+		examples: [
+			{ word: '先生', reading: 'せんせい', meaning: 'teacher' },
+			{ word: '先に', reading: 'さきに', meaning: 'first / ahead' },
+			{ word: '先週', reading: 'せんしゅう', meaning: 'last week' },
+			{ word: '先輩', reading: 'せんぱい', meaning: 'senior / upperclassman' }
+		]
+	},
+	'生': {
+		strokeCount: 5,
+		etymology: 'A pictograph of a plant 屮 sprouting from the ground — the horizontal stroke is the soil line, and the rising strokes are the young plant breaking through. Birth, life, and growth are all captured in the image of emergence. The character\'s versatility (birth, life, raw, grow, student) all flow from this single seedling image.',
+		components: ['生 (sprouting plant from ground — five strokes)'],
+		examples: [
+			{ word: '先生', reading: 'せんせい', meaning: 'teacher' },
+			{ word: '学生', reading: 'がくせい', meaning: 'student' },
+			{ word: '生活', reading: 'せいかつ', meaning: 'life / lifestyle' },
+			{ word: '誕生日', reading: 'たんじょうび', meaning: 'birthday' }
+		]
+	},
+	'名': {
+		strokeCount: 6,
+		etymology: 'Combines 夕 (evening / dusk) and 口 (mouth). In darkness, when you cannot see someone\'s face, you call out their name. The image is evening with a mouth calling out — the necessity of names when visual identification fails. A name is what you say at dusk to find someone.',
+		components: ['夕 (evening / dusk)', '口 (mouth — calling out)'],
+		examples: [
+			{ word: '名前', reading: 'なまえ', meaning: 'name' },
+			{ word: '名刺', reading: 'めいし', meaning: 'business card' },
+			{ word: '有名', reading: 'ゆうめい', meaning: 'famous' },
+			{ word: '名古屋', reading: 'なごや', meaning: 'Nagoya (city)' }
+		]
+	},
+	'白': {
+		strokeCount: 5,
+		etymology: 'Originally a pictograph of an acorn or thumb with a prominent white tip — the shining white of polished bone or the pale acorn cap. Some analyses trace it to a pictograph of a candle flame. Either way, the bright, pale, reflective quality of the image gave 白 its meaning of white and, by extension, clear or bright.',
+		components: ['白 (bright tip over a base — five strokes)'],
+		examples: [
+			{ word: '白い', reading: 'しろい', meaning: 'white' },
+			{ word: '白黒', reading: 'しろくろ', meaning: 'black and white' },
+			{ word: '余白', reading: 'よはく', meaning: 'margin / blank space' },
+			{ word: '白紙', reading: 'はくし', meaning: 'blank paper' }
+		]
+	},
+	'黒': {
+		strokeCount: 11,
+		etymology: 'Combines 里 (village / black earth) and 灬 (fire / soot dots). The image is soot-blackened earth from fire — the black char left after burning. Early oracle bone forms showed a person with a blackened face (from soot or tattooing). The fire dots at the bottom are the key diagnostic feature.',
+		components: ['里 (village / earth)', '灬 (fire — soot)'],
+		examples: [
+			{ word: '黒い', reading: 'くろい', meaning: 'black' },
+			{ word: '黒板', reading: 'こくばん', meaning: 'blackboard' },
+			{ word: '白黒', reading: 'しろくろ', meaning: 'black and white' },
+			{ word: '黒字', reading: 'くろじ', meaning: 'in the black (profit)' }
+		]
+	},
+	'赤': {
+		strokeCount: 7,
+		etymology: 'Combines 大 (large / person with arms spread) and 火 (fire). A person standing before a fire, glowing red-orange in the firelight. The image of a figure lit by flames captures the specific red-orange hue of fire and heated metal. The character appears early in oracle bone records associated with fire, blood, and warmth.',
+		components: ['大 (large person / spread arms)', '火 (fire — below the figure)'],
+		examples: [
+			{ word: '赤い', reading: 'あかい', meaning: 'red' },
+			{ word: '赤ちゃん', reading: 'あかちゃん', meaning: 'baby' },
+			{ word: '赤信号', reading: 'あかしんごう', meaning: 'red light' },
+			{ word: '赤字', reading: 'あかじ', meaning: 'in the red (deficit)' }
+		]
+	},
+	'青': {
+		strokeCount: 8,
+		etymology: 'Combines 生 (life / sprouting plant) and 丹 (red cinnabar pigment, here serving as a color well). The sprouting plant that is green, and the natural pigment colors, both relate to raw, living color at the blue-green end of the spectrum. Japanese 青 (ao) covers both blue and green, a famously broad color term.',
+		components: ['生 (sprouting / living — upper part)', '丹 (pigment well / color source — lower part)'],
+		examples: [
+			{ word: '青い', reading: 'あおい', meaning: 'blue / green' },
+			{ word: '青空', reading: 'あおぞら', meaning: 'blue sky' },
+			{ word: '青年', reading: 'せいねん', meaning: 'youth / young person' },
+			{ word: '青信号', reading: 'あおしんごう', meaning: 'green light' }
+		]
+	},
+	'高': {
+		strokeCount: 10,
+		etymology: 'A pictograph of a tall tower or high-gabled building — the top shows a pointed roof, the middle is a window or observation deck, and the bottom is the elevated base or gate structure. The character still reads as a tall building if you look at it from the right angle. Height in architecture became the abstract concept of height and cost.',
+		components: ['高 (tall tower / gabled building pictograph)'],
+		examples: [
+			{ word: '高い', reading: 'たかい', meaning: 'tall / expensive' },
+			{ word: '高校', reading: 'こうこう', meaning: 'high school' },
+			{ word: '最高', reading: 'さいこう', meaning: 'the best / highest' },
+			{ word: '高速', reading: 'こうそく', meaning: 'high speed' }
+		]
+	},
+	'安': {
+		strokeCount: 6,
+		etymology: 'Combines 宀 (roof / house) and 女 (woman). A woman safe inside a home — the ancient image of domestic peace and security. The character reflects the patriarchal household structure of ancient China, where a woman sheltered indoors represented the household\'s stability and tranquility. Today it simply means "peaceful" and "cheap/affordable."',
+		components: ['宀 (roof / house)', '女 (woman — sheltered inside)'],
+		examples: [
+			{ word: '安い', reading: 'やすい', meaning: 'cheap / inexpensive' },
+			{ word: '安全', reading: 'あんぜん', meaning: 'safety / safe' },
+			{ word: '安心', reading: 'あんしん', meaning: 'peace of mind' },
+			{ word: '不安', reading: 'ふあん', meaning: 'anxiety / unease' }
+		]
+	}
+};
+
+// ─────────────────────────────────────────────
 // JLPT N5 KANJI (80 kanji)
 // ─────────────────────────────────────────────
 
@@ -534,7 +1432,7 @@ const kanjiN5: CardItem[] = [
 	{ character: '青', romaji: 'sei / ao', meaning: 'blue / green', readings: { on: ['セイ', 'ショウ'], kun: ['あお'] }, tags: ['N5'] },
 	{ character: '高', romaji: 'kou / taka', meaning: 'high / expensive', readings: { on: ['コウ'], kun: ['たか-'] }, tags: ['N5'] },
 	{ character: '安', romaji: 'an / yasu', meaning: 'peaceful / cheap', readings: { on: ['アン'], kun: ['やす-'] }, tags: ['N5'] },
-];
+].map((item) => (kanjiN5Enrichment[item.character] ? { ...item, ...kanjiN5Enrichment[item.character] } : item));
 
 // ─────────────────────────────────────────────
 // JLPT N4 KANJI (170 kanji)

@@ -120,6 +120,8 @@
 	let recipeCards = $derived(data.item.recipes ?? []);
 	let noteTags = $derived(data.item.tags ?? []);
 	let variants = $derived(data.item.variants ?? []);
+	let examples = $derived(data.item.examples ?? []);
+	let components = $derived(data.item.components ?? []);
 
 	// JLPT level badge colors for kanji study page
 	const jlptBadgeColors: Record<string, string> = {
@@ -379,6 +381,12 @@
 						<section class="kanji-panel">
 							<span class="kanji-panel-label">Reference</span>
 							<div class="mt-4 flex flex-col gap-2">
+								{#if data.item.strokeCount}
+									<div class="stroke-count-badge">
+										<span class="stroke-count-num">{data.item.strokeCount}</span>
+										<span class="stroke-count-label">strokes</span>
+									</div>
+								{/if}
 								<a
 									href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
 									target="_blank"
@@ -397,6 +405,43 @@
 								</a>
 							</div>
 						</section>
+
+						{#if data.item.etymology}
+							<section class="kanji-panel md:col-span-3 etymology-panel">
+								<span class="kanji-panel-label">Origin</span>
+								<p class="etymology-text mt-3">
+									{data.item.etymology}
+								</p>
+							</section>
+						{/if}
+
+						{#if components.length > 0}
+							<section class="kanji-panel">
+								<span class="kanji-panel-label">Components</span>
+								<div class="mt-3 flex flex-col gap-2">
+									{#each components as component}
+										<div class="component-row">
+											<span class="component-text">{component}</span>
+										</div>
+									{/each}
+								</div>
+							</section>
+						{/if}
+
+						{#if examples.length > 0}
+							<section class="kanji-panel {components.length > 0 ? 'md:col-span-2' : 'md:col-span-3'}">
+								<span class="kanji-panel-label">Examples</span>
+								<div class="mt-3 grid gap-2 sm:grid-cols-2">
+									{#each examples as ex}
+										<div class="example-card">
+											<span class="example-word">{ex.word}</span>
+											<span class="example-reading">{ex.reading}</span>
+											<span class="example-meaning">{ex.meaning}</span>
+										</div>
+									{/each}
+								</div>
+							</section>
+						{/if}
 
 						{#if data.knack}
 							<section class="kanji-panel knack-panel md:col-span-3">
@@ -806,6 +851,104 @@
 		0% { transform: scale(1); }
 		30% { transform: scale(1.08); }
 		100% { transform: scale(1); }
+	}
+
+	/* ── Etymology panel ─────────────────────── */
+	.etymology-panel {
+		border-color: color-mix(in srgb, var(--detail-accent) 22%, var(--color-divider));
+		background:
+			linear-gradient(135deg, color-mix(in srgb, var(--detail-accent) 5%, transparent), transparent 50%),
+			color-mix(in srgb, var(--color-ink) 2.5%, var(--color-paper));
+	}
+
+	.etymology-text {
+		color: var(--color-ink-mid);
+		font-size: 0.875rem;
+		line-height: 1.75;
+		max-width: 72ch;
+	}
+
+	/* ── Component rows ───────────────────────── */
+	.component-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		border: 1px solid var(--color-divider);
+		border-radius: 0.6rem;
+		padding: 0.5rem 0.7rem;
+		background: color-mix(in srgb, var(--color-paper) 80%, var(--detail-accent));
+	}
+
+	.component-text {
+		color: var(--color-ink-mid);
+		font-size: 0.8rem;
+		font-weight: 700;
+		line-height: 1.4;
+	}
+
+	/* ── Example word cards ───────────────────── */
+	.example-card {
+		display: grid;
+		grid-template-rows: auto auto auto;
+		gap: 0.15rem;
+		border: 1px solid var(--color-divider);
+		border-radius: 0.75rem;
+		padding: 0.75rem 0.9rem;
+		background: color-mix(in srgb, var(--color-paper) 90%, var(--detail-accent));
+		transition: border-color 180ms ease, background 180ms ease, transform 180ms var(--ease-out-expo);
+	}
+
+	.example-card:hover {
+		border-color: color-mix(in srgb, var(--detail-accent) 40%, var(--color-divider));
+		background: color-mix(in srgb, var(--detail-accent) 8%, var(--color-paper));
+		transform: translateY(-1px);
+	}
+
+	.example-word {
+		font-family: var(--font-jp-brush);
+		font-size: 1.3rem;
+		font-weight: 900;
+		line-height: 1;
+		color: var(--color-ink);
+	}
+
+	.example-reading {
+		font-family: var(--font-jp-brush);
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--color-ink-mid);
+		margin-top: 0.3rem;
+	}
+
+	.example-meaning {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: var(--color-ink-ghost);
+		margin-top: 0.1rem;
+	}
+
+	/* ── Stroke count badge ───────────────────── */
+	.stroke-count-badge {
+		display: flex;
+		align-items: baseline;
+		gap: 0.35rem;
+		margin-bottom: 0.25rem;
+	}
+
+	.stroke-count-num {
+		color: var(--detail-accent);
+		font-size: 2rem;
+		font-weight: 900;
+		line-height: 1;
+	}
+
+	.stroke-count-label {
+		color: var(--color-ink-ghost);
+		font-size: 0.58rem;
+		font-weight: 900;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
 	}
 
 	@media (prefers-color-scheme: dark) {
