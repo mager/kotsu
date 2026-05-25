@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { Column } from '$lib/data';
 	import { getColumnItems } from '$lib/data';
 	import { isLearned, getColumnProgress, getAuthState } from '$lib/stores/auth.svelte';
@@ -21,14 +20,23 @@
 	let sectionEntries = $derived(
 		column.sections.map((section, sIdx) => {
 			const offset = column.sections.slice(0, sIdx).reduce((sum, s) => sum + s.items.length, 0);
-			const items = section.items
-				.map((item, i) => ({ item, flatIdx: offset + i, isMarked: isLearned(column.id, offset + i) }))
-				.filter(({ isMarked }) => showLearned || !auth.user || !isMarked);
+			const allItems = section.items.map((item, i) => ({
+				item,
+				flatIdx: offset + i,
+				isMarked: isLearned(column.id, offset + i)
+			}));
+			const learnedCount = allItems.filter((x) => x.isMarked).length;
+			const items = allItems.filter(
+				({ isMarked }) => showLearned || !auth.user || !isMarked
+			);
 
 			return {
 				section,
 				offset,
-				items
+				items,
+				learnedCount,
+				totalCount: section.items.length,
+				isCleared: auth.user ? learnedCount === section.items.length : false
 			};
 		})
 	);
@@ -51,26 +59,45 @@
 
 	let accent = $derived(accents[column.id] || 'var(--color-ink)');
 	let categoryAward = $derived(getColumnAward(column.id));
+
+	// CTA: first unlearned index for "Start / Resume" button
+	let firstUnlearnedIndex = $derived(items.findIndex((_, i) => !isLearned(column.id, i)));
+	let studyHref = $derived(
+		firstUnlearnedIndex !== -1
+			? `/${column.id}/${firstUnlearnedIndex}`
+			: `/${column.id}/0`
+	);
+	let studyLabel = $derived(progress > 0 ? 'Resume studying' : 'Start studying');
 </script>
 
 <div class="mx-auto max-w-3xl">
 	<div class="mb-8 animate-fade-up">
-		<div class="flex items-end gap-4">
-			<h1
-				class="text-6xl font-black leading-none md:text-7xl {isKanaColumn ? 'kana-study-type' : ''}"
-				style="font-family: {isKanaColumn ? 'var(--font-kana-study)' : 'var(--font-jp-brush)'}; color: {accent};"
-			>
-				{column.titleJp}
-			</h1>
-			<div>
-				<span class="text-base font-bold tracking-[0.1em] uppercase text-[var(--color-ink)]">{column.title}</span>
-				<span class="block text-sm text-[var(--color-ink-light)]">{column.hint}</span>
-				{#if column.id === 'radicals'}
-					<span class="mt-1 block text-xs font-bold tracking-[0.16em] uppercase text-[var(--color-ink-ghost)]">
-						{items.length} forms · {recipeCount} recipes
-					</span>
-				{/if}
+		<div class="flex flex-wrap items-end justify-between gap-4">
+			<div class="flex items-end gap-4">
+				<h1
+					class="text-6xl font-black leading-none md:text-7xl {isKanaColumn ? 'kana-study-type' : ''}"
+					style="font-family: {isKanaColumn ? 'var(--font-kana-study)' : 'var(--font-jp-brush)'}; color: {accent};"
+				>
+					{column.titleJp}
+				</h1>
+				<div>
+					<span class="text-base font-bold tracking-[0.1em] uppercase text-[var(--color-ink)]">{column.title}</span>
+					<span class="block text-sm text-[var(--color-ink-light)]">{column.hint}</span>
+					{#if column.id === 'radicals'}
+						<span class="mt-1 block text-xs font-bold tracking-[0.16em] uppercase text-[var(--color-ink-ghost)]">
+							{items.length} forms · {recipeCount} recipes
+						</span>
+					{/if}
+				</div>
 			</div>
+			<a
+				href={studyHref}
+				class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-black tracking-[0.16em] uppercase transition-all duration-200 hover:-translate-y-0.5 press-scale"
+				style="border-color: color-mix(in srgb, {accent} 36%, var(--color-divider)); background: color-mix(in srgb, {accent} 10%, var(--color-paper)); color: var(--color-ink);"
+			>
+				{studyLabel}
+				<span style="color: {accent};">→</span>
+			</a>
 		</div>
 
 		{#if auth.user && progress > 0}
@@ -108,32 +135,38 @@
 	</div>
 
 	{#each sectionEntries as entry, sIdx}
-		{#if entry.items.length > 0}
-			{#if column.sections.length > 1}
-				{@const jlptColor = jlptColors[entry.section.id]}
-				{@const sectionAccent = jlptColor ?? accent}
-				<div class="mb-4 mt-10 first:mt-0 animate-fade-up" style="animation-delay: {sIdx * 80}ms;">
-					<div class="flex items-center gap-3">
-						<div class="h-[2px] w-8 rounded-full" style="background-color: {sectionAccent}; opacity: 0.4;"></div>
-						{#if jlptColor}
-							<span
-								class="rounded-full px-3 py-1 text-[10px] font-black tracking-[0.22em] uppercase"
-								style="background: color-mix(in srgb, {jlptColor} 14%, var(--color-paper)); color: {jlptColor}; border: 1px solid color-mix(in srgb, {jlptColor} 28%, transparent);"
-							>
-								{entry.section.title}
-							</span>
-							<span class="text-[11px] font-bold text-[var(--color-ink-mid)]">
-								{entry.section.items.length} kanji
-							</span>
-						{:else}
-							<span class="text-xs font-bold tracking-[0.25em] uppercase {isKanaColumn ? 'kana-study-type' : ''}" style="color: {sectionAccent};">
-								{entry.section.titleJp} · {entry.section.title}
+		{@const jlptColor = jlptColors[entry.section.id]}
+		{@const sectionAccent = jlptColor ?? accent}
+
+		{#if column.sections.length > 1}
+			<div class="mb-4 mt-10 first:mt-0 animate-fade-up" style="animation-delay: {sIdx * 80}ms;">
+				<div class="flex items-center gap-3">
+					<div class="h-[2px] w-8 rounded-full" style="background-color: {sectionAccent}; opacity: 0.4;"></div>
+					{#if jlptColor}
+						<span
+							class="rounded-full px-3 py-1 text-[10px] font-black tracking-[0.22em] uppercase"
+							style="background: color-mix(in srgb, {jlptColor} 14%, var(--color-paper)); color: {jlptColor}; border: 1px solid color-mix(in srgb, {jlptColor} 28%, transparent);"
+						>
+							{entry.section.title}
+						</span>
+						<span class="text-[11px] font-bold text-[var(--color-ink-mid)]">
+							{entry.totalCount} kanji
+						</span>
+						{#if entry.learnedCount > 0}
+							<span class="text-[10px] font-bold text-[var(--color-ink-ghost)]">
+								· {entry.learnedCount} learned
 							</span>
 						{/if}
-					</div>
+					{:else}
+						<span class="text-xs font-bold tracking-[0.25em] uppercase {isKanaColumn ? 'kana-study-type' : ''}" style="color: {sectionAccent};">
+							{entry.section.titleJp} · {entry.section.title}
+						</span>
+					{/if}
 				</div>
-			{/if}
+			</div>
+		{/if}
 
+		{#if entry.items.length > 0}
 			<div class="grid grid-cols-4 gap-1 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
 				{#each entry.items as { item, flatIdx, isMarked }, i (item.character + item.romaji + entry.section.id)}
 					<a
@@ -168,6 +201,10 @@
 						{/if}
 					</a>
 				{/each}
+			</div>
+		{:else if entry.isCleared}
+			<div class="mb-2 mt-2 rounded-xl border border-dashed border-[var(--color-divider)] px-5 py-4 text-center">
+				<span class="text-xs font-bold text-[var(--color-ink-ghost)]">Section cleared — toggle <strong>show learned</strong> to review.</span>
 			</div>
 		{/if}
 	{/each}

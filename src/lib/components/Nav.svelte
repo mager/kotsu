@@ -24,10 +24,7 @@
 	};
 
 	function getColumnHref(column: Column): string {
-		const items = getColumnItems(column);
-		const firstUnlearnedIndex = items.findIndex((_, index) => !isLearned(column.id, index));
-		const startIndex = auth.user && firstUnlearnedIndex !== -1 ? firstUnlearnedIndex : 0;
-		return `/${column.id}/${startIndex}`;
+		return `/${column.id}`;
 	}
 
 	async function handleSignIn() {
