@@ -106,6 +106,7 @@
 	let isKana = $derived(data.column.id === 'hiragana' || data.column.id === 'katakana');
 	let isKanji = $derived(data.column.id === 'kanji');
 	let isRadical = $derived(data.column.id === 'radicals');
+	let isVocabulary = $derived(data.column.id === 'vocabulary');
 	let charCount = $derived(data.item.character.length);
 	let charFontSize = $derived(
 		isKanji || isRadical
@@ -320,6 +321,13 @@
 					<p class="mt-3 max-w-xl px-5 text-center text-sm leading-relaxed text-[var(--color-ink-mid)] md:text-base">
 						{data.item.mnemonic}
 					</p>
+				{/if}
+
+				{#if data.item.context && isVocabulary}
+					<div class="context-callout mt-4 max-w-xl px-5">
+						<span class="context-label">When to use</span>
+						<p class="context-text">{data.item.context}</p>
+					</div>
 				{/if}
 
 				{#if variants.length > 0}
@@ -1088,6 +1096,35 @@
 		.learned-action.is-learned {
 			background: color-mix(in srgb, var(--color-ink) 6%, var(--color-paper));
 		}
+	}
+
+	/* ── Context callout (vocabulary phrases) ────── */
+	.context-callout {
+		border: 1px solid color-mix(in srgb, var(--detail-accent) 28%, var(--color-divider));
+		border-radius: 0.85rem;
+		padding: 0.85rem 1rem;
+		background: color-mix(in srgb, var(--detail-accent) 6%, var(--color-paper));
+		text-align: left;
+		width: 100%;
+	}
+
+	.context-label {
+		display: block;
+		color: var(--color-ink-ghost);
+		font-size: 0.58rem;
+		font-weight: 900;
+		letter-spacing: 0.22em;
+		line-height: 1;
+		text-transform: uppercase;
+		margin-bottom: 0.45rem;
+	}
+
+	.context-text {
+		color: var(--color-ink-mid);
+		font-size: 0.875rem;
+		font-weight: 600;
+		line-height: 1.65;
+		max-width: 60ch;
 	}
 
 	@media (prefers-reduced-motion: reduce) {

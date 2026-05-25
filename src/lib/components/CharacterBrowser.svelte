@@ -16,6 +16,7 @@
 	let progressPct = $derived(items.length > 0 ? Math.round((progress / items.length) * 100) : 0);
 	let recipeCount = $derived(items.reduce((sum, item) => sum + (item.recipes?.length ?? 0), 0));
 	let isKanaColumn = $derived(column.id === 'hiragana' || column.id === 'katakana');
+	let isVocabColumn = $derived(column.id === 'vocabulary');
 	let showLearned = $state(false);
 	let sectionEntries = $derived(
 		column.sections.map((section, sIdx) => {
@@ -167,41 +168,71 @@
 		{/if}
 
 		{#if entry.items.length > 0}
-			<div class="grid grid-cols-4 gap-1 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-				{#each entry.items as { item, flatIdx, isMarked }, i (item.character + item.romaji + entry.section.id)}
-					<a
-						href="/{column.id}/{flatIdx}"
-						class="scroll-reveal group relative flex flex-col items-center justify-center rounded-lg py-4 transition-all duration-200 hover:bg-[var(--color-paper-warm)] press-scale"
-						style="animation-delay: {(sIdx * 100) + (i * 15)}ms;"
-					>
-						<span
-							class="relative inline-block font-black leading-none transition-all duration-200 {isKanaColumn ? 'kana-study-type' : ''} {isMarked ? 'char-learned' : 'char-unlearned'}"
-							style="font-size: {item.character.length <= 1 ? 'clamp(2.4rem, 4.5vw, 3.2rem)' : item.character.length <= 3 ? 'clamp(1.6rem, 3vw, 2.2rem)' : 'clamp(1.3rem, 2.5vw, 1.8rem)'};"
+			{@const isPhraseSection = isVocabColumn && entry.items.some((x) => x.item.context)}
+			{#if isPhraseSection}
+				<div class="grid gap-2 sm:grid-cols-2">
+					{#each entry.items as { item, flatIdx, isMarked }, i (item.character + item.romaji + entry.section.id)}
+						<a
+							href="/{column.id}/{flatIdx}"
+							class="scroll-reveal phrase-card group relative flex flex-col gap-1.5 rounded-xl border border-[var(--color-divider)] px-4 py-3.5 transition-all duration-200 hover:bg-[var(--color-paper-warm)] press-scale {isMarked ? 'phrase-card-learned' : ''}"
+							style="animation-delay: {(sIdx * 100) + (i * 18)}ms;"
 						>
-							{item.character}
-							{#if isMarked}
+							<div class="flex items-start justify-between gap-2">
 								<span
-									class="absolute -bottom-1 left-1/2 h-[2px] w-3/4 -translate-x-1/2 rounded-full"
-									style="background-color: {accent}; opacity: 0.5;"
-								></span>
+									class="font-black leading-tight {isMarked ? 'char-learned' : 'char-unlearned'}"
+									style="font-size: clamp(1.05rem, 2.5vw, 1.3rem); font-family: var(--font-jp-brush);"
+								>
+									{item.character}
+								</span>
+								{#if isMarked}
+									<span class="mt-0.5 shrink-0 h-[6px] w-[6px] rounded-full" style="background-color: {accent}; opacity: 0.7;"></span>
+								{/if}
+							</div>
+							<span class="text-[11px] font-bold tracking-[0.1em] text-[var(--color-ink-ghost)]">{item.romaji}</span>
+							<span class="text-xs font-semibold text-[var(--color-ink-light)]">{item.meaning}</span>
+							{#if item.context}
+								<span class="mt-0.5 text-[11px] leading-[1.5] text-[var(--color-ink-ghost)] opacity-0 transition-opacity duration-200 group-hover:opacity-100">{item.context}</span>
 							{/if}
-						</span>
-
-						<span class="mt-1 text-[10px] font-bold text-[var(--color-ink-ghost)] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-							{item.romaji}
-						</span>
-
-						{#if item.recipes?.length}
+						</a>
+					{/each}
+				</div>
+			{:else}
+				<div class="grid grid-cols-4 gap-1 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
+					{#each entry.items as { item, flatIdx, isMarked }, i (item.character + item.romaji + entry.section.id)}
+						<a
+							href="/{column.id}/{flatIdx}"
+							class="scroll-reveal group relative flex flex-col items-center justify-center rounded-lg py-4 transition-all duration-200 hover:bg-[var(--color-paper-warm)] press-scale"
+							style="animation-delay: {(sIdx * 100) + (i * 15)}ms;"
+						>
 							<span
-								class="mt-1 rounded-full border px-2 py-0.5 text-[9px] font-black tracking-[0.16em] uppercase text-[var(--color-ink-light)] opacity-80 transition-opacity duration-200 group-hover:opacity-100"
-								style="border-color: color-mix(in oklab, {accent} 28%, white);"
+								class="relative inline-block font-black leading-none transition-all duration-200 {isKanaColumn ? 'kana-study-type' : ''} {isMarked ? 'char-learned' : 'char-unlearned'}"
+								style="font-size: {item.character.length <= 1 ? 'clamp(2.4rem, 4.5vw, 3.2rem)' : item.character.length <= 3 ? 'clamp(1.6rem, 3vw, 2.2rem)' : 'clamp(1.3rem, 2.5vw, 1.8rem)'};"
 							>
-								{item.recipes.length} recipe{item.recipes.length === 1 ? '' : 's'}
+								{item.character}
+								{#if isMarked}
+									<span
+										class="absolute -bottom-1 left-1/2 h-[2px] w-3/4 -translate-x-1/2 rounded-full"
+										style="background-color: {accent}; opacity: 0.5;"
+									></span>
+								{/if}
 							</span>
-						{/if}
-					</a>
-				{/each}
-			</div>
+
+							<span class="mt-1 text-[10px] font-bold text-[var(--color-ink-ghost)] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+								{item.romaji}
+							</span>
+
+							{#if item.recipes?.length}
+								<span
+									class="mt-1 rounded-full border px-2 py-0.5 text-[9px] font-black tracking-[0.16em] uppercase text-[var(--color-ink-light)] opacity-80 transition-opacity duration-200 group-hover:opacity-100"
+									style="border-color: color-mix(in oklab, {accent} 28%, white);"
+								>
+									{item.recipes.length} recipe{item.recipes.length === 1 ? '' : 's'}
+								</span>
+							{/if}
+						</a>
+					{/each}
+				</div>
+			{/if}
 		{:else if entry.isCleared}
 			<div class="mb-2 mt-2 rounded-xl border border-dashed border-[var(--color-divider)] px-5 py-4 text-center">
 				<span class="text-xs font-bold text-[var(--color-ink-ghost)]">Section cleared — toggle <strong>show learned</strong> to review.</span>

@@ -27,6 +27,8 @@ export interface CardItem {
 	components?: string[]; // structural parts, e.g. ["日 (sun)", "月 (moon)"]
 	examples?: KanjiExample[]; // common compound words
 	strokeCount?: number;
+	// Vocabulary/phrase enrichment
+	context?: string; // when/why you'd use this phrase
 }
 
 export interface ColumnSection {
@@ -2642,6 +2644,534 @@ const vocabulary: CardItem[] = [
 ];
 
 // ─────────────────────────────────────────────
+// ESSENTIAL PHRASES
+// ─────────────────────────────────────────────
+
+const essentialGreetings: CardItem[] = [
+	{
+		character: 'こんにちは',
+		romaji: 'konnichiwa',
+		meaning: 'hello / good afternoon',
+		context: 'All-purpose daytime greeting, safe any time between late morning and evening.',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'おはようございます',
+		romaji: 'ohayou gozaimasu',
+		meaning: 'good morning (polite)',
+		context: 'Polite morning greeting — use at work, school, or with strangers before midday.',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'おはよう',
+		romaji: 'ohayou',
+		meaning: 'good morning (casual)',
+		context: 'Casual version of おはようございます — fine with friends and family.',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'こんばんは',
+		romaji: 'konbanwa',
+		meaning: 'good evening',
+		context: 'Evening greeting once the sun goes down or after around 6 pm.',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'おやすみなさい',
+		romaji: 'oyasumi nasai',
+		meaning: 'good night (polite)',
+		context: 'Said when parting at night or heading to bed. Drop なさい for casual speech.',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'さようなら',
+		romaji: 'sayounara',
+		meaning: 'goodbye (formal)',
+		context: 'A final, somewhat formal farewell — implies you may not see each other soon.',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'またね',
+		romaji: 'mata ne',
+		meaning: 'see you later',
+		context: 'Casual "see you" between friends — implies you will meet again soon.',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'じゃあね',
+		romaji: 'jā ne',
+		meaning: 'bye then / later',
+		context: 'Very casual parting word, equivalent to "later" or "catch ya."',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'よろしくおねがいします',
+		romaji: 'yoroshiku onegaishimasu',
+		meaning: 'pleased to meet you / I\'m in your care',
+		context: 'Said when meeting someone new, starting a project together, or asking a favour.',
+		tags: ['phrase', 'N5', 'greeting']
+	},
+	{
+		character: 'はじめまして',
+		romaji: 'hajimemashite',
+		meaning: 'nice to meet you',
+		context: 'Said the very first time you meet someone — comes before よろしくおねがいします.',
+		tags: ['phrase', 'N5', 'greeting']
+	}
+];
+
+const essentialPoliteness: CardItem[] = [
+	{
+		character: 'ありがとうございます',
+		romaji: 'arigatou gozaimasu',
+		meaning: 'thank you very much',
+		context: 'Polite thank-you for any situation. Drop ございます for a casual ありがとう.',
+		tags: ['phrase', 'N5', 'polite']
+	},
+	{
+		character: 'どういたしまして',
+		romaji: 'dou itashimashite',
+		meaning: 'you\'re welcome',
+		context: 'Standard reply to a thank-you. Also いえいえ ("not at all") works for casual settings.',
+		tags: ['phrase', 'N5', 'polite']
+	},
+	{
+		character: 'すみません',
+		romaji: 'sumimasen',
+		meaning: 'excuse me / I\'m sorry',
+		context: 'The most useful word in Japan: gets attention, apologises for small inconveniences, says "pardon me."',
+		tags: ['phrase', 'N5', 'polite']
+	},
+	{
+		character: 'ごめんなさい',
+		romaji: 'gomen nasai',
+		meaning: 'I\'m sorry (sincere)',
+		context: 'A genuine apology for a mistake or wrongdoing — more heartfelt than すみません.',
+		tags: ['phrase', 'N5', 'polite']
+	},
+	{
+		character: 'おねがいします',
+		romaji: 'onegaishimasu',
+		meaning: 'please (I humbly request)',
+		context: 'Said when making a request or placing an order — politer than ください alone.',
+		tags: ['phrase', 'N5', 'polite']
+	},
+	{
+		character: 'どうぞ',
+		romaji: 'douzo',
+		meaning: 'please go ahead / here you are',
+		context: 'Offering something, inviting someone through a door, or urging someone to proceed.',
+		tags: ['phrase', 'N5', 'polite']
+	},
+	{
+		character: 'いただきます',
+		romaji: 'itadakimasu',
+		meaning: 'let\'s eat / I humbly receive',
+		context: 'Said before eating — expresses gratitude for the food. Never skip it in Japan.',
+		tags: ['phrase', 'N5', 'polite']
+	},
+	{
+		character: 'ごちそうさまでした',
+		romaji: 'gochisousama deshita',
+		meaning: 'thank you for the meal',
+		context: 'Said after finishing a meal to express gratitude to the cook or host.',
+		tags: ['phrase', 'N5', 'polite']
+	}
+];
+
+const essentialNavigation: CardItem[] = [
+	{
+		character: 'どこですか',
+		romaji: 'doko desu ka',
+		meaning: 'where is it?',
+		context: 'Ask this after naming a place — e.g. "駅はどこですか" (where is the station?).',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'えき',
+		romaji: 'eki',
+		meaning: 'station (train/subway)',
+		context: 'Key word for getting around — combine with どこ or the line name.',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'トイレ',
+		romaji: 'toire',
+		meaning: 'toilet / restroom',
+		context: 'Ask "トイレはどこですか" and you will never be lost in Japan.',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'みぎ',
+		romaji: 'migi',
+		meaning: 'right (direction)',
+		context: 'Used in directions — みぎにまがってください means "please turn right."',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'ひだり',
+		romaji: 'hidari',
+		meaning: 'left (direction)',
+		context: 'Used in directions — ひだりにまがってください means "please turn left."',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'まっすぐ',
+		romaji: 'massugu',
+		meaning: 'straight ahead',
+		context: 'A direction word you will hear constantly — まっすぐいってください means "go straight."',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'ちょっとまってください',
+		romaji: 'chotto matte kudasai',
+		meaning: 'please wait a moment',
+		context: 'Buy yourself time in a conversation or ask someone to hold on while you think.',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'きっぷ',
+		romaji: 'kippu',
+		meaning: 'ticket',
+		context: 'Transit or event ticket — you will see this on vending machines at stations.',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'なんじですか',
+		romaji: 'nanji desu ka',
+		meaning: 'what time is it?',
+		context: 'Ask a passerby or check — useful when your phone is out of battery.',
+		tags: ['phrase', 'N5', 'travel']
+	},
+	{
+		character: 'チェックイン',
+		romaji: 'chekku in',
+		meaning: 'check-in',
+		context: 'Used at hotels and airports — same concept as English, borrowed as katakana.',
+		tags: ['phrase', 'travel']
+	}
+];
+
+const essentialEating: CardItem[] = [
+	{
+		character: 'これをください',
+		romaji: 'kore wo kudasai',
+		meaning: 'I\'ll have this, please',
+		context: 'Point at the menu photo or dish and say this — works even without knowing the name.',
+		tags: ['phrase', 'N5', 'food']
+	},
+	{
+		character: 'おすすめはなんですか',
+		romaji: 'osusume wa nan desu ka',
+		meaning: 'what do you recommend?',
+		context: 'Great icebreaker at restaurants — staff love being asked and often give a great pick.',
+		tags: ['phrase', 'N5', 'food']
+	},
+	{
+		character: 'おいしい',
+		romaji: 'oishii',
+		meaning: 'delicious',
+		context: 'Say this while eating and watch the chef smile. Simple, powerful, universally appreciated.',
+		tags: ['phrase', 'N5', 'food']
+	},
+	{
+		character: 'おかいけい',
+		romaji: 'okaikei',
+		meaning: 'the bill / check please',
+		context: 'Ask for the bill at a restaurant. You can also mime writing on your hand.',
+		tags: ['phrase', 'N5', 'food']
+	},
+	{
+		character: 'みずをください',
+		romaji: 'mizu wo kudasai',
+		meaning: 'water, please',
+		context: 'Water is usually free at Japanese restaurants but you sometimes need to ask.',
+		tags: ['phrase', 'N5', 'food']
+	},
+	{
+		character: 'アレルギーがあります',
+		romaji: 'arerugī ga arimasu',
+		meaning: 'I have an allergy',
+		context: 'Vital if you have food allergies — follow up with the specific allergen name.',
+		tags: ['phrase', 'travel', 'food']
+	},
+	{
+		character: 'からい',
+		romaji: 'karai',
+		meaning: 'spicy',
+		context: 'Useful for ordering — からいものがすきです means "I like spicy food."',
+		tags: ['phrase', 'N5', 'food']
+	}
+];
+
+const essentialShopping: CardItem[] = [
+	{
+		character: 'いくらですか',
+		romaji: 'ikura desu ka',
+		meaning: 'how much does it cost?',
+		context: 'Essential shopping phrase — point at an item and ask this.',
+		tags: ['phrase', 'N5', 'shopping']
+	},
+	{
+		character: 'たかい',
+		romaji: 'takai',
+		meaning: 'expensive',
+		context: 'Comment on the price or ask for something cheaper — たかいですね means "that\'s pricey."',
+		tags: ['phrase', 'N5', 'shopping']
+	},
+	{
+		character: 'やすい',
+		romaji: 'yasui',
+		meaning: 'cheap / inexpensive',
+		context: 'Compliment a good deal — やすい！ expresses pleasant surprise at a low price.',
+		tags: ['phrase', 'N5', 'shopping']
+	},
+	{
+		character: 'ちょっとみているだけです',
+		romaji: 'chotto mite iru dake desu',
+		meaning: 'just browsing, thank you',
+		context: 'Say this when a shop assistant approaches and you are not ready to buy.',
+		tags: ['phrase', 'N5', 'shopping']
+	},
+	{
+		character: 'これにします',
+		romaji: 'kore ni shimasu',
+		meaning: 'I\'ll take this one',
+		context: 'Signals your final choice to the shop assistant when you have decided.',
+		tags: ['phrase', 'N5', 'shopping']
+	},
+	{
+		character: 'ふくろはいりません',
+		romaji: 'fukuro wa irimasen',
+		meaning: 'no bag needed',
+		context: 'Cashiers always offer a bag — decline politely and save plastic.',
+		tags: ['phrase', 'travel', 'shopping']
+	},
+	{
+		character: 'カードでもいいですか',
+		romaji: 'kādo demo ii desu ka',
+		meaning: 'can I pay by card?',
+		context: 'Japan is still largely cash-based, so always worth asking before you pull out your card.',
+		tags: ['phrase', 'travel', 'shopping']
+	}
+];
+
+const essentialNumbers: CardItem[] = [
+	{
+		character: '〜えん',
+		romaji: '〜en',
+		meaning: '〜 yen',
+		context: 'The currency suffix — ¥500 is ごひゃくえん. Recognise it on price tags and receipts.',
+		tags: ['phrase', 'N5', 'numbers']
+	},
+	{
+		character: 'ひとつ',
+		romaji: 'hitotsu',
+		meaning: 'one (piece)',
+		context: 'Native Japanese counter for one item — use when ordering or picking a single thing.',
+		tags: ['phrase', 'N5', 'numbers']
+	},
+	{
+		character: 'ふたつ',
+		romaji: 'futatsu',
+		meaning: 'two (pieces)',
+		context: 'Native counter for two items — hold up two fingers alongside for clarity.',
+		tags: ['phrase', 'N5', 'numbers']
+	},
+	{
+		character: 'みっつ',
+		romaji: 'mittsu',
+		meaning: 'three (pieces)',
+		context: 'Native counter for three items — part of the ひとつ/ふたつ/みっつ set every traveller needs.',
+		tags: ['phrase', 'N5', 'numbers']
+	},
+	{
+		character: 'ひとり',
+		romaji: 'hitori',
+		meaning: 'one person',
+		context: 'Tell a restaurant host your party size — ひとりです means "just me."',
+		tags: ['phrase', 'N5', 'numbers']
+	},
+	{
+		character: 'ふたり',
+		romaji: 'futari',
+		meaning: 'two people',
+		context: 'For a party of two — ふたりです is the most common table request in Japan.',
+		tags: ['phrase', 'N5', 'numbers']
+	}
+];
+
+const essentialEmergency: CardItem[] = [
+	{
+		character: 'わかりません',
+		romaji: 'wakarimasen',
+		meaning: 'I don\'t understand',
+		context: 'Honest and polite way to signal you did not follow — gives the other person a chance to rephrase.',
+		tags: ['phrase', 'N5', 'emergency']
+	},
+	{
+		character: 'もういちどおねがいします',
+		romaji: 'mou ichido onegaishimasu',
+		meaning: 'please say that again',
+		context: 'Ask someone to repeat themselves slowly — much better than smiling and nodding.',
+		tags: ['phrase', 'N5', 'emergency']
+	},
+	{
+		character: 'えいごがはなせますか',
+		romaji: 'eigo ga hanasemasu ka',
+		meaning: 'do you speak English?',
+		context: 'A lifeline when a conversation goes beyond your Japanese — staff in tourist areas often do.',
+		tags: ['phrase', 'N5', 'emergency']
+	},
+	{
+		character: 'たすけてください',
+		romaji: 'tasukete kudasai',
+		meaning: 'please help me',
+		context: 'Emergency phrase — shout it loudly if you are in danger or need urgent assistance.',
+		tags: ['phrase', 'N5', 'emergency']
+	},
+	{
+		character: 'きゅうきゅうしゃをよんでください',
+		romaji: 'kyūkyūsha wo yonde kudasai',
+		meaning: 'please call an ambulance',
+		context: 'For medical emergencies — or just dial 119 (the Japanese emergency number for ambulance and fire).',
+		tags: ['phrase', 'emergency']
+	},
+	{
+		character: 'にほんごがわかりません',
+		romaji: 'nihongo ga wakarimasen',
+		meaning: 'I don\'t understand Japanese',
+		context: 'Sets expectations from the start when someone speaks to you in Japanese.',
+		tags: ['phrase', 'N5', 'emergency']
+	},
+	{
+		character: 'ゆっくりはなしてください',
+		romaji: 'yukkuri hanashite kudasai',
+		meaning: 'please speak slowly',
+		context: 'Ask this if someone is speaking too fast — native speakers often slow down dramatically.',
+		tags: ['phrase', 'N5', 'emergency']
+	}
+];
+
+const essentialSocial: CardItem[] = [
+	{
+		character: 'そうですね',
+		romaji: 'sou desu ne',
+		meaning: 'I see / that\'s right / hmm',
+		context: 'The classic conversation filler — shows you are listening and processing. Use it constantly.',
+		tags: ['phrase', 'N5', 'social']
+	},
+	{
+		character: 'なるほど',
+		romaji: 'naruhodo',
+		meaning: 'I see / I understand now',
+		context: 'Shows you just understood something — a natural response when something clicks.',
+		tags: ['phrase', 'N5', 'social']
+	},
+	{
+		character: 'ほんとうですか',
+		romaji: 'hontou desu ka',
+		meaning: 'really? / is that true?',
+		context: 'Express surprise or interest in what someone just said. ほんとう alone works too.',
+		tags: ['phrase', 'N5', 'social']
+	},
+	{
+		character: 'がんばってください',
+		romaji: 'ganbatte kudasai',
+		meaning: 'good luck / do your best',
+		context: 'Cheer someone on before a challenge — one of the most encouraging phrases in Japanese.',
+		tags: ['phrase', 'N5', 'social']
+	},
+	{
+		character: 'だいじょうぶですか',
+		romaji: 'daijoubu desu ka',
+		meaning: 'are you okay?',
+		context: 'Check on someone\'s wellbeing, or respond with だいじょうぶです ("I\'m fine") when asked.',
+		tags: ['phrase', 'N5', 'social']
+	},
+	{
+		character: 'たのしかったです',
+		romaji: 'tanoshikatta desu',
+		meaning: 'that was fun',
+		context: 'After an activity or meal — a warm way to end an outing and express genuine enjoyment.',
+		tags: ['phrase', 'N5', 'social']
+	},
+	{
+		character: 'また会いましょう',
+		romaji: 'mata aimashou',
+		meaning: 'let\'s meet again',
+		context: 'A warm closing after spending time with someone — shows you want to see them again.',
+		tags: ['phrase', 'N5', 'social']
+	}
+];
+
+const essentialVerbs: CardItem[] = [
+	{
+		character: 'たべます',
+		romaji: 'tabemasu',
+		meaning: 'eat (polite present)',
+		context: 'Polite form of 食べる. Use in sentences like なにをたべますか ("what will you eat?").',
+		tags: ['phrase', 'N5', 'verb']
+	},
+	{
+		character: 'のみます',
+		romaji: 'nomimasu',
+		meaning: 'drink (polite present)',
+		context: 'Polite form of 飲む. なにをのみますか means "what will you drink?"',
+		tags: ['phrase', 'N5', 'verb']
+	},
+	{
+		character: 'いきます',
+		romaji: 'ikimasu',
+		meaning: 'go (polite present)',
+		context: 'Polite form of 行く. どこにいきますか means "where are you going?"',
+		tags: ['phrase', 'N5', 'verb']
+	},
+	{
+		character: 'きます',
+		romaji: 'kimasu',
+		meaning: 'come (polite present)',
+		context: 'Polite form of 来る. にほんにきました means "I came to Japan."',
+		tags: ['phrase', 'N5', 'verb']
+	},
+	{
+		character: 'みます',
+		romaji: 'mimasu',
+		meaning: 'see / look / watch (polite present)',
+		context: 'Polite form of 見る. えいがをみます means "I will watch a movie."',
+		tags: ['phrase', 'N5', 'verb']
+	},
+	{
+		character: 'かいます',
+		romaji: 'kaimasu',
+		meaning: 'buy (polite present)',
+		context: 'Polite form of 買う. おみやげをかいます means "I will buy souvenirs."',
+		tags: ['phrase', 'N5', 'verb']
+	},
+	{
+		character: 'わかります',
+		romaji: 'wakarimasu',
+		meaning: 'understand (polite present)',
+		context: 'Polite form of 分かる. わかりますか means "do you understand?" or "do you know?"',
+		tags: ['phrase', 'N5', 'verb']
+	},
+	{
+		character: 'あります',
+		romaji: 'arimasu',
+		meaning: 'there is / I have (inanimate)',
+		context: 'Existence verb for objects and places — ~~はどこにありますか means "where is ~~?"',
+		tags: ['phrase', 'N5', 'verb']
+	},
+	{
+		character: 'います',
+		romaji: 'imasu',
+		meaning: 'there is / I am (animate)',
+		context: 'Existence verb for living things — ひとがいます means "there is a person here."',
+		tags: ['phrase', 'N5', 'verb']
+	}
+];
+
+// ─────────────────────────────────────────────
 // COLUMNS (sectioned)
 // ─────────────────────────────────────────────
 
@@ -2697,7 +3227,18 @@ export const columns: Column[] = [
 		id: 'vocabulary',
 		title: 'Vocabulary',
 		titleJp: '語彙',
-		hint: 'Daily words',
-		sections: [{ id: 'common', title: 'Common', titleJp: '日常', items: vocabulary }]
+		hint: 'Daily words & phrases',
+		sections: [
+			{ id: 'common', title: 'Common', titleJp: '日常', items: vocabulary },
+			{ id: 'greetings', title: 'Greetings & Farewells', titleJp: 'あいさつ', items: essentialGreetings },
+			{ id: 'politeness', title: 'Politeness Staples', titleJp: '礼儀', items: essentialPoliteness },
+			{ id: 'navigation', title: 'Getting Around', titleJp: '移動', items: essentialNavigation },
+			{ id: 'eating', title: 'Eating & Ordering', titleJp: '食事', items: essentialEating },
+			{ id: 'shopping', title: 'Shopping', titleJp: '買い物', items: essentialShopping },
+			{ id: 'numbers', title: 'Numbers in Context', titleJp: '数', items: essentialNumbers },
+			{ id: 'emergency', title: 'Emergency & Confusion', titleJp: '緊急', items: essentialEmergency },
+			{ id: 'social', title: 'Social Phrases', titleJp: '社交', items: essentialSocial },
+			{ id: 'verbs', title: 'Essential Verbs', titleJp: '動詞', items: essentialVerbs }
+		]
 	}
 ];
