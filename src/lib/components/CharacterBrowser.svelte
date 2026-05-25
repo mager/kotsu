@@ -42,6 +42,13 @@
 		vocabulary: 'var(--color-asagi)'
 	};
 
+	// JLPT level badge colors — warm amber for N5 (easy), indigo for N4, teal for N3
+	const jlptColors: Record<string, string> = {
+		n5: '#c7873a',
+		n4: '#5b6fd6',
+		n3: '#2a9d8f'
+	};
+
 	let accent = $derived(accents[column.id] || 'var(--color-ink)');
 	let categoryAward = $derived(getColumnAward(column.id));
 </script>
@@ -103,12 +110,26 @@
 	{#each sectionEntries as entry, sIdx}
 		{#if entry.items.length > 0}
 			{#if column.sections.length > 1}
+				{@const jlptColor = jlptColors[entry.section.id]}
+				{@const sectionAccent = jlptColor ?? accent}
 				<div class="mb-4 mt-10 first:mt-0 animate-fade-up" style="animation-delay: {sIdx * 80}ms;">
 					<div class="flex items-center gap-3">
-						<div class="h-[2px] w-8 rounded-full" style="background-color: {accent}; opacity: 0.4;"></div>
-						<span class="text-xs font-bold tracking-[0.25em] uppercase {isKanaColumn ? 'kana-study-type' : ''}" style="color: {accent};">
-							{entry.section.titleJp} · {entry.section.title}
-						</span>
+						<div class="h-[2px] w-8 rounded-full" style="background-color: {sectionAccent}; opacity: 0.4;"></div>
+						{#if jlptColor}
+							<span
+								class="rounded-full px-3 py-1 text-[10px] font-black tracking-[0.22em] uppercase"
+								style="background: color-mix(in srgb, {jlptColor} 14%, var(--color-paper)); color: {jlptColor}; border: 1px solid color-mix(in srgb, {jlptColor} 28%, transparent);"
+							>
+								{entry.section.title}
+							</span>
+							<span class="text-[11px] font-bold text-[var(--color-ink-mid)]">
+								{entry.section.items.length} kanji
+							</span>
+						{:else}
+							<span class="text-xs font-bold tracking-[0.25em] uppercase {isKanaColumn ? 'kana-study-type' : ''}" style="color: {sectionAccent};">
+								{entry.section.titleJp} · {entry.section.title}
+							</span>
+						{/if}
 					</div>
 				</div>
 			{/if}

@@ -120,6 +120,15 @@
 	let recipeCards = $derived(data.item.recipes ?? []);
 	let noteTags = $derived(data.item.tags ?? []);
 	let variants = $derived(data.item.variants ?? []);
+
+	// JLPT level badge colors for kanji study page
+	const jlptBadgeColors: Record<string, string> = {
+		N5: '#c7873a',
+		N4: '#5b6fd6',
+		N3: '#2a9d8f'
+	};
+	let jlptTag = $derived(noteTags.find((t) => t in jlptBadgeColors) ?? null);
+	let jlptBadgeColor = $derived(jlptTag ? jlptBadgeColors[jlptTag] : null);
 	let practicePrompts = $derived(getPracticePrompts());
 	let connectionNotes = $derived(getConnectionNotes());
 	let progressPercent = $derived(((data.index + 1) / data.totalItems) * 100);
@@ -261,7 +270,14 @@
 					<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">
 						{data.column.title}
 					</span>
-					{#if data.sectionTitle}
+					{#if jlptBadgeColor && jlptTag}
+						<span
+							class="rounded-full px-3 py-1 text-[10px] font-black tracking-[0.22em] uppercase"
+							style="background: color-mix(in srgb, {jlptBadgeColor} 14%, var(--color-paper)); color: {jlptBadgeColor}; border: 1px solid color-mix(in srgb, {jlptBadgeColor} 30%, transparent);"
+						>
+							JLPT {jlptTag}
+						</span>
+					{:else if data.sectionTitle}
 						<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">
 							{data.sectionTitle}
 						</span>
