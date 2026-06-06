@@ -41,6 +41,52 @@
 
 	<div class="mx-auto mt-12 h-px w-16 bg-[var(--color-divider)]"></div>
 
+	<!-- The logo: Niko -->
+	<div class="mt-12 text-center">
+		<img
+			src="/brand/niko-logo.png"
+			alt="Niko — the Kotsu logo, an invented kanji fusing コ and ツ"
+			width="128"
+			height="128"
+			class="animate-fade-up mx-auto h-28 w-28 object-contain md:h-32 md:w-32"
+			style="animation-delay: 650ms;"
+			decoding="async"
+		/>
+		<p
+			class="animate-fade-up mt-3 text-xs font-bold tracking-[0.3em] uppercase text-[var(--color-ink-ghost)]"
+			style="animation-delay: 700ms;"
+		>
+			Niko · にこ
+		</p>
+	</div>
+
+	<div
+		class="mt-8 space-y-6 text-base leading-relaxed text-[var(--color-ink-mid)]"
+		style="font-family: var(--font-jp-brush);"
+	>
+		<p class="animate-fade-up" style="animation-delay: 750ms;">
+			The mark above is <span class="font-bold text-[var(--color-ink)]">Niko</span> — a kanji that
+			doesn't exist. I drew it by fusing two katakana into one brushstroke: the open-left bracket of
+			<span class="font-bold text-[var(--color-ink)]">コ</span> (ko) cradling a
+			<span class="font-bold text-[var(--color-ink)]">ツ</span> (tsu) nested inside. Together they spell
+			コツ — <em>kotsu</em>.
+		</p>
+
+		<p class="animate-fade-up" style="animation-delay: 850ms;">
+			Look again at the ツ. Those strokes aren't only a character — they're a face mid-grin. That's
+			where the name comes from:
+			<span class="font-bold text-[var(--color-ink)]">にこにこ</span> (nikoniko), the Japanese word for
+			a warm, easy smile. The logo hides one.
+		</p>
+
+		<p class="animate-fade-up" style="animation-delay: 950ms;">
+			Which felt right. The knack and the grin are the same moment — the one where it finally clicks
+			and you can't help but smile.
+		</p>
+	</div>
+
+	<div class="mx-auto mt-12 h-px w-16 bg-[var(--color-divider)]"></div>
+
 	<!-- Credits / Links -->
 	<div class="mt-12 space-y-8 text-center">
 		<div class="animate-fade-up" style="animation-delay: 700ms;">

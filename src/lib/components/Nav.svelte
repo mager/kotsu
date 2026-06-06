@@ -40,12 +40,14 @@
 	<div class="global-nav-shell">
 		<div class="nav-row">
 			<a href="/" class="brand-lockup group" aria-label="Kotsu home">
-				<span
-					class="logo-jp text-2xl font-black leading-none transition-transform duration-200 group-hover:-translate-y-0.5 md:text-[1.7rem]"
-					style="font-family: var(--font-jp-brush); color: var(--color-shu);"
-				>
-					コツ
-				</span>
+				<img
+					src="/brand/niko-logo.png"
+					alt="Kotsu — コツ"
+					width="36"
+					height="36"
+					class="logo-mark transition-transform duration-200 group-hover:-translate-y-0.5"
+					decoding="async"
+				/>
 				<span class="text-[0.68rem] font-black tracking-[0.2em] uppercase text-[var(--color-ink-mid)]">
 					Kotsu
 				</span>
@@ -166,9 +168,23 @@
 
 	.brand-lockup {
 		display: inline-flex;
-		align-items: baseline;
-		gap: 0.55rem;
+		align-items: center;
+		gap: 0.5rem;
 		min-width: max-content;
+	}
+
+	.logo-mark {
+		height: 2rem;
+		width: 2rem;
+		object-fit: contain;
+		display: block;
+	}
+
+	@media (min-width: 768px) {
+		.logo-mark {
+			height: 2.15rem;
+			width: 2.15rem;
+		}
 	}
 
 	.nav-search {
@@ -414,7 +430,7 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.logo-jp,
+		.logo-mark,
 		.signin-button,
 		.course-pill,
 		.profile-chip {
