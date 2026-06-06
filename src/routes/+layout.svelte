@@ -3,7 +3,6 @@
 	import Nav from '$lib/components/Nav.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import type { Snippet } from 'svelte';
-	import { page } from '$app/stores';
 	import { initAuth } from '$lib/stores/auth.svelte';
 	import { browser } from '$app/environment';
 	import { dev } from '$app/environment';
@@ -14,9 +13,6 @@
 	}
 
 	let { children }: Props = $props();
-
-	let isDetailPage = $derived($page.params.index !== undefined);
-	let isHomePage = $derived($page.url.pathname === '/');
 
 	// Init Firebase auth + offline support on client only
 	if (browser) {
@@ -39,7 +35,5 @@
 		{@render children()}
 	</main>
 
-	{#if !isDetailPage && !isHomePage}
-		<Footer />
-	{/if}
+	<Footer />
 </div>
