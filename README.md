@@ -1,33 +1,37 @@
 # コツ — Kotsu
 
-**The knack of Japanese.** A mobile-first Japanese learning course built around radicals, repetition, and visual recognition.
+**The knack of Japanese.** A branching learning adventure built from sounds, radicals, kanji, and words.
 
-No streak anxiety. No mascot clutter. Just a clear path from beginner sounds to radicals, kanji families, and the words that make them stick.
+Choose which route to explore first. Complete every branch to finish the journey. Shared checkpoints require every incoming route; there are no dead ends or permanently missed paths.
 
-Kotsu is for me first, but it is built for anyone who wants to learn Japanese through calm repetition, visual structure, and a course that makes characters feel connected instead of random.
+## Play
 
-## What's here
+- **Journey (`/`)**: a directed acyclic graph with 17 stops across four chapters.
+- **Lessons (`/journey/[id]`)**: study and recall up to five pieces per session. Correct answers save progress. Wrong answers allow another attempt without a timer or penalty.
+- **Field guide (`/library`)**: freely browse all characters, search, and explore kanji recipes outside the gated course.
 
-Five study shelves feed one required course tree:
+The journey covers every item in the existing data exactly once: 105 hiragana, 105 katakana, 42 radicals, 41 kanji, and 15 words (308 total). Course progress measures completed recall items, not a claim of fluency or long-term mastery.
 
-| Column | What | Count |
-|--------|------|-------|
-| ひらがな | Hiragana basics | 46 |
-| カタカナ | Katakana | 46 |
-| 部首 | Radicals — the building blocks | 24 |
-| 漢字 | Kanji (JLPT N5) | 24 |
-| 語彙 | Vocabulary — baby words to real words | 15 |
+Adventure progress is stored in this browser's local storage (`kotsu-journey-v1`). Existing signed-in character progress also counts toward the journey. New adventure answers are local only; they are not synced to Firebase or another device. Existing account, saved vocabulary, and reference-page progress features remain available.
 
-Follow the course timeline, branch into radical families, then tap any character for an immersive full-screen study view.
+## Verify
 
-## Product direction
+```bash
+npm run check
+npm test               # requires Bun
+npm run build
+npm run dev -- --host 127.0.0.1 --port 4358
+```
 
-Kotsu is trying to balance two things at once:
+The graph tests check acyclicity, complete curriculum coverage, early branching, mandatory joins, locked prerequisites, successful end-to-end traversal, and unique correct quiz choices.
 
-- **Japan-now usefulness** — fast access to kana, core words, and recognition patterns that help before and during a trip.
-- **Long-term literacy** — a radical-first model that teaches how kanji are built so later learning compounds.
-
-The intended feel is **calm, focused, quietly electric**.
+Manual test:
+1. Start First light. Give a wrong answer, then a correct answer. Verify retry feedback and progress only for the correct answer.
+2. Finish all five vowels. Both The familiar path and The other side should unlock.
+3. Reload. The five learned pieces and both available routes should remain.
+4. Open `/journey/greetings` before its prerequisites. It must show a locked state.
+5. On a phone, select a map stop, inspect its details, return to the map, and open an available lesson. Keyboard users can focus and scroll the map.
+6. Use the field guide to open an individual character or recipe. Reference browsing does not bypass the course's prerequisites.
 
 ## Stack
 
@@ -35,7 +39,7 @@ The intended feel is **calm, focused, quietly electric**.
 - [Tailwind CSS v4](https://tailwindcss.com)
 - [BIZ UDPGothic](https://fonts.google.com/specimen/BIZ+UDPGothic) for kana study surfaces
 - [Noto Sans JP](https://fonts.google.com/noto/specimen/Noto+Sans+JP) for core UI text
-- Firebase (auth + progress tracking — coming soon)
+- Firebase (existing auth, reference progress, and saved vocabulary)
 
 ## Dev
 

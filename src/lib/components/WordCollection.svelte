@@ -157,7 +157,7 @@
 				<div class="flex w-full items-center justify-between gap-3 border-t border-[var(--color-divider)] pt-4">
 					<span class="text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">tap outside or esc to close</span>
 					<button
-						onclick={() => handleRemove(selectedWord)}
+						onclick={() => { if (selectedWord) handleRemove(selectedWord); }}
 						class="rounded-full border border-[var(--color-divider)] px-4 py-2 text-[10px] font-bold tracking-[0.2em] uppercase text-[var(--color-ink)] transition-all hover:border-[var(--color-ink)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] press-scale"
 					>
 						Remove word

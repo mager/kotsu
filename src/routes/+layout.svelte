@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import '../journey.css';
 	import Nav from '$lib/components/Nav.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import type { Snippet } from 'svelte';
@@ -16,7 +17,7 @@
 	let { children }: Props = $props();
 
 	let isDetailPage = $derived($page.params.index !== undefined);
-	let isHomePage = $derived($page.url.pathname === '/');
+	let isHomePage = $derived($page.url.pathname === '/' || $page.url.pathname.startsWith('/journey/'));
 
 	// Init Firebase auth on client only
 	if (browser) {

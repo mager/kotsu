@@ -24,7 +24,7 @@ function mapHit(hit: any, fallback: string): LookupEntry {
 	const primary = hit.japanese?.[0] ?? {};
 	const word = primary.word || primary.reading || fallback;
 	const reading = primary.reading || '';
-	const senses = (hit.senses ?? []).map((sense: any) => ({
+	const senses: LookupEntry['senses'] = (hit.senses ?? []).map((sense: any) => ({
 		meanings: sense.english_definitions ?? [],
 		partsOfSpeech: sense.parts_of_speech ?? [],
 		tags: sense.tags ?? [],
