@@ -6,11 +6,11 @@ Choose which route to explore first. Complete every branch to finish the journey
 
 ## Play
 
-- **Journey (`/`)**: a directed acyclic graph with 17 stops across four chapters.
+- **Journey (`/`)**: a directed acyclic graph with 23 stops across five chapters.
 - **Lessons (`/journey/[id]`)**: study and recall up to five pieces per session. Correct answers save progress. Wrong answers allow another attempt without a timer or penalty.
 - **Field guide (`/library`)**: freely browse all characters, search, and explore kanji recipes outside the gated course.
 
-The journey covers every item in the existing data exactly once: 105 hiragana, 105 katakana, 42 radicals, 41 kanji, and 15 words (308 total). Course progress measures completed recall items, not a claim of fluency or long-term mastery.
+The journey covers every item in the existing data exactly once: 105 hiragana, 105 katakana, 92 radicals, 621 kanji, and 86 vocabulary entries (1,009 total). Course progress measures completed recall items, not a claim of fluency or long-term mastery.
 
 Adventure progress is stored in this browser's local storage (`kotsu-journey-v1`). Existing signed-in character progress also counts toward the journey. New adventure answers are local only; they are not synced to Firebase or another device. Existing account, saved vocabulary, and reference-page progress features remain available.
 

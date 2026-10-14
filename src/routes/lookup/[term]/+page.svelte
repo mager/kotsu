@@ -3,6 +3,7 @@
 	import { getAuthState } from '$lib/stores/auth.svelte';
 	import type { CustomVocabItem } from '$lib/firebase';
 	import type { PageData } from './$types';
+	import { toRomaji } from 'wanakana';
 
 	let { data }: { data: PageData } = $props();
 	let auth = $derived(getAuthState());
@@ -10,6 +11,12 @@
 	let primaryMeaning = $derived(data.result?.meanings.slice(0, 3).join(', ') ?? '');
 	let jishoHref = $derived(
 		`https://jisho.org/search/${encodeURIComponent(data.result?.word ?? data.term)}`
+	);
+	let kanshudoHref = $derived(
+		`https://www.kanshudo.com/search?q=${encodeURIComponent(data.result?.word ?? data.term)}`
+	);
+	let forvoHref = $derived(
+		`https://forvo.com/search/${encodeURIComponent(data.result?.word ?? data.term)}/ja/`
 	);
 
 	async function saveWord() {
@@ -54,6 +61,9 @@
 						<p class="mt-2 text-3xl font-black text-[var(--color-ink-mid)] md:text-5xl" style="font-family: var(--font-jp-brush);">
 							{data.result.reading}
 						</p>
+						<p class="mt-1 text-xs font-bold tracking-[0.14em] text-[var(--color-ink-ghost)]">
+							{toRomaji(data.result.reading)}
+						</p>
 					{/if}
 					<p class="mt-5 max-w-3xl text-2xl font-black leading-tight text-[var(--color-ink)] md:text-4xl">
 						{primaryMeaning}
@@ -63,6 +73,14 @@
 				<div class="lookup-actions">
 					<a href={jishoHref} target="_blank" rel="noopener noreferrer" class="lookup-action">
 						<span>Jisho</span>
+						<span aria-hidden="true">↗</span>
+					</a>
+					<a href={kanshudoHref} target="_blank" rel="noopener noreferrer" class="lookup-action">
+						<span>Kanshudo</span>
+						<span aria-hidden="true">↗</span>
+					</a>
+					<a href={forvoHref} target="_blank" rel="noopener noreferrer" class="lookup-action">
+						<span>Forvo</span>
 						<span aria-hidden="true">↗</span>
 					</a>
 					{#if auth.user}

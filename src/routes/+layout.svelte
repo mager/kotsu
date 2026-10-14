@@ -22,6 +22,9 @@
 	// Init Firebase auth on client only
 	if (browser) {
 		initAuth();
+		if (!dev && 'serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+		}
 	}
 
 	// Vercel Analytics

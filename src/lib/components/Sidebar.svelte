@@ -59,12 +59,16 @@
 >
 	<!-- Logo area -->
 	<div class="px-6 pt-6 pb-2">
-		<a href="/" class="group inline-block" onclick={() => onclose?.()}>
-			<span
-				class="logo-jp text-4xl font-black leading-none transition-transform duration-200 group-hover:scale-105 inline-block"
-				style="font-family: var(--font-jp-brush); color: var(--color-shu);"
-			>コツ</span>
-			<span class="ml-2 text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)] align-middle">
+		<a href="/" class="group inline-flex items-center gap-2" onclick={() => onclose?.()}>
+			<img
+				src="/brand/niko-logo.png"
+				alt="Kotsu — コツ"
+				width="44"
+				height="44"
+				class="h-11 w-11 object-contain transition-transform duration-200 group-hover:scale-105"
+				decoding="async"
+			/>
+			<span class="text-sm font-bold tracking-[0.2em] uppercase text-[var(--color-ink-ghost)]">
 				Kotsu
 			</span>
 		</a>

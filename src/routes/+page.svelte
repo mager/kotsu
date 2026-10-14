@@ -1,7 +1,7 @@
 <script lang="ts">
   import RouteIcon from '$lib/components/RouteIcon.svelte';
   import { onMount } from 'svelte';
-  import { stops, stopById, chapters, allItems, getStates, nextStop, type Stop } from '$lib/journey/graph';
+  import { stops, stopById, chapters, mapHeight, allItems, getStates, nextStop, type Stop } from '$lib/journey/graph';
   import { getJourneyProgress, loadJourney } from '$lib/journey/progress.svelte';
   import { isLearned } from '$lib/stores/auth.svelte';
   let progress = $derived(getJourneyProgress());
@@ -43,8 +43,8 @@
       <div class="map-toolbar"><span><span class="legend-dot ready"></span> Ready <span class="legend-dot done"></span> Complete <span class="legend-dot later"></span> Not yet</span><button onclick={locate} disabled={!next}>Find my next stop <RouteIcon name="down" /></button></div>
       <!-- The scroll region must be focusable so keyboard users can pan the map. -->
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-      <div class="map-scroll" tabindex="0" role="region" aria-label="Scrollable journey map"><div class="journey-map">
-        <svg class="map-lines" viewBox="0 0 800 2300" preserveAspectRatio="none" aria-hidden="true">
+      <div class="map-scroll" tabindex="0" role="region" aria-label="Scrollable journey map"><div class="journey-map" style={`height: ${mapHeight}px`}>
+        <svg class="map-lines" viewBox={`0 0 800 ${mapHeight}`} preserveAspectRatio="none" aria-hidden="true">
           {#each stops as stop}{#each stop.requires as parentId}
             {@const parent = stopById.get(parentId)!}
             <path d={edgePath(parent, stop)} class:earned={states[parentId] === 'complete'} />

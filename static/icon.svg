@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="120" fill="#f8f5ef"/>
+  <g fill="none" stroke="#111111" stroke-linecap="round" stroke-linejoin="round">
+    <!-- コ bracket: open on the left -->
+    <path d="M150 132 H372 V380 H150" stroke-width="40"/>
+    <!-- ツ nested inside: two top strokes + sweeping right stroke -->
+    <path d="M214 206 v34" stroke-width="26"/>
+    <path d="M268 200 v40" stroke-width="26"/>
+    <path d="M310 196 C300 280 268 318 222 332" stroke-width="28"/>
+  </g>
+</svg>

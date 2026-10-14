@@ -1,27 +1,40 @@
 <script lang="ts">
 	import { fly, fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
-	import { markLearned, unmarkLearned } from '$lib/firebase';
-	import { getAuthState, isLearned, setLearned } from '$lib/stores/auth.svelte';
+	import { getAuthState, isLearned, setLearnedStatus } from '$lib/stores/auth.svelte';
+	import { getColumnItems } from '$lib/data';
+	import { getColumnAward, type Award } from '$lib/awards';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	let showDetails = $state(false);
 	let auth = $derived(getAuthState());
 	let justLearned = $state(false);
+	let unlockedAward = $state<Award | null>(null);
 
 	let learnedKey = $derived(`${data.column.id}_${data.index}`);
 	let learned = $derived(isLearned(data.column.id, data.index));
-
+	let columnItems = $derived(getColumnItems(data.column));
 	let mouseX = $state(0);
 	let mouseY = $state(0);
 	let charOffsetX = $derived((mouseX - 0.5) * 12);
 	let charOffsetY = $derived((mouseY - 0.5) * 8);
 
+	let visiblePrevIndex = $derived(data.prevIndex);
+	let visibleNextIndex = $derived(data.nextIndex);
+
+	function getNextUnlearnedIndex(): number | null {
+		for (let i = data.index + 1; i < columnItems.length; i++) {
+			if (!isLearned(data.column.id, i)) return i;
+		}
+		return data.nextIndex;
+	}
+
 	$effect(() => {
 		const _idx = data.index;
 		showDetails = false;
 		justLearned = false;
+		unlockedAward = null;
 		const t = setTimeout(() => (showDetails = true), 200);
 		return () => clearTimeout(t);
 	});
@@ -32,28 +45,32 @@
 	}
 
 	async function toggleLearned() {
-		if (!auth.user) return;
 		const previousValue = learned;
 		const newValue = !previousValue;
-		setLearned(learnedKey, newValue);
+		const willCompleteColumn = newValue && columnItems.every((_, index) => index === data.index || isLearned(data.column.id, index));
 
 		try {
 			if (newValue) {
 				justLearned = true;
-				await markLearned(auth.user.uid, data.column.id, data.index);
+				unlockedAward = willCompleteColumn ? getColumnAward(data.column.id) : null;
+			}
+
+			await setLearnedStatus(data.column.id, data.index, newValue);
+
+			if (newValue) {
 				setTimeout(() => {
 					justLearned = false;
-					if (data.nextIndex !== null) {
+					const nextIdx = getNextUnlearnedIndex();
+					if (nextIdx !== null) {
 						showDetails = false;
-						goto(`/${data.column.id}/${data.nextIndex}`);
+						goto(`/${data.column.id}/${nextIdx}`);
 					}
-				}, 600);
-			} else {
-				await unmarkLearned(auth.user.uid, data.column.id, data.index);
+				}, unlockedAward ? 1100 : 600);
 			}
 		} catch (error) {
 			justLearned = false;
-			setLearned(learnedKey, previousValue);
+			unlockedAward = null;
+			await setLearnedStatus(data.column.id, data.index, previousValue);
 			console.error('Failed to update learned state', error);
 		}
 	}
@@ -67,16 +84,16 @@
 				break;
 			case 'ArrowRight':
 			case 'l':
-				if (data.nextIndex !== null) {
+				if (visibleNextIndex !== null) {
 					showDetails = false;
-					goto(`/${data.column.id}/${data.nextIndex}`);
+					goto(`/${data.column.id}/${visibleNextIndex}`);
 				}
 				break;
 			case 'ArrowLeft':
 			case 'h':
-				if (data.prevIndex !== null) {
+				if (visiblePrevIndex !== null) {
 					showDetails = false;
-					goto(`/${data.column.id}/${data.prevIndex}`);
+					goto(`/${data.column.id}/${visiblePrevIndex}`);
 				}
 				break;
 			case ' ':
@@ -88,9 +105,11 @@
 
 	let isKana = $derived(data.column.id === 'hiragana' || data.column.id === 'katakana');
 	let isKanji = $derived(data.column.id === 'kanji');
+	let isRadical = $derived(data.column.id === 'radicals');
+	let isVocabulary = $derived(data.column.id === 'vocabulary');
 	let charCount = $derived(data.item.character.length);
 	let charFontSize = $derived(
-		isKanji
+		isKanji || isRadical
 			? 'clamp(7rem, 24vw, 15rem)'
 			: charCount === 1
 			? 'clamp(9rem, 34vw, 22rem)'
@@ -103,6 +122,17 @@
 	let recipeCards = $derived(data.item.recipes ?? []);
 	let noteTags = $derived(data.item.tags ?? []);
 	let variants = $derived(data.item.variants ?? []);
+	let examples = $derived(data.item.examples ?? []);
+	let components = $derived(data.item.components ?? []);
+
+	// JLPT level badge colors for kanji study page
+	const jlptBadgeColors: Record<string, string> = {
+		N5: '#c7873a',
+		N4: '#5b6fd6',
+		N3: '#2a9d8f'
+	};
+	let jlptTag = $derived(noteTags.find((t) => t in jlptBadgeColors) ?? null);
+	let jlptBadgeColor = $derived(jlptTag ? jlptBadgeColors[jlptTag] : null);
 	let practicePrompts = $derived(getPracticePrompts());
 	let connectionNotes = $derived(getConnectionNotes());
 	let progressPercent = $derived(((data.index + 1) / data.totalItems) * 100);
@@ -116,12 +146,12 @@
 	function onTouchEnd(e: TouchEvent) {
 		const delta = e.changedTouches[0].clientX - touchStartX;
 		if (Math.abs(delta) < 50) return;
-		if (delta < 0 && data.nextIndex !== null) {
+		if (delta < 0 && visibleNextIndex !== null) {
 			showDetails = false;
-			goto(`/${data.column.id}/${data.nextIndex}`);
-		} else if (delta > 0 && data.prevIndex !== null) {
+			goto(`/${data.column.id}/${visibleNextIndex}`);
+		} else if (delta > 0 && visiblePrevIndex !== null) {
 			showDetails = false;
-			goto(`/${data.column.id}/${data.prevIndex}`);
+			goto(`/${data.column.id}/${visiblePrevIndex}`);
 		}
 	}
 
@@ -174,16 +204,13 @@
 
 <svelte:window onkeydown={handleKeydown} ontouchstart={onTouchStart} ontouchend={onTouchEnd} />
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="detail-page relative flex flex-col items-center justify-between bg-[var(--color-paper)] {isKanji ? 'overflow-y-auto' : 'overflow-hidden'}"
+	class="detail-page relative flex flex-col items-center justify-between bg-[var(--color-paper)] {isKanji || isRadical ? 'overflow-y-auto' : 'overflow-hidden'}"
 	onmousemove={handleMouseMove}
-	style="--detail-accent: var(--color-col-{data.column.id}); --detail-progress: {progressPercent}%; min-height: calc(100dvh - var(--nav-height, 56px)); {isKanji ? '' : 'height: calc(100dvh - var(--nav-height, 56px));'}"
+	style="--detail-accent: var(--color-col-{data.column.id}); --detail-progress: {progressPercent}%; min-height: calc(100dvh - var(--nav-height, 56px)); {isKanji || isRadical ? '' : 'height: calc(100dvh - var(--nav-height, 56px));'}"
 >
-	<!-- Paper texture overlay -->
 	<div class="paper-grain pointer-events-none absolute inset-0"></div>
 
-	<!-- Quiet lesson context -->
 	<div class="lesson-rail pointer-events-none absolute inset-x-0 top-0 z-10 px-5 pt-4 md:px-8 md:pt-5">
 		<div class="mx-auto flex max-w-5xl items-center gap-3">
 			<div class="min-w-0 flex items-baseline gap-2">
@@ -209,8 +236,23 @@
 		</div>
 	</div>
 
-	<!-- Center: character + details + learn button -->
-	<div class="z-10 flex flex-1 flex-col items-center px-4 pt-12 {isKanji ? 'w-full justify-start pb-20 md:pt-16' : 'justify-center'}">
+	<div class="z-10 flex flex-1 flex-col items-center px-4 pt-12 {isKanji || isRadical ? 'w-full justify-start pb-20 md:pt-16' : 'justify-center'}">
+		{#if unlockedAward}
+			<div
+				in:fade={{ duration: 180 }}
+				class="mb-4 w-full max-w-md rounded-2xl border border-[var(--color-divider)] bg-[var(--color-paper-warm)] px-4 py-4 text-left shadow-[0_20px_60px_rgba(15,23,42,0.08)]"
+				style="box-shadow: inset 0 0 0 1px color-mix(in srgb, {unlockedAward.accent} 16%, transparent);"
+			>
+				<div class="flex items-start justify-between gap-3">
+					<div>
+						<p class="text-[10px] font-bold tracking-[0.22em] uppercase" style="color: {unlockedAward.accent};">Award unlocked · {unlockedAward.titleJp}</p>
+						<h2 class="mt-1 text-lg font-black text-[var(--color-ink)]">{unlockedAward.title}</h2>
+					</div>
+					<span class="flex h-10 w-10 items-center justify-center rounded-full text-xl" style="background: color-mix(in srgb, {unlockedAward.accent} 12%, var(--color-paper)); color: {unlockedAward.accent};">{unlockedAward.icon}</span>
+				</div>
+				<p class="mt-2 text-sm leading-6 text-[var(--color-ink-light)]">{unlockedAward.description}</p>
+			</div>
+		{/if}
 		{#key data.index + data.column.id}
 			<div
 				in:fly={{ y: 30, duration: 350, delay: 50 }}
@@ -218,7 +260,7 @@
 				style="transform: translate({charOffsetX}px, {charOffsetY}px);"
 			>
 				<span
-					class="block font-black leading-none text-center px-4 {isKana ? 'kana-study-type' : ''}"
+					class="block px-4 text-center font-black leading-none {isKana ? 'kana-study-type' : ''}"
 					style="font-size: {charFontSize}; max-width: 90vw; word-break: keep-all;"
 				>
 					{data.item.character}
@@ -232,7 +274,14 @@
 					<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">
 						{data.column.title}
 					</span>
-					{#if data.sectionTitle}
+					{#if jlptBadgeColor && jlptTag}
+						<span
+							class="rounded-full px-3 py-1 text-[10px] font-black tracking-[0.22em] uppercase"
+							style="background: color-mix(in srgb, {jlptBadgeColor} 14%, var(--color-paper)); color: {jlptBadgeColor}; border: 1px solid color-mix(in srgb, {jlptBadgeColor} 30%, transparent);"
+						>
+							JLPT {jlptTag}
+						</span>
+					{:else if data.sectionTitle}
 						<span class="rounded-full border border-[var(--color-divider)] px-3 py-1 text-[10px] font-bold tracking-[0.18em] uppercase text-[var(--color-ink-light)]">
 							{data.sectionTitle}
 						</span>
@@ -241,9 +290,7 @@
 						item {data.index + 1} of {data.totalItems}
 					</span>
 				</div>
-				<span
-					class="text-xl font-black tracking-[0.3em] uppercase text-[var(--color-ink)] md:text-3xl"
-				>
+				<span class="text-xl font-black tracking-[0.3em] uppercase text-[var(--color-ink)] md:text-3xl">
 					{data.item.romaji}
 				</span>
 
@@ -274,6 +321,13 @@
 					<p class="mt-3 max-w-xl px-5 text-center text-sm leading-relaxed text-[var(--color-ink-mid)] md:text-base">
 						{data.item.mnemonic}
 					</p>
+				{/if}
+
+				{#if data.item.context && isVocabulary}
+					<div class="context-callout mt-4 max-w-xl px-5">
+						<span class="context-label">When to use</span>
+						<p class="context-text">{data.item.context}</p>
+					</div>
 				{/if}
 
 				{#if variants.length > 0}
@@ -336,6 +390,12 @@
 						<section class="kanji-panel">
 							<span class="kanji-panel-label">Reference</span>
 							<div class="mt-4 flex flex-col gap-2">
+								{#if data.item.strokeCount}
+									<div class="stroke-count-badge">
+										<span class="stroke-count-num">{data.item.strokeCount}</span>
+										<span class="stroke-count-label">strokes</span>
+									</div>
+								{/if}
 								<a
 									href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
 									target="_blank"
@@ -354,6 +414,43 @@
 								</a>
 							</div>
 						</section>
+
+						{#if data.item.etymology}
+							<section class="kanji-panel md:col-span-3 etymology-panel">
+								<span class="kanji-panel-label">Origin</span>
+								<p class="etymology-text mt-3">
+									{data.item.etymology}
+								</p>
+							</section>
+						{/if}
+
+						{#if components.length > 0}
+							<section class="kanji-panel">
+								<span class="kanji-panel-label">Components</span>
+								<div class="mt-3 flex flex-col gap-2">
+									{#each components as component}
+										<div class="component-row">
+											<span class="component-text">{component}</span>
+										</div>
+									{/each}
+								</div>
+							</section>
+						{/if}
+
+						{#if examples.length > 0}
+							<section class="kanji-panel {components.length > 0 ? 'md:col-span-2' : 'md:col-span-3'}">
+								<span class="kanji-panel-label">Examples</span>
+								<div class="mt-3 grid gap-2 sm:grid-cols-2">
+									{#each examples as ex}
+										<div class="example-card">
+											<span class="example-word">{ex.word}</span>
+											<span class="example-reading">{ex.reading}</span>
+											<span class="example-meaning">{ex.meaning}</span>
+										</div>
+									{/each}
+								</div>
+							</section>
+						{/if}
 
 						{#if data.knack}
 							<section class="kanji-panel knack-panel md:col-span-3">
@@ -414,6 +511,130 @@
 					</div>
 				{/if}
 
+				{#if isRadical}
+					<div class="radical-reference mt-7 grid w-full max-w-5xl gap-3 md:mt-9 md:grid-cols-[1fr_1.15fr_1fr]">
+						<section class="kanji-panel">
+							<span class="kanji-panel-label">Meaning</span>
+							<p class="mt-3 text-2xl font-black leading-tight text-[var(--color-ink)] md:text-3xl">
+								{data.item.meaning}
+							</p>
+							<p class="mt-3 text-sm leading-6 text-[var(--color-ink-light)]">
+								{data.item.character} is a radical — a building block that gives kanji their visual DNA. Learning it here means you will recognize it inside dozens of kanji.
+							</p>
+						</section>
+
+						<section class="kanji-panel">
+							<span class="kanji-panel-label">Name</span>
+							<div class="mt-4">
+								<p class="text-2xl font-black leading-tight text-[var(--color-ink)]">
+									{data.item.romaji}
+								</p>
+								{#if variants.length > 0}
+									<div class="mt-3">
+										<span class="block text-[9px] font-black tracking-[0.22em] uppercase text-[var(--color-ink-ghost)]">Variant forms</span>
+										<div class="mt-2 flex flex-wrap gap-2">
+											{#each variants as v}
+												<span class="variant-chip">{v}</span>
+											{/each}
+										</div>
+									</div>
+								{/if}
+								{#if noteTags.length > 0}
+									<div class="mt-3 flex flex-wrap gap-1.5">
+										{#each noteTags as tag}
+											<span class="radical-tag-chip">{tag}</span>
+										{/each}
+									</div>
+								{/if}
+							</div>
+						</section>
+
+						<section class="kanji-panel">
+							<span class="kanji-panel-label">Reference</span>
+							<div class="mt-4 flex flex-col gap-2">
+								<a
+									href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
+									target="_blank"
+									rel="noopener noreferrer"
+									class="kanji-link"
+								>
+									Kanshudo
+								</a>
+								<a
+									href="https://jisho.org/search/{encodeURIComponent(data.item.character)}%20%23radical"
+									target="_blank"
+									rel="noopener noreferrer"
+									class="kanji-link"
+								>
+									Jisho
+								</a>
+							</div>
+						</section>
+
+						{#if data.item.etymology}
+							<section class="kanji-panel md:col-span-3 etymology-panel">
+								<span class="kanji-panel-label">Origin</span>
+								<p class="etymology-text mt-3">
+									{data.item.etymology}
+								</p>
+							</section>
+						{/if}
+
+						{#if data.item.mnemonic}
+							<section class="kanji-panel md:col-span-3 mnemonic-panel">
+								<span class="kanji-panel-label">Memory hook</span>
+								<p class="mnemonic-text mt-3">
+									{data.item.mnemonic}
+								</p>
+							</section>
+						{/if}
+
+						{#if examples.length > 0}
+							<section class="kanji-panel md:col-span-3">
+								<span class="kanji-panel-label">Kanji that use this radical</span>
+								<div class="mt-3 grid gap-2 sm:grid-cols-2 md:grid-cols-3">
+									{#each examples as ex}
+										<a
+											href="/lookup/{encodeURIComponent(ex.word)}"
+											class="radical-example-card"
+											aria-label="Look up {ex.word} — {ex.meaning}"
+										>
+											<span class="radical-example-char">{ex.word}</span>
+											<span class="radical-example-reading">{ex.reading}</span>
+											<span class="radical-example-meaning">{ex.meaning}</span>
+										</a>
+									{/each}
+								</div>
+							</section>
+						{/if}
+
+						{#if recipeCards.length > 0}
+							<section class="kanji-panel md:col-span-3">
+								<span class="kanji-panel-label">In action — kanji recipes</span>
+								<div class="mt-4 grid gap-2 md:grid-cols-2">
+									{#each recipeCards as recipe}
+										<div class="recipe-strip">
+											<span class="flex items-center gap-2">
+												<span class="formula-char">{data.item.character}</span>
+												<span class="formula-mark">+</span>
+												<span class="formula-char text-[var(--color-ink-mid)]">…</span>
+												<span class="formula-mark">=</span>
+												<span class="formula-char is-result">{recipe.kanji}</span>
+											</span>
+											<div class="flex flex-col items-end gap-0.5 text-right">
+												<span class="text-sm font-black text-[var(--color-ink)]">{recipe.meaning}</span>
+												{#if recipe.reading}
+													<span class="kana-study-type text-xs font-bold text-[var(--color-ink-ghost)]">{recipe.reading}</span>
+												{/if}
+											</div>
+										</div>
+									{/each}
+								</div>
+							</section>
+						{/if}
+					</div>
+				{/if}
+
 				{#if auth.user}
 					<button
 						onclick={toggleLearned}
@@ -428,11 +649,10 @@
 		{/if}
 	</div>
 
-	<!-- Bottom nav: prev / next -->
 	<div class="lesson-nav z-10 flex items-center gap-3 pb-5" aria-label="Lesson navigation">
-		{#if data.prevIndex !== null}
+		{#if visiblePrevIndex !== null}
 			<a
-				href="/{data.column.id}/{data.prevIndex}"
+				href="/{data.column.id}/{visiblePrevIndex}"
 				aria-label="Previous item"
 				class="lesson-arrow"
 				onclick={() => (showDetails = false)}
@@ -443,9 +663,13 @@
 			<span class="lesson-arrow is-disabled" aria-hidden="true"></span>
 		{/if}
 
-		{#if data.nextIndex !== null}
+		<span class="text-[10px] font-bold tracking-[0.2em] text-[var(--color-ink-ghost)]">
+			{data.index + 1} / {data.totalItems}
+		</span>
+
+		{#if visibleNextIndex !== null}
 			<a
-				href="/{data.column.id}/{data.nextIndex}"
+				href="/{data.column.id}/{visibleNextIndex}"
 				aria-label="Next item"
 				class="lesson-arrow"
 				onclick={() => (showDetails = false)}
@@ -457,7 +681,6 @@
 		{/if}
 	</div>
 
-	<!-- Bottom-right: kanshudo link -->
 	<a
 		href="https://www.kanshudo.com/search?q={encodeURIComponent(data.item.character)}"
 		target="_blank"
@@ -467,7 +690,6 @@
 		kanshudo ↗
 	</a>
 
-	<!-- Bottom-left: keyboard hint -->
 	<span class="absolute bottom-3 left-4 z-10 hidden text-[10px] font-bold tracking-[0.15em] text-[var(--color-ink-ghost)] md:inline">
 		← → space
 	</span>
@@ -764,6 +986,104 @@
 		100% { transform: scale(1); }
 	}
 
+	/* ── Etymology panel ─────────────────────── */
+	.etymology-panel {
+		border-color: color-mix(in srgb, var(--detail-accent) 22%, var(--color-divider));
+		background:
+			linear-gradient(135deg, color-mix(in srgb, var(--detail-accent) 5%, transparent), transparent 50%),
+			color-mix(in srgb, var(--color-ink) 2.5%, var(--color-paper));
+	}
+
+	.etymology-text {
+		color: var(--color-ink-mid);
+		font-size: 0.875rem;
+		line-height: 1.75;
+		max-width: 72ch;
+	}
+
+	/* ── Component rows ───────────────────────── */
+	.component-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		border: 1px solid var(--color-divider);
+		border-radius: 0.6rem;
+		padding: 0.5rem 0.7rem;
+		background: color-mix(in srgb, var(--color-paper) 80%, var(--detail-accent));
+	}
+
+	.component-text {
+		color: var(--color-ink-mid);
+		font-size: 0.8rem;
+		font-weight: 700;
+		line-height: 1.4;
+	}
+
+	/* ── Example word cards ───────────────────── */
+	.example-card {
+		display: grid;
+		grid-template-rows: auto auto auto;
+		gap: 0.15rem;
+		border: 1px solid var(--color-divider);
+		border-radius: 0.75rem;
+		padding: 0.75rem 0.9rem;
+		background: color-mix(in srgb, var(--color-paper) 90%, var(--detail-accent));
+		transition: border-color 180ms ease, background 180ms ease, transform 180ms var(--ease-out-expo);
+	}
+
+	.example-card:hover {
+		border-color: color-mix(in srgb, var(--detail-accent) 40%, var(--color-divider));
+		background: color-mix(in srgb, var(--detail-accent) 8%, var(--color-paper));
+		transform: translateY(-1px);
+	}
+
+	.example-word {
+		font-family: var(--font-jp-brush);
+		font-size: 1.3rem;
+		font-weight: 900;
+		line-height: 1;
+		color: var(--color-ink);
+	}
+
+	.example-reading {
+		font-family: var(--font-jp-brush);
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--color-ink-mid);
+		margin-top: 0.3rem;
+	}
+
+	.example-meaning {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: var(--color-ink-ghost);
+		margin-top: 0.1rem;
+	}
+
+	/* ── Stroke count badge ───────────────────── */
+	.stroke-count-badge {
+		display: flex;
+		align-items: baseline;
+		gap: 0.35rem;
+		margin-bottom: 0.25rem;
+	}
+
+	.stroke-count-num {
+		color: var(--detail-accent);
+		font-size: 2rem;
+		font-weight: 900;
+		line-height: 1;
+	}
+
+	.stroke-count-label {
+		color: var(--color-ink-ghost);
+		font-size: 0.58rem;
+		font-weight: 900;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
 	@media (prefers-color-scheme: dark) {
 		.lesson-rail {
 			text-shadow: 0 1px 18px var(--color-paper);
@@ -778,6 +1098,35 @@
 		}
 	}
 
+	/* ── Context callout (vocabulary phrases) ────── */
+	.context-callout {
+		border: 1px solid color-mix(in srgb, var(--detail-accent) 28%, var(--color-divider));
+		border-radius: 0.85rem;
+		padding: 0.85rem 1rem;
+		background: color-mix(in srgb, var(--detail-accent) 6%, var(--color-paper));
+		text-align: left;
+		width: 100%;
+	}
+
+	.context-label {
+		display: block;
+		color: var(--color-ink-ghost);
+		font-size: 0.58rem;
+		font-weight: 900;
+		letter-spacing: 0.22em;
+		line-height: 1;
+		text-transform: uppercase;
+		margin-bottom: 0.45rem;
+	}
+
+	.context-text {
+		color: var(--color-ink-mid);
+		font-size: 0.875rem;
+		font-weight: 600;
+		line-height: 1.65;
+		max-width: 60ch;
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		.paper-grain { display: none; }
 		.char-pulse { animation: none; }
@@ -786,7 +1135,8 @@
 		.learned-action-dot,
 		.pair-link,
 		.kanji-link,
-		.recipe-strip {
+		.recipe-strip,
+		.radical-example-card {
 			transition: none;
 		}
 		.learned-action:hover,
@@ -795,8 +1145,108 @@
 		.lesson-arrow:last-child:hover,
 		.pair-link:hover,
 		.kanji-link:hover,
-		.recipe-strip:hover {
+		.recipe-strip:hover,
+		.radical-example-card:hover {
 			transform: none;
 		}
+	}
+
+	/* ── Radical reference layout ─────────────────── */
+	.radical-reference {
+		text-align: left;
+	}
+
+	/* ── Mnemonic panel ───────────────────────────── */
+	.mnemonic-panel {
+		border-color: color-mix(in srgb, var(--detail-accent) 28%, var(--color-divider));
+		background:
+			linear-gradient(135deg, color-mix(in srgb, var(--detail-accent) 8%, transparent), transparent 55%),
+			color-mix(in srgb, var(--color-ink) 2.5%, var(--color-paper));
+	}
+
+	.mnemonic-text {
+		color: var(--color-ink);
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.7;
+		max-width: 68ch;
+	}
+
+	/* ── Variant chips ────────────────────────────── */
+	.variant-chip {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.4rem;
+		border: 1px solid color-mix(in srgb, var(--detail-accent) 35%, var(--color-divider));
+		border-radius: 0.6rem;
+		padding: 0.3rem 0.6rem;
+		background: color-mix(in srgb, var(--detail-accent) 10%, var(--color-paper));
+		font-family: var(--font-jp-brush);
+		font-size: 1.35rem;
+		font-weight: 900;
+		color: var(--detail-accent);
+		line-height: 1;
+	}
+
+	/* ── Radical tag chips ────────────────────────── */
+	.radical-tag-chip {
+		border: 1px solid var(--color-divider);
+		border-radius: 9999px;
+		padding: 0.2rem 0.65rem;
+		background: color-mix(in srgb, var(--color-ink) 4%, var(--color-paper));
+		color: var(--color-ink-ghost);
+		font-size: 0.62rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	/* ── Radical example cards (tappable kanji chips) */
+	.radical-example-card {
+		display: grid;
+		grid-template-rows: auto auto auto;
+		gap: 0.15rem;
+		border: 1px solid var(--color-divider);
+		border-radius: 0.85rem;
+		padding: 0.85rem 1rem;
+		background: color-mix(in srgb, var(--color-paper) 90%, var(--detail-accent));
+		text-decoration: none;
+		transition:
+			border-color 180ms ease,
+			background 180ms ease,
+			transform 180ms var(--ease-out-expo);
+	}
+
+	.radical-example-card:hover,
+	.radical-example-card:focus-visible {
+		border-color: color-mix(in srgb, var(--detail-accent) 45%, var(--color-divider));
+		background: color-mix(in srgb, var(--detail-accent) 10%, var(--color-paper));
+		outline: none;
+		transform: translateY(-2px);
+	}
+
+	.radical-example-char {
+		font-family: var(--font-jp-brush);
+		font-size: 1.6rem;
+		font-weight: 900;
+		line-height: 1;
+		color: var(--color-ink);
+	}
+
+	.radical-example-reading {
+		font-family: var(--font-jp-brush);
+		font-size: 0.8rem;
+		font-weight: 700;
+		color: var(--color-ink-mid);
+		margin-top: 0.35rem;
+	}
+
+	.radical-example-meaning {
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		color: var(--color-ink-ghost);
+		margin-top: 0.1rem;
 	}
 </style>

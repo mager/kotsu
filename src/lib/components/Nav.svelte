@@ -11,7 +11,7 @@
   }
 </script>
 <header class="expedition-header">
-  <a class="expedition-brand" href="/" aria-label="Kotsu home"><span lang="ja">コツ</span><b>kotsu</b></a>
+  <a class="expedition-brand" href="/" aria-label="Kotsu home"><img src="/brand/niko-logo.png" alt="" width="36" height="36" /><b>kotsu</b></a>
   <nav aria-label="Main navigation">
     <a href="/" aria-current={$page.url.pathname === '/' || $page.url.pathname.startsWith('/journey/') ? 'page' : undefined}>Journey</a>
     <a href="/library" aria-current={$page.url.pathname === '/library' ? 'page' : undefined}>Field guide</a>

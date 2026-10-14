@@ -209,7 +209,7 @@ Retained search results use compact pill tags. The common-word tag has a green f
 
 ### Navigation
 
-The header pairs the Japanese wordmark with a compact Manrope name. Desktop links use 14px text at weight 700. The current page has cobalt text and a 3px bottom border. Mobile links use 12px text in a full-width row. Links and buttons use the shared keyboard-focus treatment; no separate navigation hover effect is defined.
+The header pairs the existing Niko logo with a compact Manrope name. Desktop links use 14px text at weight 700. The current page has cobalt text and a 3px bottom border. Mobile links use 12px text in a full-width row. Links and buttons use the shared keyboard-focus treatment; no separate navigation hover effect is defined.
 
 ### Route stations and progress
 
