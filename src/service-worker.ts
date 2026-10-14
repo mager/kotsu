@@ -1,6 +1,7 @@
 /// <reference types="@sveltejs/kit" />
 import { build, files, version } from '$service-worker';
 import { columns, getColumnItems } from '$lib/data';
+import { stops } from '$lib/journey/graph';
 import { radicalRecipes } from '$lib/course';
 
 const CACHE = `kotsu-${version}`;
@@ -8,6 +9,8 @@ const APP_ROUTES = [
 	'/',
 	'/about',
 	'/profile',
+	'/library',
+	...stops.filter((stop) => !stop.checkpoint).map((stop) => `/journey/${stop.id}`),
 	...radicalRecipes.map((recipe) => `/recipes/${recipe.id}`),
 	...columns.flatMap((column) => getColumnItems(column).map((_, index) => `/${column.id}/${index}`))
 ];

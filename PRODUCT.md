@@ -10,6 +10,8 @@ Kotsu is for Mager first, but it should work for anyone who wants to learn Japan
 
 ## Product Purpose
 
+Kotsu is a DAG-based Japanese learning game. Learners choose which available route to explore first, then return to complete all branches. Shared checkpoints require every incoming route. Short study-and-recall sessions connect exploration to real learning.
+
 Kotsu teaches the knack of Japanese by starting with the smallest useful pieces and letting learners move from recognition into composition and reading. The core path should go from beginner sounds into radicals, then into kanji families, readings, and useful vocabulary. Branches can explore memory hooks, semantic families, and real-word connections, but the learner should still feel one coherent course instead of scattered reference material.
 
 Kotsu should support two goals at once:
@@ -23,7 +25,7 @@ Success means a learner can tell where they are, what unlocks next, what they ha
 
 Calm, focused, quietly electric.
 
-Kotsu should feel like refined study material with a little Tokyo night energy: serious enough for repetition, warm enough for beginners, and visually memorable without turning into a game dashboard.
+Kotsu should feel like an expedition atlas: curious, clear, and playful. The journey map is the game board. Every route connects to real Japanese study material, with no timers, lives, or streak pressure.
 
 ## Anti-references
 

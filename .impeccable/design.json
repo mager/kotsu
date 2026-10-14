@@ -1,0 +1,437 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-14T11:48:11.691038+00:00",
+  "title": "Design System: Kotsu",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Primary",
+        "tonalRamp": [
+          "oklch(15% 0.2204 266.88)",
+          "oklch(26% 0.2204 266.88)",
+          "oklch(38% 0.2204 266.88)",
+          "oklch(49% 0.2204 266.88)",
+          "oklch(61% 0.2204 266.88)",
+          "oklch(72% 0.2204 266.88)",
+          "oklch(84% 0.2204 266.88)",
+          "oklch(95% 0.2204 266.88)"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Primary Hover",
+        "tonalRamp": [
+          "oklch(15% 0.1975 266.11)",
+          "oklch(26% 0.1975 266.11)",
+          "oklch(38% 0.1975 266.11)",
+          "oklch(49% 0.1975 266.11)",
+          "oklch(61% 0.1975 266.11)",
+          "oklch(72% 0.1975 266.11)",
+          "oklch(84% 0.1975 266.11)",
+          "oklch(95% 0.1975 266.11)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0722 261.63)",
+          "oklch(26% 0.0722 261.63)",
+          "oklch(38% 0.0722 261.63)",
+          "oklch(49% 0.0722 261.63)",
+          "oklch(61% 0.0722 261.63)",
+          "oklch(72% 0.0722 261.63)",
+          "oklch(84% 0.0722 261.63)",
+          "oklch(95% 0.0722 261.63)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "tonalRamp": [
+          "oklch(15% 0.0438 257.02)",
+          "oklch(26% 0.0438 257.02)",
+          "oklch(38% 0.0438 257.02)",
+          "oklch(49% 0.0438 257.02)",
+          "oklch(61% 0.0438 257.02)",
+          "oklch(72% 0.0438 257.02)",
+          "oklch(84% 0.0438 257.02)",
+          "oklch(95% 0.0438 257.02)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0057 264.53)",
+          "oklch(26% 0.0057 264.53)",
+          "oklch(38% 0.0057 264.53)",
+          "oklch(49% 0.0057 264.53)",
+          "oklch(61% 0.0057 264.53)",
+          "oklch(72% 0.0057 264.53)",
+          "oklch(84% 0.0057 264.53)",
+          "oklch(95% 0.0057 264.53)"
+        ]
+      },
+      "map-ground": {
+        "role": "neutral",
+        "displayName": "Map Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0132 262.38)",
+          "oklch(26% 0.0132 262.38)",
+          "oklch(38% 0.0132 262.38)",
+          "oklch(49% 0.0132 262.38)",
+          "oklch(61% 0.0132 262.38)",
+          "oklch(72% 0.0132 262.38)",
+          "oklch(84% 0.0132 262.38)",
+          "oklch(95% 0.0132 262.38)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "tonalRamp": [
+          "oklch(15% 0.0215 259.19)",
+          "oklch(26% 0.0215 259.19)",
+          "oklch(38% 0.0215 259.19)",
+          "oklch(49% 0.0215 259.19)",
+          "oklch(61% 0.0215 259.19)",
+          "oklch(72% 0.0215 259.19)",
+          "oklch(84% 0.0215 259.19)",
+          "oklch(95% 0.0215 259.19)"
+        ]
+      },
+      "selected": {
+        "role": "secondary",
+        "displayName": "Selected",
+        "tonalRamp": [
+          "oklch(15% 0.1869 30.85)",
+          "oklch(26% 0.1869 30.85)",
+          "oklch(38% 0.1869 30.85)",
+          "oklch(49% 0.1869 30.85)",
+          "oklch(61% 0.1869 30.85)",
+          "oklch(72% 0.1869 30.85)",
+          "oklch(84% 0.1869 30.85)",
+          "oklch(95% 0.1869 30.85)"
+        ]
+      },
+      "selected-ring": {
+        "role": "secondary",
+        "displayName": "Selected Ring",
+        "tonalRamp": [
+          "oklch(15% 0.0350 33.27)",
+          "oklch(26% 0.0350 33.27)",
+          "oklch(38% 0.0350 33.27)",
+          "oklch(49% 0.0350 33.27)",
+          "oklch(61% 0.0350 33.27)",
+          "oklch(72% 0.0350 33.27)",
+          "oklch(84% 0.0350 33.27)",
+          "oklch(95% 0.0350 33.27)"
+        ]
+      },
+      "selected-text": {
+        "role": "secondary",
+        "displayName": "Selected Text",
+        "tonalRamp": [
+          "oklch(15% 0.1557 30.70)",
+          "oklch(26% 0.1557 30.70)",
+          "oklch(38% 0.1557 30.70)",
+          "oklch(49% 0.1557 30.70)",
+          "oklch(61% 0.1557 30.70)",
+          "oklch(72% 0.1557 30.70)",
+          "oklch(84% 0.1557 30.70)",
+          "oklch(95% 0.1557 30.70)"
+        ]
+      },
+      "complete": {
+        "role": "tertiary",
+        "displayName": "Complete",
+        "tonalRamp": [
+          "oklch(15% 0.0887 161.04)",
+          "oklch(26% 0.0887 161.04)",
+          "oklch(38% 0.0887 161.04)",
+          "oklch(49% 0.0887 161.04)",
+          "oklch(61% 0.0887 161.04)",
+          "oklch(72% 0.0887 161.04)",
+          "oklch(84% 0.0887 161.04)",
+          "oklch(95% 0.0887 161.04)"
+        ]
+      },
+      "complete-ground": {
+        "role": "tertiary",
+        "displayName": "Complete Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0133 159.91)",
+          "oklch(26% 0.0133 159.91)",
+          "oklch(38% 0.0133 159.91)",
+          "oklch(49% 0.0133 159.91)",
+          "oklch(61% 0.0133 159.91)",
+          "oklch(72% 0.0133 159.91)",
+          "oklch(84% 0.0133 159.91)",
+          "oklch(95% 0.0133 159.91)"
+        ]
+      },
+      "active-ground": {
+        "role": "neutral",
+        "displayName": "Active Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0222 272.06)",
+          "oklch(26% 0.0222 272.06)",
+          "oklch(38% 0.0222 272.06)",
+          "oklch(49% 0.0222 272.06)",
+          "oklch(61% 0.0222 272.06)",
+          "oklch(72% 0.0222 272.06)",
+          "oklch(84% 0.0222 272.06)",
+          "oklch(95% 0.0222 272.06)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "correct-ground": {
+        "role": "tertiary",
+        "displayName": "Correct Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0190 157.87)",
+          "oklch(26% 0.0190 157.87)",
+          "oklch(38% 0.0190 157.87)",
+          "oklch(49% 0.0190 157.87)",
+          "oklch(61% 0.0190 157.87)",
+          "oklch(72% 0.0190 157.87)",
+          "oklch(84% 0.0190 157.87)",
+          "oklch(95% 0.0190 157.87)"
+        ]
+      },
+      "correct-text": {
+        "role": "tertiary",
+        "displayName": "Correct Text",
+        "tonalRamp": [
+          "oklch(15% 0.0770 160.84)",
+          "oklch(26% 0.0770 160.84)",
+          "oklch(38% 0.0770 160.84)",
+          "oklch(49% 0.0770 160.84)",
+          "oklch(61% 0.0770 160.84)",
+          "oklch(72% 0.0770 160.84)",
+          "oklch(84% 0.0770 160.84)",
+          "oklch(95% 0.0770 160.84)"
+        ]
+      },
+      "incorrect-ground": {
+        "role": "tertiary",
+        "displayName": "Incorrect Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0229 34.30)",
+          "oklch(26% 0.0229 34.30)",
+          "oklch(38% 0.0229 34.30)",
+          "oklch(49% 0.0229 34.30)",
+          "oklch(61% 0.0229 34.30)",
+          "oklch(72% 0.0229 34.30)",
+          "oklch(84% 0.0229 34.30)",
+          "oklch(95% 0.0229 34.30)"
+        ]
+      },
+      "incorrect-border": {
+        "role": "tertiary",
+        "displayName": "Incorrect Border",
+        "tonalRamp": [
+          "oklch(15% 0.1711 31.85)",
+          "oklch(26% 0.1711 31.85)",
+          "oklch(38% 0.1711 31.85)",
+          "oklch(49% 0.1711 31.85)",
+          "oklch(61% 0.1711 31.85)",
+          "oklch(72% 0.1711 31.85)",
+          "oklch(84% 0.1711 31.85)",
+          "oklch(95% 0.1711 31.85)"
+        ]
+      },
+      "incorrect-text": {
+        "role": "tertiary",
+        "displayName": "Incorrect Text",
+        "tonalRamp": [
+          "oklch(15% 0.1476 31.65)",
+          "oklch(26% 0.1476 31.65)",
+          "oklch(38% 0.1476 31.65)",
+          "oklch(49% 0.1476 31.65)",
+          "oklch(61% 0.1476 31.65)",
+          "oklch(72% 0.1476 31.65)",
+          "oklch(84% 0.1476 31.65)",
+          "oklch(95% 0.1476 31.65)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Journey invitation."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Practice title."
+      },
+      "stop-title": {
+        "displayName": "Stop Title",
+        "purpose": "Selected stop heading."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Introductory and supporting prose."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Main actions and desktop navigation."
+      },
+      "study-character": {
+        "displayName": "Study Character",
+        "purpose": "Large practice character."
+      },
+      "station-character": {
+        "displayName": "Station Character",
+        "purpose": "Map location character."
+      },
+      "chapter-character": {
+        "displayName": "Chapter Character",
+        "purpose": "Japanese chapter mark."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "state-change",
+        "value": "180ms ease",
+        "purpose": "Station fill and border changes, and primary action fill."
+      },
+      {
+        "name": "reduced-motion",
+        "value": ".01ms",
+        "purpose": "Animation and transition duration when reduced motion is requested; animations run once."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-max",
+        "value": "720px"
+      },
+      {
+        "name": "chapter-row-max",
+        "value": "1049px"
+      },
+      {
+        "name": "compact-desktop-max",
+        "value": "1200px"
+      },
+      {
+        "name": "wide-min",
+        "value": "1600px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Full-width action for starting or continuing practice.",
+      "html": "<button class=\"ds-action\">Let’s go<svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 10h12M11 5l5 5-5 5\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button>",
+      "css": ".ds-action { display:flex; align-items:center; justify-content:space-between; gap:20px; width:100%; padding:16px 20px; background:var(--atlas-blue, #2849d8); color:white; border:1px solid var(--atlas-blue, #2849d8); border-radius:5px; font:700 14px Manrope, sans-serif; cursor:pointer; transition:background 180ms; } .ds-action:hover { background:#1937b3; } .ds-action:focus-visible { outline:3px solid var(--atlas-coral, #d94632); outline-offset:5px; }"
+    },
+    {
+      "name": "Answer option",
+      "kind": "button",
+      "refersTo": "answer-option",
+      "description": "A practice answer before a choice is made.",
+      "html": "<button class=\"ds-answer\">water</button>",
+      "css": ".ds-answer { min-height:58px; padding:12px; border:1px solid #a7b5cd; border-radius:5px; font:15px Manrope, sans-serif; color:var(--atlas-ink, #182c51); background:white; cursor:pointer; } .ds-answer:hover:not(:disabled) { background:#e7ecfc; border-color:var(--atlas-blue, #2849d8); } .ds-answer:focus-visible { outline: 3px solid var(--atlas-blue, #2849d8); outline-offset: 5px; }"
+    },
+    {
+      "name": "Selected station",
+      "kind": "custom",
+      "refersTo": "station-selected",
+      "description": "Coral marks the current map location.",
+      "html": "<button class=\"ds-stop\" aria-pressed=\"true\"><span class=\"ds-station\" lang=\"ja\">あ</span><strong>First sounds</strong><small>5 pieces</small></button>",
+      "css": ".ds-stop { display:flex; flex-direction:column; align-items:center; gap:11px; border:0; background:var(--atlas-ground, #f6f8fc); padding:18px; cursor:pointer; font:12px Manrope,sans-serif; } .ds-station { display:grid; place-items:center; height:72px; width:72px; border:2px solid var(--atlas-coral, #d94632); border-radius:50%; background:var(--atlas-coral, #d94632); color:white; outline:5px solid #f4d6cf; outline-offset:5px; font:33px \"BIZ UDPGothic\",sans-serif; transition:background 180ms,border-color 180ms; } .ds-stop strong { color:#a32e1f; font-weight:800; } .ds-stop small { color:var(--atlas-muted, #53647c); font-size:10px; } .ds-stop:hover .ds-station { border-color:var(--atlas-blue, #2849d8); } .ds-stop:focus-visible { outline: 3px solid var(--atlas-blue, #2849d8); outline-offset: 5px; }"
+    },
+    {
+      "name": "Main navigation",
+      "kind": "nav",
+      "description": "Current page is identified by a cobalt underline.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a href=\"#journey\" aria-current=\"page\">Journey</a><a href=\"#guide\">Field guide</a><a href=\"#about\">About</a></nav>",
+      "css": ".ds-nav { display:flex; gap:32px; height:81px; background:var(--atlas-ground, #f6f8fc); border-bottom:1px solid var(--atlas-line, #d8e1ef); } .ds-nav a { display:flex; align-items:center; padding-top:3px; color:var(--atlas-muted, #53647c); font:700 14px Manrope,sans-serif; text-decoration:none; border-bottom:3px solid transparent; } .ds-nav a[aria-current] { color:var(--atlas-blue, #2849d8); border-color:var(--atlas-blue, #2849d8); } .ds-nav a:focus-visible { outline: 3px solid var(--atlas-blue, #2849d8); outline-offset: 5px; }"
+    },
+    {
+      "name": "Study table",
+      "kind": "card",
+      "refersTo": "learning-table",
+      "description": "A solid character field and a quiet meaning field.",
+      "html": "<div class=\"ds-study\"><div class=\"ds-character\" lang=\"ja\">水</div><div class=\"ds-meaning\"><p>mizu</p><h2>water</h2></div></div>",
+      "css": ".ds-study { display:grid; grid-template-columns:1fr 1fr; min-height:280px; border:1px solid var(--atlas-line, #d8e1ef); border-radius:8px; overflow:hidden; font-family:Manrope,sans-serif; } .ds-character { display:grid; place-items:center; padding:28px; color:white; background:var(--atlas-blue, #2849d8); font:100px/1.4 \"BIZ UDPGothic\",sans-serif; } .ds-meaning { display:flex; flex-direction:column; justify-content:center; padding:36px; color:var(--atlas-ink, #182c51); } .ds-meaning p { color:var(--atlas-blue, #2849d8); font-size:22px; margin:0 0 12px; } .ds-meaning h2 { font-size:26px; font-weight:800; line-height:1.3; letter-spacing:-.03em; margin:0; }"
+    },
+    {
+      "name": "Search field",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "Retained field-guide search with the shared paper and ink colors.",
+      "html": "<div class=\"ds-search\"><input aria-label=\"Search Japanese, romaji, English\" placeholder=\"Search Japanese, romaji, English...\"></div>",
+      "css": ".ds-search { padding:10px 16px; border:1px solid var(--color-divider, #d8e1ef); border-radius:12px; background:var(--color-paper, #f6f8fc); transition:box-shadow .3s ease,border-color .3s ease; } .ds-search:focus-within { border-color:var(--color-ai, #2849d8); box-shadow:0 0 0 3px rgba(0,145,255,.1); } .ds-search input { width:100%; border:0; background:transparent; color:var(--color-ink, #182c51); caret-color:var(--atlas-blue, #2849d8); font:500 16px Manrope,sans-serif; } .ds-search input::placeholder { color:var(--color-ink-ghost, #64748b); } .ds-search input:focus-visible { outline: 3px solid var(--atlas-blue, #2849d8); outline-offset: 5px; }"
+    },
+    {
+      "name": "Common-word tag",
+      "kind": "chip",
+      "refersTo": "common-chip",
+      "description": "Retained reference metadata for a common word.",
+      "html": "<span class=\"ds-tag\">common</span>",
+      "css": ".ds-tag { display:inline-block; padding:2px 10px; border-radius:9999px; color:white; background:var(--color-matcha, #287050); font:700 10px Manrope,sans-serif; letter-spacing:.05em; text-transform:uppercase; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Cobalt Expedition Atlas",
+    "overview": "The cobalt expedition atlas makes learning paths visible. Cool paper, blue ink, coral location marks, and green completion marks give each state a clear role. Japanese characters are the main visual landmarks. Compact controls and strong Manrope headings keep the course easy to scan.\n\nThe map, practice screen, field guide, and shared navigation use this system. Existing character, recipe, lookup, and profile pages keep their structures and inherit the new shared colors and display font. This record describes the source build; it does not claim that every older component has been redesigned. No raster assets ship with this redesign.",
+    "keyCharacteristics": [
+      "Connected routes with visible branch and join points.",
+      "Large Japanese characters with clear English labels.",
+      "Flat surfaces, fine rules, and compact controls.",
+      "Progress shown through color, text, line style, and SVG badges."
+    ],
+    "rules": [
+      {
+        "name": "The State Color Rule",
+        "body": "Use cobalt for available actions, coral for the selected location, and green for earned progress. Keep text or a shape cue with each state.",
+        "section": "colors"
+      },
+      {
+        "name": "The Character Landmark Rule",
+        "body": "Use BIZ UDPGothic for study characters and route stations. Keep the character separate from the smaller interface label.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Atlas Rule",
+        "body": "Use fills, borders, and route lines to separate the new atlas surfaces. Selection rings show state; they are not drop shadows.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use the shared atlas variables for new surfaces.",
+      "Do show locked paths with dashed borders and a lock badge, and completed paths with a check badge and solid lines.",
+      "Do use the shared SVG RouteIcon for interface arrows and checks.",
+      "Do keep visible keyboard focus and reduced-motion behavior.",
+      "Do retain a clear return path between practice, the selected stop, and the map."
+    ],
+    "donts": [
+      "Don't use coral as the completion color.",
+      "Don't use a color change as the only progress signal.",
+      "Don't copy older neon effects or text glyph controls into new atlas components.",
+      "Don't treat the retained detail-page structures as a new atlas layout standard."
+    ]
+  }
+}

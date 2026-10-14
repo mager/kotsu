@@ -16,15 +16,16 @@
 	let reading = $state('');
 	let meaning = $state('');
 
-	let wordInput: HTMLInputElement;
+	let wordInput = $state<HTMLInputElement>();
 	let lookupTimer: ReturnType<typeof setTimeout>;
 
 	// Bind wanakana to word input when form opens
 	$effect(() => {
 		if (open && wordInput) {
-			bind(wordInput);
-			wordInput.focus();
-			return () => unbind(wordInput);
+			const input = wordInput;
+			bind(input);
+			input.focus();
+			return () => unbind(input);
 		}
 	});
 

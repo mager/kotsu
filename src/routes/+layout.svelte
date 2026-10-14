@@ -1,8 +1,10 @@
 <script lang="ts">
 	import '../app.css';
+	import '../journey.css';
 	import Nav from '$lib/components/Nav.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import type { Snippet } from 'svelte';
+	import { page } from '$app/stores';
 	import { initAuth } from '$lib/stores/auth.svelte';
 	import { browser } from '$app/environment';
 	import { dev } from '$app/environment';
@@ -14,14 +16,14 @@
 
 	let { children }: Props = $props();
 
-	// Init Firebase auth + offline support on client only
+	let isDetailPage = $derived($page.params.index !== undefined);
+	let isHomePage = $derived($page.url.pathname === '/' || $page.url.pathname.startsWith('/journey/'));
+
+	// Init Firebase auth on client only
 	if (browser) {
 		initAuth();
-
-		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('/service-worker.js').catch(() => {
-				// no-op
-			});
+		if (!dev && 'serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/service-worker.js').catch(() => {});
 		}
 	}
 
@@ -35,5 +37,7 @@
 		{@render children()}
 	</main>
 
-	<Footer />
+	{#if !isDetailPage && !isHomePage}
+		<Footer />
+	{/if}
 </div>
